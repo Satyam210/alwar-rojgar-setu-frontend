@@ -1,0 +1,53 @@
+{
+  "dashboard": {
+    "title": "DEO Dashboard",
+    "subtitle": "Platform metrics for District Employment Office, Alwar.",
+    "metrics": {
+      "candidates": "Registered candidates",
+      "employers": "Registered employers",
+      "pendingEmployers": "Pending verifications",
+      "activeJobs": "Active jobs",
+      "applications": "Total applications",
+      "placements": "Placements",
+      "verifiedPlacements": "Placements via platform"
+    },
+    "charts": {
+      "registrations": "Candidate registrations by month",
+      "placements": "Placements by month",
+      "applicationsByStatus": "Applications by status"
+    }
+  },
+  "employers": {
+    "title": "Employers",
+    "search": "Search employers",
+    "filterStatus": "Filter by status",
+    "verify": "Verify",
+    "reject": "Reject",
+    "verifyConfirm": "Verify this employer? They will be able to post jobs.",
+    "rejectTitle": "Reject employer",
+    "rejectReason": "Reason for rejection",
+    "verified": "Employer verified",
+    "rejected": "Employer rejected",
+    "empty": "No employers found",
+    "viewDetails": "View details"
+  },
+  "candidates": {
+    "title": "Candidates",
+    "search": "Search candidates",
+    "filterDepartment": "Filter by department",
+    "allDepartments": "All departments",
+    "empty": "No candidates found",
+    "viewDetails": "View details"
+  },
+  "users": {
+    "title": "Users",
+    "enable": "Enable",
+    "disable": "Disable",
+    "enableConfirm": "Enable this account?",
+    "disableConfirm": "Disable this account? The user will not be able to log in.",
+    "enabled": "Account enabled",
+    "disabled": "Account disabled",
+    "active": "Active",
+    "inactive": "Disabled"
+  }
+}

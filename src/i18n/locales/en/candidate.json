@@ -1,0 +1,53 @@
+{
+  "onboarding": {
+    "title": "Complete your profile",
+    "subtitle": "Tell employers about yourself. You can edit this anytime.",
+    "submit": "Create profile",
+    "creating": "Creating profile…"
+  },
+  "profile": {
+    "title": "My Profile",
+    "edit": "Edit profile",
+    "saved": "Profile saved",
+    "sections": {
+      "basic": "Basic details",
+      "education": "Education & skills",
+      "preferences": "Job preferences",
+      "documents": "Documents"
+    }
+  },
+  "fields": {
+    "fullName": "Full name",
+    "email": "Email address",
+    "emailHelp": "Employers use this to contact you. Optional but recommended.",
+    "highestEducation": "Highest education",
+    "itiTrade": "ITI trade",
+    "itiCollege": "ITI college",
+    "itiCollegeHelp": "The ITI you studied at. Helps us group students by department.",
+    "department": "Department / Branch",
+    "graduationYear": "Year of passing",
+    "workExperienceMonths": "Work experience (months)",
+    "expectedSalary": "Expected salary (monthly)",
+    "skills": "Skills",
+    "skillsHelp": "Add skills one at a time, e.g. Welding, MS Office.",
+    "city": "City / Town",
+    "district": "District",
+    "pincode": "PIN code"
+  },
+  "documents": {
+    "resume": "Resume",
+    "resumeHelp": "Optional — we can auto-generate a clean resume from your profile.",
+    "generateResume": "Download auto-generated resume",
+    "aadhaar": "Aadhaar (optional)",
+    "aadhaarHelp": "Optional. Aadhaar is encouraged but not required to register.",
+    "aadhaarVerified": "Aadhaar verified",
+    "itiCertificate": "ITI certificate",
+    "diplomaCertificate": "Diploma certificate",
+    "degreeCertificate": "Degree certificate",
+    "experienceLetter": "Experience letter",
+    "uploaded": "Uploaded",
+    "notUploaded": "Not uploaded",
+    "uploading": "Uploading… {{percent}}%",
+    "view": "View"
+  }
+}

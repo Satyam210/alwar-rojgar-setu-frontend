@@ -1,0 +1,48 @@
+{
+  "status": {
+    "received": "Application Received",
+    "viewed": "Viewed by Employer",
+    "shortlisted": "Shortlisted",
+    "rejected": "Not Selected",
+    "hired": "Hired"
+  },
+  "statusHelp": {
+    "received": "The employer has received your application but hasn't reviewed it yet.",
+    "viewed": "The employer has opened and looked at your profile.",
+    "shortlisted": "Good news — the employer is interested and may contact you soon.",
+    "rejected": "The employer has moved forward with other candidates.",
+    "hired": "You got the job! The placement is recorded."
+  },
+  "candidate": {
+    "title": "My Applications",
+    "empty": "You haven't applied to any jobs yet",
+    "emptyBody": "Browse jobs and apply to start tracking your applications here.",
+    "appliedOn": "Applied {{date}}",
+    "filterByStatus": "Filter by status",
+    "allStatuses": "All applications"
+  },
+  "employer": {
+    "applicantsTitle": "Applicants",
+    "applicantsFor": "Applicants for {{title}}",
+    "totalApplicants": "{{count}} applicant",
+    "totalApplicants_other": "{{count}} applicants",
+    "empty": "No applicants yet",
+    "emptyBody": "Applicants will appear here as job seekers apply.",
+    "viewProfile": "View profile",
+    "shortlist": "Shortlist",
+    "reject": "Reject",
+    "markHired": "Mark as hired",
+    "contact": "Contact",
+    "rejectTitle": "Reject applicant",
+    "rejectReason": "Reason (optional, shown to candidate as 'Not Selected')",
+    "statusUpdated": "Application status updated",
+    "hireTitle": "Confirm hire",
+    "hireBody": "Record this placement so it counts towards platform outcomes.",
+    "joiningDate": "Joining date",
+    "attributedLabel": "This candidate was hired through Alwar Rojgar Setu",
+    "attributedHelp": "Tick this so the district office can verify the placement happened via the platform.",
+    "confirmHire": "Confirm hire",
+    "hiredViaPlatform": "Hired via Rojgar Setu",
+    "joiningOn": "Joining {{date}}"
+  }
+}

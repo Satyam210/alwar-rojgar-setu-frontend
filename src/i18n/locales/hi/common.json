@@ -1,0 +1,126 @@
+{
+  "app": {
+    "name": "अलवर रोज़गार सेतु",
+    "subBrand": "जिला प्रशासन, अलवर",
+    "tagline": "अलवर के युवाओं को स्थानीय नौकरियों से जोड़ना"
+  },
+  "nav": {
+    "home": "होम",
+    "findJobs": "नौकरी खोजें",
+    "myApplications": "मेरे आवेदन",
+    "myProfile": "मेरी प्रोफ़ाइल",
+    "myJobs": "मेरी नौकरियाँ",
+    "postJob": "नौकरी पोस्ट करें",
+    "dashboard": "डैशबोर्ड",
+    "employers": "नियोक्ता",
+    "candidates": "उम्मीदवार",
+    "users": "उपयोगकर्ता",
+    "login": "लॉग इन",
+    "logout": "लॉग आउट",
+    "menu": "मेनू"
+  },
+  "actions": {
+    "save": "सहेजें",
+    "saving": "सहेजा जा रहा है…",
+    "cancel": "रद्द करें",
+    "edit": "संपादित करें",
+    "delete": "हटाएँ",
+    "submit": "जमा करें",
+    "search": "खोजें",
+    "filter": "फ़िल्टर",
+    "clear": "साफ़ करें",
+    "apply": "आवेदन करें",
+    "applyFilters": "फ़िल्टर लागू करें",
+    "viewDetails": "विवरण देखें",
+    "back": "वापस",
+    "next": "आगे",
+    "previous": "पिछला",
+    "retry": "पुनः प्रयास करें",
+    "upload": "अपलोड करें",
+    "remove": "हटाएँ",
+    "confirm": "पुष्टि करें",
+    "close": "बंद करें",
+    "continue": "जारी रखें"
+  },
+  "states": {
+    "loading": "लोड हो रहा है…",
+    "errorTitle": "कुछ गलत हो गया",
+    "errorBody": "हम इसे अभी लोड नहीं कर सके। कृपया पुनः प्रयास करें।",
+    "emptyTitle": "अभी यहाँ कुछ नहीं है",
+    "notFoundTitle": "पेज नहीं मिला",
+    "notFoundBody": "आप जो पेज खोज रहे हैं वह मौजूद नहीं है।",
+    "goHome": "होमपेज पर जाएँ"
+  },
+  "a11y": {
+    "skipToContent": "मुख्य सामग्री पर जाएँ",
+    "toolbar": "सुलभता विकल्प",
+    "decreaseFont": "टेक्स्ट का आकार घटाएँ",
+    "resetFont": "टेक्स्ट का आकार रीसेट करें",
+    "increaseFont": "टेक्स्ट का आकार बढ़ाएँ",
+    "highContrast": "उच्च कंट्रास्ट",
+    "highContrastOn": "उच्च कंट्रास्ट चालू",
+    "highContrastOff": "उच्च कंट्रास्ट बंद",
+    "screenReaderAccess": "स्क्रीन रीडर पहुँच",
+    "language": "भाषा",
+    "selectLanguage": "भाषा चुनें"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "जिला प्रशासन, अलवर की एक पहल"
+    },
+    "trust": {
+      "verified": "सत्यापित स्थानीय नियोक्ता",
+      "free": "नौकरी चाहने वालों के लिए पूर्णतः निःशुल्क",
+      "local": "अलवर ज़िले भर में नौकरियाँ"
+    },
+    "stats": {
+      "activeJobs": "सक्रिय नौकरियाँ",
+      "registeredEmployers": "पंजीकृत नियोक्ता",
+      "successfulHires": "सफल नियुक्तियाँ"
+    },
+    "featured": {
+      "title": "प्रमुख नियोक्ता",
+      "subtitle": "अलवर और आसपास अभी भर्ती कर रही विश्वसनीय स्थानीय कंपनियाँ।",
+      "openVacancies": "रिक्त पद",
+      "viewJobs": "नौकरियाँ देखें",
+      "viewAll": "सभी रिक्तियाँ देखें",
+      "verified": "सत्यापित",
+      "roles": "{{count}} रिक्ति",
+      "roles_other": "{{count}} रिक्तियाँ"
+    }
+  },
+  "languagePicker": {
+    "title": "अपनी भाषा चुनें",
+    "subtitle": "Choose your language · आप इसे कभी भी बदल सकते हैं।"
+  },
+  "language": {
+    "en": "English",
+    "hi": "हिन्दी"
+  },
+  "pagination": {
+    "page": "पेज",
+    "of": "में से",
+    "showing": "{{total}} में से {{from}}–{{to}} दिखाए जा रहे हैं"
+  },
+  "footer": {
+    "about": "हमारे बारे में",
+    "aboutText": "स्थानीय युवाओं को स्थानीय नियोक्ताओं से पूरे वर्ष जोड़ने की जिला प्रशासन, अलवर की एक पहल।",
+    "quickLinks": "त्वरित लिंक",
+    "legal": "कानूनी एवं नीतियाँ",
+    "accessibility": "सुलभता विवरण",
+    "privacy": "गोपनीयता नीति",
+    "terms": "उपयोग की शर्तें",
+    "grievance": "शिकायत निवारण",
+    "grievanceOfficer": "शिकायत अधिकारी",
+    "helpline": "हेल्पलाइन",
+    "helplineText": "मदद चाहिए? हमारी हेल्पलाइन पर कॉल करें:",
+    "lastUpdated": "अंतिम अद्यतन",
+    "copyright": "© {{year}} जिला प्रशासन, अलवर। सर्वाधिकार सुरक्षित।",
+    "notProvided": "सूचित किया जाएगा"
+  },
+  "roles": {
+    "candidate": "नौकरी चाहने वाला",
+    "employer": "नियोक्ता",
+    "admin": "प्रशासक"
+  }
+}

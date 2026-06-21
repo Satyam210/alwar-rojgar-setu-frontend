@@ -1,0 +1,65 @@
+{
+  "search": {
+    "title": "Find Jobs",
+    "resultsCount": "{{count}} job found",
+    "resultsCount_other": "{{count}} jobs found",
+    "placeholder": "Search by job title or skill",
+    "noResults": "No jobs match your filters",
+    "noResultsBody": "Try removing some filters or searching a different skill category."
+  },
+  "filters": {
+    "title": "Filters",
+    "district": "District",
+    "trade": "Skill Category",
+    "jobType": "Job type",
+    "minSalary": "Minimum salary",
+    "maxSalary": "Maximum salary",
+    "all": "All",
+    "anyDistrict": "Any district",
+    "anyTrade": "Any category",
+    "anyType": "Any type"
+  },
+  "type": {
+    "permanent": "Permanent",
+    "contract": "Contract",
+    "internship": "Internship"
+  },
+  "status": {
+    "draft": "Draft",
+    "active": "Active",
+    "closed": "Closed",
+    "filled": "Filled",
+    "expired": "Expired"
+  },
+  "fields": {
+    "title": "Job title",
+    "description": "Job description",
+    "company": "Company",
+    "district": "District",
+    "trade": "Skill Category",
+    "jobType": "Job type",
+    "grossSalary": "Gross salary (monthly)",
+    "netSalary": "Take-home salary (monthly)",
+    "openings": "Number of openings",
+    "filled": "Positions filled",
+    "posted": "Posted"
+  },
+  "detail": {
+    "salaryRange": "Take-home {{net}} · Gross {{gross}}",
+    "openings": "{{count}} opening",
+    "openings_other": "{{count}} openings",
+    "aboutRole": "About this role",
+    "applyTitle": "Apply for this job",
+    "applyCta": "Apply for Job",
+    "applying": "Applying…",
+    "loginToApply": "Login to apply",
+    "alreadyApplied": "You have already applied",
+    "applySuccess": "Application submitted! Track it in My Applications.",
+    "expiredNotice": "This job is no longer accepting applications.",
+    "candidatesOnly": "Only job seekers can apply for jobs."
+  },
+  "card": {
+    "takeHome": "Take-home",
+    "perMonth": "/month"
+  }
+}

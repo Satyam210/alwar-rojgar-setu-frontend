@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Design tokens as CSS variables (RGB channels for Tailwind <alpha-value>).
+ * Palette verified for WCAG 2.1 AA contrast (>= 4.5:1 for body text).
+ */
+@layer base {
+  :root {
+    --color-brand-50: 239 246 255;
+    --color-brand-100: 219 234 254;
+    --color-brand-200: 191 219 254;
+    --color-brand-300: 147 197 253;
+    --color-brand-400: 96 165 250;
+    --color-brand-500: 59 130 246;
+    --color-brand-600: 37 99 235;
+    --color-brand-700: 29 78 216;
+    --color-brand-800: 30 64 175;
+    --color-brand-900: 30 58 138;
+
+    --color-surface: 255 255 255;
+    --color-surface-muted: 248 250 252;
+    --color-border: 203 213 225;
+    --color-content: 15 23 42; /* slate-900, ~16:1 on white */
+    --color-content-muted: 71 85 105; /* slate-600, ~7:1 on white */
+    --color-success: 21 128 61; /* green-700 */
+    --color-warning: 180 83 9; /* amber-700 */
+    --color-danger: 185 28 28; /* red-700 */
+    --color-info: 29 78 216; /* blue-700 */
+
+    --font-scale: 1;
+  }
+
+  /* High-contrast theme (accessibility toolbar). Pure black/white + bold borders. */
+  .high-contrast {
+    --color-surface: 255 255 255;
+    --color-surface-muted: 255 255 255;
+    --color-border: 0 0 0;
+    --color-content: 0 0 0;
+    --color-content-muted: 0 0 0;
+    --color-brand-600: 0 0 139;
+    --color-brand-700: 0 0 128;
+    --color-brand-900: 0 0 102;
+    --color-success: 0 100 0;
+    --color-danger: 153 0 0;
+  }
+
+  .high-contrast * {
+    border-color: rgb(0 0 0) !important;
+  }
+
+  html {
+    font-size: 100%;
+  }
+
+  body {
+    @apply bg-surface-muted text-content antialiased;
+    font-family: theme('fontFamily.sans');
+    font-size: calc(1rem * var(--font-scale));
+    line-height: 1.6;
+  }
+
+  /* Visible focus everywhere (WCAG 2.4.7) — never remove outlines. */
+  :focus-visible {
+    @apply outline-none ring ring-brand-600 ring-offset-2 ring-offset-surface;
+  }
+
+  h1 {
+    @apply text-2xl font-bold sm:text-3xl;
+  }
+  h2 {
+    @apply text-xl font-semibold sm:text-2xl;
+  }
+  h3 {
+    @apply text-lg font-semibold;
+  }
+
+  a {
+    @apply text-brand-700 underline-offset-2 hover:underline;
+  }
+}
+
+@layer components {
+  /* Skip link — first focusable element, visible on focus (WCAG 2.4.1). */
+  .skip-link {
+    @apply sr-only;
+  }
+  .skip-link:focus {
+    @apply not-sr-only fixed left-4 top-4 z-50 rounded bg-brand-700 px-4 py-2 font-semibold text-white;
+  }
+}
+
+/* Respect reduced-motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

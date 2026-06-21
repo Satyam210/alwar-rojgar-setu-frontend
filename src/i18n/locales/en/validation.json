@@ -1,0 +1,18 @@
+{
+  "required": "This field is required",
+  "phoneInvalid": "Enter a valid 10-digit mobile number",
+  "otpInvalid": "Enter the 6-digit code",
+  "emailInvalid": "Enter a valid email address",
+  "pincodeInvalid": "Enter a valid 6-digit PIN code",
+  "numberInvalid": "Enter a valid number",
+  "minLength": "Must be at least {{count}} characters",
+  "maxLength": "Must be at most {{count}} characters",
+  "min": "Must be at least {{min}}",
+  "max": "Must be at most {{max}}",
+  "netGreaterThanGross": "Take-home salary cannot be more than gross salary",
+  "gstInvalid": "Enter a valid 15-character GST number",
+  "yearInvalid": "Enter a valid year",
+  "fileTooLarge": "File is too large (max {{size}} MB)",
+  "fileType": "Unsupported file type",
+  "errorSummaryTitle": "Please fix the following:"
+}

@@ -1,0 +1,74 @@
+{
+  "onboarding": {
+    "title": "Create your company profile",
+    "subtitle": "Register your business. Our team verifies it before you can post jobs.",
+    "submit": "Create company profile",
+    "creating": "Creating…"
+  },
+  "verification": {
+    "pending": "Verification pending",
+    "pendingBody": "Our operations team will verify your company within 2 working days. You can post jobs once verified.",
+    "verified": "Verified",
+    "verifiedBody": "Your company is verified. You can now post jobs.",
+    "rejected": "Verification rejected",
+    "rejectedReason": "Reason: {{reason}}"
+  },
+  "profile": {
+    "title": "Company Profile",
+    "edit": "Edit company profile",
+    "saved": "Company profile saved"
+  },
+  "account": {
+    "roleOwner": "Owner",
+    "roleHrHead": "HR Head",
+    "hrHeadNote": "You are signed in as the HR Head for this company. You can post jobs and manage applicants on the company's behalf."
+  },
+  "fields": {
+    "companyName": "Company name",
+    "gstNumber": "GST number",
+    "udyamNumber": "Udyam registration number",
+    "contactPerson": "Contact person",
+    "status": "Verification status"
+  },
+  "documents": {
+    "title": "Company documents",
+    "subtitle": "Upload GST, Udyam and other documents for verification.",
+    "type": "Document type",
+    "upload": "Upload document",
+    "uploading": "Uploading… {{percent}}%",
+    "empty": "No documents uploaded yet",
+    "deleteConfirm": "Delete this document?",
+    "types": {
+      "GST_CERTIFICATE": "GST Certificate",
+      "UDYAM_CERTIFICATE": "Udyam Certificate",
+      "FACTORY_LICENSE": "Factory License",
+      "PAN_CARD": "PAN Card",
+      "OTHER": "Other"
+    },
+    "verificationStatus": {
+      "pending": "Pending review",
+      "verified": "Verified",
+      "rejected": "Rejected"
+    }
+  },
+  "jobs": {
+    "title": "My Jobs",
+    "post": "Post a Job",
+    "edit": "Edit Job",
+    "empty": "You haven't posted any jobs yet",
+    "emptyBody": "Post your first job to start receiving applicants.",
+    "applicants": "{{count}} applicant",
+    "applicants_other": "{{count}} applicants",
+    "viewApplicants": "View applicants",
+    "close": "Close job",
+    "closeConfirm": "Close this job? Candidates will no longer be able to apply.",
+    "created": "Job posted",
+    "updated": "Job updated",
+    "closed": "Job closed",
+    "mustVerify": "Your company must be verified before you can post jobs.",
+    "form": {
+      "createTitle": "Post a new job",
+      "editTitle": "Edit job"
+    }
+  }
+}

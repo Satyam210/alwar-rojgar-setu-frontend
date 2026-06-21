@@ -1,0 +1,126 @@
+{
+  "app": {
+    "name": "Alwar Rojgar Setu",
+    "subBrand": "District Administration, Alwar",
+    "tagline": "Connecting Alwar's youth with local jobs"
+  },
+  "nav": {
+    "home": "Home",
+    "findJobs": "Find Jobs",
+    "myApplications": "My Applications",
+    "myProfile": "My Profile",
+    "myJobs": "My Jobs",
+    "postJob": "Post a Job",
+    "dashboard": "Dashboard",
+    "employers": "Employers",
+    "candidates": "Candidates",
+    "users": "Users",
+    "login": "Login",
+    "logout": "Logout",
+    "menu": "Menu"
+  },
+  "actions": {
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "apply": "Apply",
+    "applyFilters": "Apply filters",
+    "viewDetails": "View details",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "retry": "Try again",
+    "upload": "Upload",
+    "remove": "Remove",
+    "confirm": "Confirm",
+    "close": "Close",
+    "continue": "Continue"
+  },
+  "states": {
+    "loading": "Loading…",
+    "errorTitle": "Something went wrong",
+    "errorBody": "We couldn't load this right now. Please try again.",
+    "emptyTitle": "Nothing here yet",
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The page you're looking for doesn't exist.",
+    "goHome": "Go to homepage"
+  },
+  "a11y": {
+    "skipToContent": "Skip to main content",
+    "toolbar": "Accessibility options",
+    "decreaseFont": "Decrease text size",
+    "resetFont": "Reset text size",
+    "increaseFont": "Increase text size",
+    "highContrast": "High contrast",
+    "highContrastOn": "High contrast on",
+    "highContrastOff": "High contrast off",
+    "screenReaderAccess": "Screen reader access",
+    "language": "Language",
+    "selectLanguage": "Select language"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "A District Administration, Alwar initiative"
+    },
+    "trust": {
+      "verified": "Verified local employers",
+      "free": "100% free for job seekers",
+      "local": "Jobs across Alwar district"
+    },
+    "stats": {
+      "activeJobs": "Active jobs",
+      "registeredEmployers": "Registered employers",
+      "successfulHires": "Successful hires"
+    },
+    "featured": {
+      "title": "Featured employers",
+      "subtitle": "Trusted local companies hiring right now in and around Alwar.",
+      "openVacancies": "Open vacancies",
+      "viewJobs": "View jobs",
+      "viewAll": "View all openings",
+      "verified": "Verified",
+      "roles": "{{count}} open role",
+      "roles_other": "{{count}} open roles"
+    }
+  },
+  "languagePicker": {
+    "title": "Choose your language",
+    "subtitle": "अपनी भाषा चुनें · You can change this anytime."
+  },
+  "language": {
+    "en": "English",
+    "hi": "हिन्दी"
+  },
+  "pagination": {
+    "page": "Page",
+    "of": "of",
+    "showing": "Showing {{from}}–{{to}} of {{total}}"
+  },
+  "footer": {
+    "about": "About",
+    "aboutText": "A District Administration, Alwar initiative to connect local youth with local employers, all year round.",
+    "quickLinks": "Quick Links",
+    "legal": "Legal & Policies",
+    "accessibility": "Accessibility Statement",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "grievance": "Grievance Redressal",
+    "grievanceOfficer": "Grievance Officer",
+    "helpline": "Helpline",
+    "helplineText": "Need help? Call our helpline:",
+    "lastUpdated": "Last updated",
+    "copyright": "© {{year}} District Administration, Alwar. All rights reserved.",
+    "notProvided": "To be notified"
+  },
+  "roles": {
+    "candidate": "Job Seeker",
+    "employer": "Employer",
+    "admin": "Administrator"
+  }
+}

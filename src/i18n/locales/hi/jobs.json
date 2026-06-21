@@ -1,0 +1,65 @@
+{
+  "search": {
+    "title": "नौकरी खोजें",
+    "resultsCount": "{{count}} नौकरी मिली",
+    "resultsCount_other": "{{count}} नौकरियाँ मिलीं",
+    "placeholder": "नौकरी के शीर्षक या कौशल से खोजें",
+    "noResults": "आपके फ़िल्टर से कोई नौकरी मेल नहीं खाती",
+    "noResultsBody": "कुछ फ़िल्टर हटाकर देखें या कोई अन्य कौशल श्रेणी खोजें।"
+  },
+  "filters": {
+    "title": "फ़िल्टर",
+    "district": "ज़िला",
+    "trade": "कौशल श्रेणी",
+    "jobType": "नौकरी का प्रकार",
+    "minSalary": "न्यूनतम वेतन",
+    "maxSalary": "अधिकतम वेतन",
+    "all": "सभी",
+    "anyDistrict": "कोई भी ज़िला",
+    "anyTrade": "कोई भी श्रेणी",
+    "anyType": "कोई भी प्रकार"
+  },
+  "type": {
+    "permanent": "स्थायी",
+    "contract": "अनुबंध",
+    "internship": "इंटर्नशिप"
+  },
+  "status": {
+    "draft": "ड्राफ़्ट",
+    "active": "सक्रिय",
+    "closed": "बंद",
+    "filled": "भरा हुआ",
+    "expired": "समाप्त"
+  },
+  "fields": {
+    "title": "नौकरी का शीर्षक",
+    "description": "नौकरी का विवरण",
+    "company": "कंपनी",
+    "district": "ज़िला",
+    "trade": "कौशल श्रेणी",
+    "jobType": "नौकरी का प्रकार",
+    "grossSalary": "सकल वेतन (मासिक)",
+    "netSalary": "हाथ में आने वाला वेतन (मासिक)",
+    "openings": "रिक्तियों की संख्या",
+    "filled": "भरे गए पद",
+    "posted": "पोस्ट किया गया"
+  },
+  "detail": {
+    "salaryRange": "हाथ में {{net}} · सकल {{gross}}",
+    "openings": "{{count}} रिक्ति",
+    "openings_other": "{{count}} रिक्तियाँ",
+    "aboutRole": "इस भूमिका के बारे में",
+    "applyTitle": "इस नौकरी के लिए आवेदन करें",
+    "applyCta": "नौकरी के लिए आवेदन करें",
+    "applying": "आवेदन किया जा रहा है…",
+    "loginToApply": "आवेदन के लिए लॉग इन करें",
+    "alreadyApplied": "आप पहले ही आवेदन कर चुके हैं",
+    "applySuccess": "आवेदन जमा हो गया! इसे मेरे आवेदन में देखें।",
+    "expiredNotice": "यह नौकरी अब आवेदन स्वीकार नहीं कर रही है।",
+    "candidatesOnly": "केवल नौकरी चाहने वाले ही आवेदन कर सकते हैं।"
+  },
+  "card": {
+    "takeHome": "हाथ में",
+    "perMonth": "/माह"
+  }
+}
