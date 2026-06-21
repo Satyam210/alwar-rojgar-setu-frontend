@@ -3,10 +3,9 @@ import react from '@vitejs/plugin-react';
 import path from 'node:path';
 
 // https://vite.dev/config/
-// `base` must match the GitHub Pages project path (https://<user>.github.io/alwar-rojgar-setu/).
-// Kept at '/' for local dev so routing and assets work unchanged.
-export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/alwar-rojgar-setu/' : '/',
+// Served at the domain root on Vercel, so base stays '/' in every mode.
+export default defineConfig(() => ({
+  base: '/',
   plugins: [react()],
   resolve: {
     alias: {
