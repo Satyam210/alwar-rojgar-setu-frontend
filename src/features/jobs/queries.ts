@@ -35,7 +35,7 @@ export function useJob(jobId: string | undefined) {
 }
 
 export function useOwnedJobs() {
-  return useQuery({ queryKey: jobKeys.owned(), queryFn: getOwnedJobs });
+  return useQuery({ queryKey: jobKeys.owned(), queryFn: () => getOwnedJobs() });
 }
 
 export function useJobApplicants(jobId: string | undefined) {

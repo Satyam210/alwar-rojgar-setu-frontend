@@ -14,8 +14,8 @@ export async function getJob(jobId: string): Promise<Job> {
 }
 
 /** GET /jobs/owned — employer's own jobs. */
-export async function getOwnedJobs(): Promise<Paginated<Job>> {
-  const { data } = await api.get<Paginated<Job>>('/jobs/owned');
+export async function getOwnedJobs(params: Pick<JobSearchParams, 'page' | 'limit'> = {}): Promise<Paginated<Job>> {
+  const { data } = await api.get<Paginated<Job>>('/jobs/owned', { params });
   return data;
 }
 

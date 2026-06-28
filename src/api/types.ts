@@ -195,9 +195,12 @@ export interface AdminDashboardMetrics {
   pendingEmployers: number;
   activeJobs: number;
   totalApplications: number;
-  totalPlacements: number;
-  /** Placements explicitly confirmed as made through the platform. */
-  verifiedPlacements: number;
+  /** Real backend field — maps to successful hired placements. */
+  successfulHires?: number;
+  /** Mock/extended field — total hired applications. Falls back to successfulHires. */
+  totalPlacements?: number;
+  /** Mock/extended field — hired applications attributed to the platform. */
+  verifiedPlacements?: number;
   registrationsByMonth?: { month: string; count: number }[];
   placementsByMonth?: { month: string; count: number }[];
   applicationsByStatus?: { status: ApplicationStatus; count: number }[];

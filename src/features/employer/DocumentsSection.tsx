@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import type { EmployerDocumentType } from '@/api/types';
 import { uploadEmployerDocument } from '@/api/employer';
+import { fetchDocumentBlobUrl } from '@/api/documents';
 import { employerKeys, useDeleteEmployerDocument, useEmployerDocuments } from './queries';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
 import { Field } from '@/components/ui/Field';
@@ -72,9 +73,16 @@ export function EmployerDocumentsSection() {
               >
                 <div>
                   <p className="font-medium">{t(`documents.types.${doc.documentType}`)}</p>
-                  <a href={doc.documentUrl} target="_blank" rel="noreferrer" className="text-sm">
-                    {t('documents.upload')}
-                  </a>
+                  <button
+                    type="button"
+                    className="text-sm text-brand-700 hover:underline"
+                    onClick={async () => {
+                      const blobUrl = await fetchDocumentBlobUrl(doc.documentUrl);
+                      if (blobUrl) window.open(blobUrl, '_blank', 'noreferrer');
+                    }}
+                  >
+                    {t('common:actions.view', { defaultValue: 'View' })}
+                  </button>
                 </div>
                 <div className="flex items-center gap-3">
                   <DocumentStatusBadge status={doc.verificationStatus} />

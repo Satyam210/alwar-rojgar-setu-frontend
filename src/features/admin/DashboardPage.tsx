@@ -31,8 +31,8 @@ export function AdminDashboardPage() {
     { label: t('dashboard.metrics.pendingEmployers'), value: data.pendingEmployers },
     { label: t('dashboard.metrics.activeJobs'), value: data.activeJobs },
     { label: t('dashboard.metrics.applications'), value: data.totalApplications },
-    { label: t('dashboard.metrics.placements'), value: data.totalPlacements },
-    { label: t('dashboard.metrics.verifiedPlacements'), value: data.verifiedPlacements },
+    { label: t('dashboard.metrics.placements'), value: data.totalPlacements ?? data.successfulHires ?? 0 },
+    { label: t('dashboard.metrics.verifiedPlacements'), value: data.verifiedPlacements ?? 0 },
   ];
 
   return (
