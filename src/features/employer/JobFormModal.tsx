@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
@@ -40,6 +41,19 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
       district: initial?.district ?? 'Alwar',
     },
   });
+
+  useEffect(() => {
+    reset({
+      title: initial?.title ?? '',
+      description: initial?.description ?? '',
+      grossSalary: initial?.grossSalary ?? undefined,
+      netSalary: initial?.netSalary ?? undefined,
+      jobType: initial?.jobType ?? 'permanent',
+      openings: initial?.openings ?? 1,
+      tradeRequired: initial?.tradeRequired ?? '',
+      district: initial?.district ?? 'Alwar',
+    });
+  }, [initial, reset]);
 
   function submit(values: JobForm) {
     const parsed = jobSchema.parse(values);

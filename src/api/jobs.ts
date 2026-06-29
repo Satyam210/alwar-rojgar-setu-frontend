@@ -37,6 +37,12 @@ export async function closeJob(jobId: string): Promise<Job> {
   return data;
 }
 
+/** PATCH /jobs/{jobId}/reopen — reopen a closed job (sets status to active, resets posted_at). */
+export async function reopenJob(jobId: string): Promise<Job> {
+  const { data } = await api.patch<Job>(`/jobs/${jobId}/reopen`, {});
+  return data;
+}
+
 /** GET /jobs/{jobId}/applications — applicants for a job (employer/admin). */
 export async function getJobApplicants(jobId: string): Promise<Paginated<Application>> {
   const { data } = await api.get<Paginated<Application>>(`/jobs/${jobId}/applications`);

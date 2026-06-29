@@ -405,6 +405,17 @@ add('PATCH', '/jobs/:id/close', (ctx) => {
   return job;
 });
 
+add('PATCH', '/jobs/:id/reopen', (ctx) => {
+  const profile = employerOf(ctx, requireRole(ctx, 'employer'));
+  const job = ctx.db.jobs.find((j) => j.id === ctx.params.id && j.employerId === profile.id);
+  if (!job) throw new HttpError(404, 'Job not found.');
+  job.status = 'active';
+  job.postedAt = now();
+  job.updatedAt = now();
+  persist();
+  return job;
+});
+
 add('GET', '/jobs/:id/applications', (ctx) => {
   requireUser(ctx);
   const items = ctx.db.applications
