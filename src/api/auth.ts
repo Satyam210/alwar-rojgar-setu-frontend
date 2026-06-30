@@ -9,6 +9,8 @@ export interface RequestOtpPayload {
 export interface VerifyOtpPayload {
   phone: string;
   otp: string;
+  /** Required by backend on first sign-up; safe to send on every verify call. */
+  role?: Role;
 }
 
 interface VerifyOtpResponse {

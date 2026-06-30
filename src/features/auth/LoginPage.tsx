@@ -37,11 +37,13 @@ export function LoginPage() {
 
   const [step, setStep] = useState<Step>('phone');
   const [phone, setPhone] = useState('');
+  const [role, setRole] = useState<Role>('candidate');
   const disabled = (location.state as { disabled?: boolean } | null)?.disabled;
   const from = (location.state as { from?: string } | null)?.from;
 
-  function onOtpRequested(value: string) {
+  function onOtpRequested(value: string, selectedRole: Role) {
     setPhone(value);
+    setRole(selectedRole);
     setStep('otp');
   }
 
@@ -70,7 +72,7 @@ export function LoginPage() {
           {step === 'phone' ? (
             <PhoneStep onRequested={onOtpRequested} />
           ) : (
-            <OtpStep phone={phone} onVerified={completeLogin} onChangeNumber={() => setStep('phone')} />
+            <OtpStep phone={phone} role={role} onVerified={completeLogin} onChangeNumber={() => setStep('phone')} />
           )}
         </CardBody>
       </Card>
@@ -78,7 +80,7 @@ export function LoginPage() {
   );
 }
 
-function PhoneStep({ onRequested }: { onRequested: (phone: string) => void }) {
+function PhoneStep({ onRequested }: { onRequested: (phone: string, role: Role) => void }) {
   const { t } = useTranslation(['auth', 'common', 'validation']);
   const [serverError, setServerError] = useState<string>();
   const {
@@ -94,7 +96,7 @@ function PhoneStep({ onRequested }: { onRequested: (phone: string) => void }) {
     setServerError(undefined);
     try {
       await requestOtp({ phone: toE164(values.phone), role: values.role });
-      onRequested(values.phone);
+      onRequested(values.phone, values.role);
     } catch (err) {
       setServerError((err as ApiError).message);
     }
@@ -150,10 +152,12 @@ function PhoneStep({ onRequested }: { onRequested: (phone: string) => void }) {
 
 function OtpStep({
   phone,
+  role,
   onVerified,
   onChangeNumber,
 }: {
   phone: string;
+  role: Role;
   onVerified: () => Promise<void>;
   onChangeNumber: () => void;
 }) {
@@ -169,7 +173,7 @@ function OtpStep({
   async function onSubmit(values: VerifyOtpForm) {
     setServerError(undefined);
     try {
-      await verifyOtp({ phone: toE164(phone), otp: values.otp });
+      await verifyOtp({ phone: toE164(phone), otp: values.otp, role });
       await onVerified();
     } catch (err) {
       setServerError((err as ApiError).message);

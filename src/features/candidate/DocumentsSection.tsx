@@ -5,6 +5,7 @@ import {
   uploadCertificate,
   uploadResume,
 } from '@/api/candidate';
+import { fetchDocumentBlobUrl } from '@/api/documents';
 import { useQueryClient } from '@tanstack/react-query';
 import { candidateKeys } from './queries';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
@@ -105,9 +106,16 @@ function DocRow({
         <p className="font-medium">{label}</p>
         <p className="text-sm text-content-muted">
           {url ? (
-            <a href={url} target="_blank" rel="noreferrer">
+            <button
+              type="button"
+              className="text-brand-700 hover:underline"
+              onClick={async () => {
+                const blobUrl = await fetchDocumentBlobUrl(url);
+                if (blobUrl) window.open(blobUrl, '_blank', 'noreferrer');
+              }}
+            >
               {t('documents.view')}
-            </a>
+            </button>
           ) : (
             t('documents.notUploaded')
           )}

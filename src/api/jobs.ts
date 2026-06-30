@@ -14,8 +14,8 @@ export async function getJob(jobId: string): Promise<Job> {
 }
 
 /** GET /jobs/owned — employer's own jobs. */
-export async function getOwnedJobs(): Promise<Paginated<Job>> {
-  const { data } = await api.get<Paginated<Job>>('/jobs/owned');
+export async function getOwnedJobs(params: Pick<JobSearchParams, 'page' | 'limit'> = {}): Promise<Paginated<Job>> {
+  const { data } = await api.get<Paginated<Job>>('/jobs/owned', { params });
   return data;
 }
 
@@ -34,6 +34,12 @@ export async function updateJob(jobId: string, input: Partial<JobInput>): Promis
 /** PATCH /jobs/{jobId}/close */
 export async function closeJob(jobId: string): Promise<Job> {
   const { data } = await api.patch<Job>(`/jobs/${jobId}/close`, {});
+  return data;
+}
+
+/** PATCH /jobs/{jobId}/reopen — reopen a closed job (sets status to active, resets posted_at). */
+export async function reopenJob(jobId: string): Promise<Job> {
+  const { data } = await api.patch<Job>(`/jobs/${jobId}/reopen`, {});
   return data;
 }
 

@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import { useCloseJob, useCreateJob, useOwnedJobs, useUpdateJob } from '@/features/jobs/queries';
+import { useCloseJob, useCreateJob, useOwnedJobs, useReopenJob, useUpdateJob, jobKeys } from '@/features/jobs/queries';
 import { useEmployerProfile } from './queries';
 import { JobFormModal } from './JobFormModal';
+import { getJob } from '@/api/jobs';
 import { paths } from '@/routes/paths';
 import { formatCurrency, formatRelative } from '@/lib/format';
 import type { Job, JobInput } from '@/api/types';
@@ -19,13 +21,16 @@ export function EmployerJobsPage() {
   const { t } = useTranslation(['employer', 'jobs', 'common']);
   usePageTitle(t('employer:jobs.title'));
 
+  const qc = useQueryClient();
   const { data: profile } = useEmployerProfile();
   const { data, isLoading, isError, refetch } = useOwnedJobs();
   const createJob = useCreateJob();
   const closeJob = useCloseJob();
+  const reopenJob = useReopenJob();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<Job | undefined>();
+  const [editLoadingId, setEditLoadingId] = useState<string | null>(null);
   const updateJob = useUpdateJob(editingJob?.id ?? '');
 
   const isVerified = profile?.status === 'verified';
@@ -34,9 +39,22 @@ export function EmployerJobsPage() {
     setEditingJob(undefined);
     setModalOpen(true);
   }
-  function openEdit(job: Job) {
-    setEditingJob(job);
-    setModalOpen(true);
+
+  async function openEdit(jobId: string) {
+    setEditLoadingId(jobId);
+    try {
+      const fresh = await qc.fetchQuery({
+        queryKey: jobKeys.detail(jobId),
+        queryFn: () => getJob(jobId),
+        staleTime: 0,
+      });
+      setEditingJob(fresh);
+      setModalOpen(true);
+    } catch (err) {
+      toast.error(apiErrorMessage(err));
+    } finally {
+      setEditLoadingId(null);
+    }
   }
 
   function handleSubmit(input: JobInput) {
@@ -109,23 +127,45 @@ export function EmployerJobsPage() {
                         {t('employer:jobs.viewApplicants')}
                       </Link>
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => openEdit(job)}>
-                      {t('common:actions.edit')}
-                    </Button>
-                    {(job.status === 'active' || job.status === 'draft') && (
+
+                    {(job.status === 'active' || job.status === 'draft') ? (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          loading={editLoadingId === job.id}
+                          onClick={() => openEdit(job.id)}
+                        >
+                          {t('common:actions.edit')}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            if (confirm(t('employer:jobs.closeConfirm'))) {
+                              closeJob.mutate(job.id, {
+                                onSuccess: () => toast.success(t('employer:jobs.closed')),
+                                onError: (err) => toast.error(apiErrorMessage(err)),
+                              });
+                            }
+                          }}
+                        >
+                          {t('employer:jobs.close')}
+                        </Button>
+                      </>
+                    ) : (
                       <Button
                         variant="ghost"
                         size="sm"
+                        loading={reopenJob.isPending && reopenJob.variables === job.id}
                         onClick={() => {
-                          if (confirm(t('employer:jobs.closeConfirm'))) {
-                            closeJob.mutate(job.id, {
-                              onSuccess: () => toast.success(t('employer:jobs.closed')),
-                              onError: (err) => toast.error(apiErrorMessage(err)),
-                            });
-                          }
+                          reopenJob.mutate(job.id, {
+                            onSuccess: () => toast.success(t('employer:jobs.reopened', { defaultValue: 'Job reopened.' })),
+                            onError: (err) => toast.error(apiErrorMessage(err)),
+                          });
                         }}
                       >
-                        {t('employer:jobs.close')}
+                        {t('employer:jobs.reopen', { defaultValue: 'Open' })}
                       </Button>
                     )}
                   </div>

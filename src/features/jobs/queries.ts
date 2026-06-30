@@ -5,6 +5,7 @@ import {
   getJob,
   getJobApplicants,
   getOwnedJobs,
+  reopenJob,
   searchJobs,
   updateJob,
 } from '@/api/jobs';
@@ -35,7 +36,7 @@ export function useJob(jobId: string | undefined) {
 }
 
 export function useOwnedJobs() {
-  return useQuery({ queryKey: jobKeys.owned(), queryFn: getOwnedJobs });
+  return useQuery({ queryKey: jobKeys.owned(), queryFn: () => getOwnedJobs() });
 }
 
 export function useJobApplicants(jobId: string | undefined) {
@@ -69,6 +70,14 @@ export function useCloseJob() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (jobId: string) => closeJob(jobId),
+    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.owned() }),
+  });
+}
+
+export function useReopenJob() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (jobId: string) => reopenJob(jobId),
     onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.owned() }),
   });
 }
