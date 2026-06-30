@@ -32,3 +32,6 @@ dist-ssr
 coverage
 playwright-report
 .nyc_output
+
+#cursor
+.cursor/rules/

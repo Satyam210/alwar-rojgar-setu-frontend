@@ -158,6 +158,7 @@ export interface JobSearchParams {
   jobType?: JobType;
   minSalary?: number;
   maxSalary?: number;
+  companyName?: string;
   page?: number;
   limit?: number;
 }

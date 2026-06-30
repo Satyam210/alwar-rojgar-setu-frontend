@@ -8,16 +8,24 @@
  */
 @layer base {
   :root {
-    --color-brand-50: 239 246 255;
-    --color-brand-100: 219 234 254;
-    --color-brand-200: 191 219 254;
-    --color-brand-300: 147 197 253;
-    --color-brand-400: 96 165 250;
-    --color-brand-500: 59 130 246;
-    --color-brand-600: 37 99 235;
-    --color-brand-700: 29 78 216;
-    --color-brand-800: 30 64 175;
-    --color-brand-900: 30 58 138;
+    /* Deep navy — inspired by Indian government portals (NIC / India.gov.in) */
+    --color-brand-50: 237 242 255;
+    --color-brand-100: 218 228 255;
+    --color-brand-200: 183 199 245;
+    --color-brand-300: 134 158 224;
+    --color-brand-400: 82 109 196;
+    --color-brand-500: 48 73 163;
+    --color-brand-600: 30 55 138;
+    --color-brand-700: 23 37 84;
+    --color-brand-800: 20 30 70;
+    --color-brand-900: 15 23 55;
+
+    /* Saffron accent — Indian tricolor, for CTAs and highlights */
+    --color-accent-50: 255 247 237;
+    --color-accent-100: 255 237 213;
+    --color-accent-500: 245 124 0;
+    --color-accent-600: 230 81 0;
+    --color-accent-700: 191 67 0;
 
     --color-surface: 255 255 255;
     --color-surface-muted: 248 250 252;
@@ -27,7 +35,7 @@
     --color-success: 21 128 61; /* green-700 */
     --color-warning: 180 83 9; /* amber-700 */
     --color-danger: 185 28 28; /* red-700 */
-    --color-info: 29 78 216; /* blue-700 */
+    --color-info: 23 37 84; /* navy-700 */
 
     --font-scale: 1;
   }
@@ -39,9 +47,11 @@
     --color-border: 0 0 0;
     --color-content: 0 0 0;
     --color-content-muted: 0 0 0;
-    --color-brand-600: 0 0 139;
-    --color-brand-700: 0 0 128;
-    --color-brand-900: 0 0 102;
+    --color-brand-600: 0 0 100;
+    --color-brand-700: 0 0 80;
+    --color-brand-900: 0 0 60;
+    --color-accent-500: 200 80 0;
+    --color-accent-600: 180 60 0;
     --color-success: 0 100 0;
     --color-danger: 153 0 0;
   }

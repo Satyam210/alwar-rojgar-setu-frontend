@@ -342,6 +342,7 @@ add('GET', '/jobs', (ctx) => {
   if (q.jobType) items = items.filter((j) => j.jobType === q.jobType);
   if (q.minSalary) items = items.filter((j) => j.netSalary >= Number(q.minSalary));
   if (q.maxSalary) items = items.filter((j) => j.netSalary <= Number(q.maxSalary));
+  if (q.companyName) items = items.filter((j) => j.companyName === q.companyName);
   items = items.sort((a, b) => (b.postedAt ?? '').localeCompare(a.postedAt ?? ''));
   return paginate(items, q);
 });

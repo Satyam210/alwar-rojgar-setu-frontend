@@ -23,6 +23,7 @@ export function JobsPage() {
     jobType: (searchParams.get('jobType') as JobType) || undefined,
     minSalary: numberParam(searchParams.get('minSalary')),
     maxSalary: numberParam(searchParams.get('maxSalary')),
+    companyName: searchParams.get('companyName') || undefined,
     page: Number(searchParams.get('page')) || 1,
     limit: PAGE_SIZE,
   };

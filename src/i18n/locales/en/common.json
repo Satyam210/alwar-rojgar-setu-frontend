@@ -4,6 +4,12 @@
     "subBrand": "District Administration, Alwar",
     "tagline": "Connecting Alwar's youth with local jobs"
   },
+  "govt": {
+    "rajasthanGov": "Government of Rajasthan",
+    "department": "District Administration, Alwar",
+    "eGov": "An e-Governance initiative",
+    "emblemAlt": "Government of Rajasthan — Satyamev Jayate"
+  },
   "nav": {
     "home": "Home",
     "findJobs": "Find Jobs",
@@ -79,14 +85,34 @@
       "successfulHires": "Successful hires"
     },
     "featured": {
-      "title": "Featured employers",
-      "subtitle": "Trusted local companies hiring right now in and around Alwar.",
+      "title": "Top employers in Alwar",
+      "subtitle": "Major companies actively hiring across Alwar — from plant-floor workers to fresh graduates.",
       "openVacancies": "Open vacancies",
       "viewJobs": "View jobs",
       "viewAll": "View all openings",
       "verified": "Verified",
       "roles": "{{count}} open role",
-      "roles_other": "{{count}} open roles"
+      "roles_other": "{{count}} open roles",
+      "sectors": {
+        "manufacturing": "Manufacturing & FMCG",
+        "banking": "Banking, Finance & Insurance"
+      },
+      "roleType": {
+        "unskilled": "Unskilled / Semi-skilled",
+        "graduate": "Graduates"
+      },
+      "companies": {
+        "havells": "Mass hiring for electrical-appliance assembly lines; graduates for inventory, billing and supervisor roles.",
+        "hero": "Automotive assembly, loading and parts sorting; graduates for sales, service and parts coordination.",
+        "rspl": "Machine operators, packaging and dispatch; graduates for supply chain and accounts.",
+        "vijaysolvex": "Seed-crushing, oil bottling and packaging; graduates for plant operations, quality testing and invoicing.",
+        "qoot": "Food packaging, sorting and bakery assistance; graduates for office administration and sales coordination.",
+        "aubank": "Bank officer, customer service and CASA sales roles for graduates.",
+        "hdfc": "Branch banking, relationship management and loan verification for graduates.",
+        "icici": "Branch banking and relationship roles for fresh graduates.",
+        "tatacapital": "Field sales and loan officer roles for graduates.",
+        "bajaj": "Sales and finance executive roles for graduates."
+      }
     }
   },
   "languagePicker": {
