@@ -11,6 +11,8 @@ export interface VerifyOtpPayload {
   otp: string;
   /** Required by backend on first sign-up; safe to send on every verify call. */
   role?: Role;
+  /** Second admin gate (with the phone allowlist) when role === 'admin'. */
+  adminCode?: string;
 }
 
 interface VerifyOtpResponse {

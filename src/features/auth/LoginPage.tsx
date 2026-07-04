@@ -38,12 +38,14 @@ export function LoginPage() {
   const [step, setStep] = useState<Step>('phone');
   const [phone, setPhone] = useState('');
   const [role, setRole] = useState<Role>('candidate');
+  const [adminCode, setAdminCode] = useState<string>('');
   const disabled = (location.state as { disabled?: boolean } | null)?.disabled;
   const from = (location.state as { from?: string } | null)?.from;
 
-  function onOtpRequested(value: string, selectedRole: Role) {
+  function onOtpRequested(value: string, selectedRole: Role, code?: string) {
     setPhone(value);
     setRole(selectedRole);
+    setAdminCode(code ?? '');
     setStep('otp');
   }
 
@@ -72,7 +74,13 @@ export function LoginPage() {
           {step === 'phone' ? (
             <PhoneStep onRequested={onOtpRequested} />
           ) : (
-            <OtpStep phone={phone} role={role} onVerified={completeLogin} onChangeNumber={() => setStep('phone')} />
+            <OtpStep
+              phone={phone}
+              role={role}
+              adminCode={adminCode}
+              onVerified={completeLogin}
+              onChangeNumber={() => setStep('phone')}
+            />
           )}
         </CardBody>
       </Card>
@@ -80,29 +88,36 @@ export function LoginPage() {
   );
 }
 
-function PhoneStep({ onRequested }: { onRequested: (phone: string, role: Role) => void }) {
+function PhoneStep({
+  onRequested,
+}: {
+  onRequested: (phone: string, role: Role, adminCode?: string) => void;
+}) {
   const { t } = useTranslation(['auth', 'common', 'validation']);
   const [serverError, setServerError] = useState<string>();
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<RequestOtpForm>({
     resolver: zodResolver(requestOtpSchema),
     defaultValues: { role: 'candidate' },
   });
 
+  const selectedRole = watch('role');
+
   async function onSubmit(values: RequestOtpForm) {
     setServerError(undefined);
     try {
       await requestOtp({ phone: toE164(values.phone), role: values.role });
-      onRequested(values.phone, values.role);
+      onRequested(values.phone, values.role, values.adminCode);
     } catch (err) {
       setServerError((err as ApiError).message);
     }
   }
 
-  const roles: Role[] = ['candidate', 'employer'];
+  const roles: Role[] = ['candidate', 'employer', 'admin'];
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
@@ -137,6 +152,21 @@ function PhoneStep({ onRequested }: { onRequested: (phone: string, role: Role) =
         </NativeSelect>
       </Field>
 
+      {selectedRole === 'admin' && (
+        <Field
+          label={t('auth:login.adminCodeLabel')}
+          help={t('auth:login.adminCodeHelp')}
+          error={translateError(t, errors.adminCode?.message)}
+        >
+          <Input
+            type="password"
+            autoComplete="off"
+            placeholder={t('auth:login.adminCodePlaceholder')}
+            {...register('adminCode')}
+          />
+        </Field>
+      )}
+
       {serverError && (
         <p role="alert" className="text-sm font-medium text-danger">
           {serverError}
@@ -153,11 +183,13 @@ function PhoneStep({ onRequested }: { onRequested: (phone: string, role: Role) =
 function OtpStep({
   phone,
   role,
+  adminCode,
   onVerified,
   onChangeNumber,
 }: {
   phone: string;
   role: Role;
+  adminCode?: string;
   onVerified: () => Promise<void>;
   onChangeNumber: () => void;
 }) {
@@ -173,7 +205,7 @@ function OtpStep({
   async function onSubmit(values: VerifyOtpForm) {
     setServerError(undefined);
     try {
-      await verifyOtp({ phone: toE164(phone), otp: values.otp, role });
+      await verifyOtp({ phone: toE164(phone), otp: values.otp, role, adminCode });
       await onVerified();
     } catch (err) {
       setServerError((err as ApiError).message);
