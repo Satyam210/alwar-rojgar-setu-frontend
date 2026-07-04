@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import { useEmployerProfile, useUpdateEmployerProfile } from './queries';
+import { useEmployerProfile, useUpdateEmployerProfile, useUploadEmployerLogo } from './queries';
 import { EmployerProfileFormFields } from './EmployerProfileForm';
-import { EmployerDocumentsSection } from './DocumentsSection';
 import { VerificationBanner } from './VerificationBanner';
+import { fetchDocumentBlobUrl } from '@/api/documents';
 import { apiErrorMessage } from '@/lib/errors';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { CompanyBrandLogo } from '@/components/ui/CompanyLogo';
+import { FileUpload } from '@/components/ui/FileUpload';
 import { ErrorState, LoadingState } from '@/components/common/States';
 import { toast } from '@/components/ui/toast';
 
@@ -17,7 +19,30 @@ export function EmployerProfilePage() {
   usePageTitle(t('profile.title'));
   const { data: profile, isLoading, isError, refetch } = useEmployerProfile();
   const update = useUpdateEmployerProfile();
+  const uploadLogo = useUploadEmployerLogo();
   const [editing, setEditing] = useState(false);
+  const [logoSrc, setLogoSrc] = useState<string>();
+
+  // Resolve the stored logo (served auth-gated) into a displayable object URL.
+  const logoUrl = profile?.logoUrl;
+  useEffect(() => {
+    if (!logoUrl) {
+      setLogoSrc(undefined);
+      return;
+    }
+    let revoke: string | undefined;
+    let active = true;
+    fetchDocumentBlobUrl(logoUrl).then((url) => {
+      if (active && url) {
+        revoke = url;
+        setLogoSrc(url);
+      }
+    });
+    return () => {
+      active = false;
+      if (revoke) URL.revokeObjectURL(revoke);
+    };
+  }, [logoUrl]);
 
   if (isLoading) return <LoadingState />;
   if (isError || !profile) return <ErrorState onRetry={refetch} />;
@@ -52,7 +77,23 @@ export function EmployerProfilePage() {
             )}
           </div>
         </CardHeader>
-        <CardBody>
+        <CardBody className="flex flex-col gap-5">
+          <div className="flex flex-wrap items-center gap-4">
+            <CompanyBrandLogo name={profile.companyName} src={logoSrc} />
+            <div className="flex flex-col gap-1">
+              <FileUpload
+                label={t('profile.uploadLogo', { defaultValue: 'Upload logo' })}
+                accept="image/png,image/jpeg,image/webp"
+                onUpload={(file) => uploadLogo.mutateAsync(file)}
+                onSuccess={() => toast.success(t('profile.saved'))}
+                onError={(m) => toast.error(m)}
+              />
+              <p className="text-xs text-content-muted">
+                {t('profile.logoHint', { defaultValue: 'PNG, JPG or WEBP.' })}
+              </p>
+            </div>
+          </div>
+
           {editing ? (
             <EmployerProfileFormFields
               initial={profile}
@@ -74,12 +115,18 @@ export function EmployerProfilePage() {
               <Item label={t('fields.contactPerson')} value={profile.contactPersonName} />
               <Item label={t('fields.gstNumber')} value={profile.gstNumber} />
               <Item label={t('fields.udyamNumber')} value={profile.udyamNumber} />
+              <div className="col-span-2">
+                <dt className="text-sm text-content-muted">
+                  {t('fields.companyDescription', { defaultValue: 'Company description' })}
+                </dt>
+                <dd className="whitespace-pre-line font-medium">
+                  {profile.companyDescription || '—'}
+                </dd>
+              </div>
             </dl>
           )}
         </CardBody>
       </Card>
-
-      <EmployerDocumentsSection />
     </div>
   );
 }

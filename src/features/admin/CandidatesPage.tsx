@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { useAdminCandidates } from './queries';
 import { ITI_DEPARTMENTS, PAGE_SIZE } from '@/lib/constants';
-import { formatCurrency, formatExperience } from '@/lib/format';
+import { formatSalaryRange, formatExperience } from '@/lib/format';
 import { Card, CardBody } from '@/components/ui/Card';
 import { Field } from '@/components/ui/Field';
 import { Input, NativeSelect } from '@/components/ui/Input';
@@ -84,8 +84,8 @@ export function AdminCandidatesPage() {
                     <p className="text-sm text-content-muted">
                       {t('candidate:fields.workExperienceMonths')}:{' '}
                       {formatExperience(c.workExperienceMonths)}
-                      {c.expectedSalary
-                        ? ` · ${t('candidate:fields.expectedSalary')}: ${formatCurrency(c.expectedSalary)}`
+                      {c.expectedSalaryMin || c.expectedSalaryMax
+                        ? ` · ${t('candidate:fields.expectedSalary')}: ${formatSalaryRange(c.expectedSalaryMin, c.expectedSalaryMax)}`
                         : ''}
                     </p>
                     {c.email && (

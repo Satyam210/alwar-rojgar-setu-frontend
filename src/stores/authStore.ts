@@ -25,3 +25,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   reset: () => set({ user: null, status: 'unauthenticated' }),
   hasRole: (role) => get().user?.role === role,
 }));
+
+/**
+ * Whether the user has completed their profile. Prefers the backend
+ * `profileUpdated` flag and falls back to `profileCompleted` (older API / mocks).
+ */
+export function isProfileComplete(user: Pick<CurrentUser, 'profileCompleted' | 'profileUpdated'> | null | undefined): boolean {
+  if (!user) return false;
+  return user.profileUpdated ?? user.profileCompleted;
+}

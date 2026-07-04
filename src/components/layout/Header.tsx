@@ -1,4 +1,4 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useAuthStore } from '@/stores/authStore';
@@ -13,12 +13,21 @@ import { toast } from '@/components/ui/toast';
 interface NavItem {
   to: string;
   label: string;
+  /** Extra routes that should also mark this tab active (e.g. onboarding = My Profile). */
+  matchPaths?: string[];
+}
+
+/** True when the current path matches the item's own route or any of its matchPaths. */
+function isNavItemActive(item: NavItem, pathname: string): boolean {
+  if (pathname === item.to) return true;
+  return (item.matchPaths ?? []).some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
 export function Header() {
   const { t } = useTranslation('common');
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const navItems = getNavItems(user?.role, t);
 
@@ -74,11 +83,20 @@ export function Header() {
           className="hidden flex-1 items-center justify-center gap-1 md:flex"
           aria-label={t('nav.menu')}
         >
-          {navItems.map((item) => (
-            <NavLink key={item.to} to={item.to} className={navLinkClass} end>
-              {item.label}
-            </NavLink>
-          ))}
+          {navItems.map((item) => {
+            const active = isNavItemActive(item, pathname);
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end
+                aria-current={active ? 'page' : undefined}
+                className={navLinkClass(active)}
+              >
+                {item.label}
+              </NavLink>
+            );
+          })}
         </nav>
 
         <div className="ml-auto hidden items-center gap-2 md:flex">
@@ -110,11 +128,11 @@ export function Header() {
   );
 }
 
-function navLinkClass({ isActive }: { isActive: boolean }) {
+function navLinkClass(isActive: boolean) {
   return cn(
     'inline-flex h-9 items-center rounded-full px-4 text-sm font-bold no-underline transition-colors focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-600',
     isActive
-      ? 'bg-brand-50 text-brand-800'
+      ? 'bg-brand-700 text-white shadow-sm hover:bg-brand-800'
       : 'text-brand-800 hover:bg-brand-50 hover:text-brand-900',
   );
 }
@@ -129,13 +147,21 @@ function getNavItems(role: string | undefined, t: (k: string) => string): NavIte
       return [
         ...common,
         { to: paths.candidate.applications, label: t('nav.myApplications') },
-        { to: paths.candidate.profile, label: t('nav.myProfile') },
+        {
+          to: paths.candidate.profile,
+          label: t('nav.myProfile'),
+          matchPaths: [paths.candidate.onboarding],
+        },
       ];
     case 'employer':
       return [
         { to: paths.home, label: t('nav.home') },
         { to: paths.employer.jobs, label: t('nav.myJobs') },
-        { to: paths.employer.profile, label: t('nav.myProfile') },
+        {
+          to: paths.employer.profile,
+          label: t('nav.myProfile'),
+          matchPaths: [paths.employer.onboarding],
+        },
       ];
     case 'admin':
       return [
@@ -164,8 +190,9 @@ function MobileMenu({
   loginLabel: string;
   logoutLabel: string;
 }) {
+  const { pathname } = useLocation();
   const itemClass =
-    'block w-full rounded px-3 py-2 text-left text-sm no-underline hover:bg-surface-muted focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-600';
+    'block w-full rounded px-3 py-2 text-left text-sm no-underline focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-600';
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -179,13 +206,26 @@ function MobileMenu({
           sideOffset={8}
           className="z-50 min-w-48 rounded-lg border border-border bg-surface p-1 shadow-lg"
         >
-          {navItems.map((item) => (
-            <DropdownMenu.Item key={item.to} asChild>
-              <NavLink to={item.to} className={itemClass} end>
-                {item.label}
-              </NavLink>
-            </DropdownMenu.Item>
-          ))}
+          {navItems.map((item) => {
+            const active = isNavItemActive(item, pathname);
+            return (
+              <DropdownMenu.Item key={item.to} asChild>
+                <NavLink
+                  to={item.to}
+                  end
+                  aria-current={active ? 'page' : undefined}
+                  className={cn(
+                    itemClass,
+                    active
+                      ? 'bg-brand-700 font-semibold text-white'
+                      : 'hover:bg-surface-muted',
+                  )}
+                >
+                  {item.label}
+                </NavLink>
+              </DropdownMenu.Item>
+            );
+          })}
           <DropdownMenu.Separator className="my-1 h-px bg-border" />
           <DropdownMenu.Item asChild>
             {isAuthed ? (

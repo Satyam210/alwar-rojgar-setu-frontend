@@ -1,6 +1,8 @@
 import { api } from './client';
 import type {
   AdminDashboardMetrics,
+  AdminStatus,
+  AdminUser,
   CandidateProfile,
   EmployerProfile,
   EmployerStatus,
@@ -75,4 +77,33 @@ export async function disableUser(userId: string): Promise<void> {
 /** PATCH /admin/users/{userId}/enable */
 export async function enableUser(userId: string): Promise<void> {
   await api.patch(`/admin/users/${userId}/enable`, {});
+}
+
+// --- Admin onboarding requests (WIP: mock-backed; backend endpoints stubbed) ---
+
+export interface AdminUserListParams {
+  page?: number;
+  limit?: number;
+  status?: AdminStatus;
+  search?: string;
+}
+
+/** GET /admin/admins — list admin users / access requests. */
+export async function getAdminAdmins(
+  params: AdminUserListParams = {},
+): Promise<Paginated<AdminUser>> {
+  const { data } = await api.get<Paginated<AdminUser>>('/admin/admins', { params });
+  return data;
+}
+
+/** PATCH /admin/admins/{userId}/approve — grant admin access. */
+export async function approveAdmin(userId: string): Promise<AdminUser> {
+  const { data } = await api.patch<AdminUser>(`/admin/admins/${userId}/approve`, {});
+  return data;
+}
+
+/** PATCH /admin/admins/{userId}/reject — reject an admin access request. */
+export async function rejectAdmin(userId: string): Promise<AdminUser> {
+  const { data } = await api.patch<AdminUser>(`/admin/admins/${userId}/reject`, {});
+  return data;
 }

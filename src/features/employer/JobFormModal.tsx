@@ -33,8 +33,8 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
     defaultValues: {
       title: initial?.title ?? '',
       description: initial?.description ?? '',
-      grossSalary: initial?.grossSalary ?? undefined,
-      netSalary: initial?.netSalary ?? undefined,
+      salaryMin: initial?.salaryMin ?? undefined,
+      salaryMax: initial?.salaryMax ?? undefined,
       jobType: initial?.jobType ?? 'permanent',
       openings: initial?.openings ?? 1,
       tradeRequired: initial?.tradeRequired ?? '',
@@ -46,8 +46,8 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
     reset({
       title: initial?.title ?? '',
       description: initial?.description ?? '',
-      grossSalary: initial?.grossSalary ?? undefined,
-      netSalary: initial?.netSalary ?? undefined,
+      salaryMin: initial?.salaryMin ?? undefined,
+      salaryMax: initial?.salaryMax ?? undefined,
       jobType: initial?.jobType ?? 'permanent',
       openings: initial?.openings ?? 1,
       tradeRequired: initial?.tradeRequired ?? '',
@@ -85,18 +85,18 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
-            label={t('jobs:fields.grossSalary')}
-            error={translateError(t, errors.grossSalary?.message)}
+            label={t('jobs:fields.salaryMin')}
+            error={translateError(t, errors.salaryMin?.message)}
             required
           >
-            <Input type="number" inputMode="numeric" {...register('grossSalary')} />
+            <Input type="number" inputMode="numeric" min={1} {...register('salaryMin')} />
           </Field>
           <Field
-            label={t('jobs:fields.netSalary')}
-            error={translateError(t, errors.netSalary?.message)}
+            label={t('jobs:fields.salaryMax')}
+            error={translateError(t, errors.salaryMax?.message)}
             required
           >
-            <Input type="number" inputMode="numeric" {...register('netSalary')} />
+            <Input type="number" inputMode="numeric" min={1} {...register('salaryMax')} />
           </Field>
           <Field
             label={t('jobs:fields.jobType')}

@@ -9,6 +9,7 @@ import { Toaster } from '@/components/ui/toast';
 import { env } from '@/config/env';
 import { MockBadge } from '@/components/dev/MockBadge';
 import { LanguageGate } from '@/components/layout/LanguageGate';
+import { ConfirmDialogHost } from '@/components/ui/ConfirmDialog';
 import { bootstrapPageTranslation } from '@/lib/appLanguage';
 
 export function App() {
@@ -33,6 +34,7 @@ export function App() {
       <RouterProvider router={router} />
       <LanguageGate />
       <Toaster />
+      <ConfirmDialogHost />
       {env.useMocks && <MockBadge />}
     </QueryClientProvider>
   );

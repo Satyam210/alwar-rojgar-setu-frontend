@@ -55,7 +55,7 @@ export const router = createBrowserRouter([
         element: <RequireAuth requiredRole="candidate" />,
         children: [
           {
-            element: <RequireProfile onboardingPath={paths.candidate.onboarding} />,
+            element: <RequireProfile onboardingPath={paths.candidate.onboarding} variant="candidate" />,
             children: [
               { path: paths.candidate.onboarding, element: <CandidateOnboardingPage /> },
               { path: paths.candidate.profile, element: <CandidateProfilePage /> },
@@ -70,7 +70,7 @@ export const router = createBrowserRouter([
         element: <RequireAuth requiredRole="employer" />,
         children: [
           {
-            element: <RequireProfile onboardingPath={paths.employer.onboarding} />,
+            element: <RequireProfile onboardingPath={paths.employer.onboarding} variant="employer" />,
             children: [
               { path: paths.employer.onboarding, element: <EmployerOnboardingPage /> },
               { path: paths.employer.profile, element: <EmployerProfilePage /> },

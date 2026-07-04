@@ -1,8 +1,11 @@
+import { useEffect } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { Role } from '@/api/types';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore, isProfileComplete } from '@/stores/authStore';
 import { paths, postLoginPath } from './paths';
 import { LoadingState } from '@/components/common/States';
+import { toast } from '@/components/ui/toast';
 
 /**
  * Route guards (HLD §5): gate by role; candidates/employers are pushed to
@@ -31,7 +34,7 @@ export function RequireAuth({ requiredRole }: { requiredRole?: Role }) {
   }
 
   if (requiredRole && user.role !== requiredRole) {
-    return <Navigate to={postLoginPath(user.role, user.profileCompleted)} replace />;
+    return <Navigate to={postLoginPath(user.role, isProfileComplete(user))} replace />;
   }
 
   return <Outlet />;
@@ -39,15 +42,34 @@ export function RequireAuth({ requiredRole }: { requiredRole?: Role }) {
 
 /**
  * For candidate/employer areas: force onboarding until the profile is complete,
- * but allow the onboarding route itself.
+ * but allow the onboarding route itself. Explains the redirect with a toast so
+ * the user understands why they can't reach the page (e.g. My Jobs) yet.
  */
-export function RequireProfile({ onboardingPath }: { onboardingPath: string }) {
+export function RequireProfile({
+  onboardingPath,
+  variant,
+}: {
+  onboardingPath: string;
+  variant: 'candidate' | 'employer';
+}) {
+  const { t } = useTranslation('common');
   const user = useAuthStore((s) => s.user);
   const location = useLocation();
 
-  if (user && !user.profileCompleted && location.pathname !== onboardingPath) {
-    return <Navigate to={onboardingPath} replace />;
-  }
+  const shouldRedirect = Boolean(
+    user && !isProfileComplete(user) && location.pathname !== onboardingPath,
+  );
+
+  useEffect(() => {
+    if (!shouldRedirect) return;
+    toast.error(
+      variant === 'employer'
+        ? t('guards.completeEmployerProfile')
+        : t('guards.completeCandidateProfile'),
+    );
+  }, [shouldRedirect, variant, t]);
+
+  if (shouldRedirect) return <Navigate to={onboardingPath} replace />;
   return <Outlet />;
 }
 
@@ -57,7 +79,7 @@ export function RedirectIfAuthed({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((s) => s.user);
   if (loading) return <LoadingState />;
   if (user && user.isActive !== false) {
-    return <Navigate to={postLoginPath(user.role, user.profileCompleted)} replace />;
+    return <Navigate to={postLoginPath(user.role, isProfileComplete(user))} replace />;
   }
   return <>{children}</>;
 }

@@ -5,6 +5,7 @@ import {
   getEmployerDocuments,
   getEmployerProfile,
   updateEmployerProfile,
+  uploadEmployerLogo,
 } from '@/api/employer';
 import type { EmployerProfileInput } from '@/api/types';
 import { useAuthStore } from '@/stores/authStore';
@@ -30,7 +31,8 @@ export function useCreateEmployerProfile() {
     onSuccess: (data) => {
       qc.setQueryData(employerKeys.profile(), data);
       const user = useAuthStore.getState().user;
-      if (user) useAuthStore.getState().setUser({ ...user, profileCompleted: true });
+      if (user)
+        useAuthStore.getState().setUser({ ...user, profileCompleted: true, profileUpdated: true });
     },
   });
 }
@@ -39,6 +41,14 @@ export function useUpdateEmployerProfile() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: Partial<EmployerProfileInput>) => updateEmployerProfile(input),
+    onSuccess: (data) => qc.setQueryData(employerKeys.profile(), data),
+  });
+}
+
+export function useUploadEmployerLogo() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (file: File) => uploadEmployerLogo(file),
     onSuccess: (data) => qc.setQueryData(employerKeys.profile(), data),
   });
 }

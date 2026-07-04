@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { requestOtp, verifyOtp } from '@/api/auth';
 import { getCurrentUser } from '@/api/users';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore, isProfileComplete } from '@/stores/authStore';
 import { postLoginPath } from '@/routes/paths';
 import type { Role } from '@/api/types';
 import { DEMO_PHONES } from '@/mocks/seed';
@@ -16,7 +16,9 @@ import { Button } from '@/components/ui/Button';
  */
 const ACCOUNTS: { id: string; role: Role; phone: string; label: string }[] = [
   { id: 'candidate', role: 'candidate', phone: DEMO_PHONES.candidate, label: 'Job Seeker' },
+  { id: 'newCandidate', role: 'candidate', phone: DEMO_PHONES.newCandidate, label: 'New Job Seeker (empty profile)' },
   { id: 'employer', role: 'employer', phone: DEMO_PHONES.employer, label: 'Employer (Owner)' },
+  { id: 'newEmployer', role: 'employer', phone: DEMO_PHONES.newEmployer, label: 'New Employer (empty profile)' },
   { id: 'hrHead', role: 'employer', phone: DEMO_PHONES.hrHead, label: 'HR Head' },
   { id: 'admin', role: 'admin', phone: DEMO_PHONES.admin, label: 'Admin' },
 ];
@@ -34,7 +36,7 @@ export function DemoLoginPanel() {
       await verifyOtp({ phone, otp: '123456' });
       const user = await getCurrentUser();
       setUser(user);
-      navigate(postLoginPath(user.role, user.profileCompleted), { replace: true });
+      navigate(postLoginPath(user.role, isProfileComplete(user)), { replace: true });
     } finally {
       setBusy(null);
     }

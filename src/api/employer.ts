@@ -28,6 +28,22 @@ export async function updateEmployerProfile(
   return data;
 }
 
+/** POST /employer-profile/logo — multipart upload; returns the updated profile. */
+export async function uploadEmployerLogo(
+  file: File,
+  onProgress?: (percent: number) => void,
+): Promise<EmployerProfile> {
+  const form = new FormData();
+  form.append('file', file);
+  const { data } = await api.post<EmployerProfile>('/employer-profile/logo', form, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    onUploadProgress: (e) => {
+      if (onProgress && e.total) onProgress(Math.round((e.loaded / e.total) * 100));
+    },
+  });
+  return data;
+}
+
 /** GET /employer-profile/documents */
 export async function getEmployerDocuments(): Promise<EmployerDocument[]> {
   const { data } = await api.get<EmployerDocument[]>('/employer-profile/documents');

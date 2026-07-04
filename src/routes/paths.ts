@@ -34,8 +34,11 @@ export const paths = {
 export function postLoginPath(role: string, profileCompleted: boolean): string {
   switch (role) {
     case 'candidate':
-      return profileCompleted ? paths.candidate.applications : paths.candidate.onboarding;
+      // New user (profile not completed) → profile onboarding as landing page.
+      // Existing user → Find Jobs (was My Applications).
+      return profileCompleted ? paths.jobs : paths.candidate.onboarding;
     case 'employer':
+      // Employers land on My Jobs once their profile exists, else onboarding.
       return profileCompleted ? paths.employer.jobs : paths.employer.onboarding;
     case 'admin':
       return paths.admin.dashboard;

@@ -32,6 +32,7 @@ const written = new WeakMap<Text, string>();
 
 function hasTranslatableChars(text: string): boolean {
   // Latin or Devanagari letters — skip pure numbers / punctuation / symbols.
+  // eslint-disable-next-line no-misleading-character-class -- intentional Devanagari block range
   return /[A-Za-z\u0900-\u097F]/.test(text);
 }
 

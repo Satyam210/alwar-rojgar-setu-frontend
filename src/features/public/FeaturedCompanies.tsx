@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { paths } from '@/routes/paths';
+import { useAuthStore } from '@/stores/authStore';
+import { cn } from '@/lib/cn';
 import { Card, CardBody } from '@/components/ui/Card';
 import { CompanyBrandLogo } from '@/components/ui/CompanyLogo';
 
@@ -96,6 +98,7 @@ const SECTORS: Sector[] = [
 export function FeaturedCompanies() {
   const { t } = useTranslation('common');
   const base = import.meta.env.BASE_URL;
+  const isEmployer = useAuthStore((s) => s.user?.role === 'employer');
 
   return (
     <section aria-labelledby="featured-heading">
@@ -120,13 +123,14 @@ export function FeaturedCompanies() {
               <span className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {sector.companies.map((company) => (
-                <Link
-                  key={company.id}
-                  to={`${paths.jobs}?companyName=${encodeURIComponent(company.name)}`}
-                  className="group block h-full rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
-                >
-                  <Card className="h-full cursor-pointer rounded-xl border border-border bg-white shadow-sm transition-shadow duration-150 group-hover:shadow-md">
+              {sector.companies.map((company) => {
+                const card = (
+                  <Card
+                    className={cn(
+                      'h-full rounded-xl border border-border bg-white shadow-sm',
+                      !isEmployer && 'cursor-pointer transition-shadow duration-150 group-hover:shadow-md',
+                    )}
+                  >
                     <CardBody className="flex h-full flex-col gap-3.5">
                       <div className="flex items-center gap-3">
                         <CompanyBrandLogo
@@ -158,14 +162,32 @@ export function FeaturedCompanies() {
                             {t(`home.featured.roleType.${role}`)}
                           </span>
                         ))}
-                        <span className="ml-auto text-xs font-semibold text-brand-700 opacity-0 transition-opacity group-hover:opacity-100">
-                          {t('home.featured.viewJobs')} →
-                        </span>
+                        {!isEmployer && (
+                          <span className="ml-auto text-xs font-semibold text-brand-700 opacity-0 transition-opacity group-hover:opacity-100">
+                            {t('home.featured.viewJobs')} →
+                          </span>
+                        )}
                       </div>
                     </CardBody>
                   </Card>
-                </Link>
-              ))}
+                );
+
+                // Employers: static, non-clickable card (no "view jobs").
+                // Everyone else (incl. logged-out): clickable link to the company's jobs.
+                return isEmployer ? (
+                  <div key={company.id} className="h-full rounded-xl">
+                    {card}
+                  </div>
+                ) : (
+                  <Link
+                    key={company.id}
+                    to={`${paths.jobs}?companyName=${encodeURIComponent(company.name)}`}
+                    className="group block h-full rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+                  >
+                    {card}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         ))}

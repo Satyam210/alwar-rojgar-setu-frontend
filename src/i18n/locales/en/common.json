@@ -20,10 +20,14 @@
     "dashboard": "Dashboard",
     "employers": "Employers",
     "candidates": "Candidates",
-    "users": "Users",
+    "users": "Admin Users",
     "login": "Login",
     "logout": "Logout",
     "menu": "Menu"
+  },
+  "guards": {
+    "completeCandidateProfile": "Please complete your profile before you continue.",
+    "completeEmployerProfile": "Please complete your company profile and get it verified before you can post jobs."
   },
   "actions": {
     "save": "Save",

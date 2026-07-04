@@ -4,9 +4,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import { requestOtp, verifyOtp } from '@/api/auth';
+import { requestAdminAccess, requestOtp, verifyOtp } from '@/api/auth';
 import { getCurrentUser } from '@/api/users';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore, isProfileComplete } from '@/stores/authStore';
 import { postLoginPath } from '@/routes/paths';
 import { translateError } from '@/lib/validation';
 import type { ApiError } from '@/api/client';
@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/Button';
 import { useResendTimer } from './useResendTimer';
 import { env } from '@/config/env';
 import { DemoLoginPanel } from '@/components/dev/DemoLoginPanel';
+import { toast } from '@/components/ui/toast';
 
 type Step = 'phone' | 'otp';
 
@@ -52,7 +53,7 @@ export function LoginPage() {
   async function completeLogin() {
     const user = await getCurrentUser();
     setUser(user);
-    navigate(from ?? postLoginPath(user.role, user.profileCompleted), { replace: true });
+    navigate(from ?? postLoginPath(user.role, isProfileComplete(user)), { replace: true });
   }
 
   return (
@@ -95,6 +96,7 @@ function PhoneStep({
 }) {
   const { t } = useTranslation(['auth', 'common', 'validation']);
   const [serverError, setServerError] = useState<string>();
+  const [requestingAdmin, setRequestingAdmin] = useState(false);
   const {
     register,
     handleSubmit,
@@ -106,6 +108,10 @@ function PhoneStep({
   });
 
   const selectedRole = watch('role');
+
+  if (requestingAdmin) {
+    return <AdminAccessRequestForm onDone={() => setRequestingAdmin(false)} />;
+  }
 
   async function onSubmit(values: RequestOtpForm) {
     setServerError(undefined);
@@ -167,6 +173,16 @@ function PhoneStep({
         </Field>
       )}
 
+      {selectedRole === 'admin' && (
+        <button
+          type="button"
+          className="self-start text-sm font-medium text-brand-700 hover:underline"
+          onClick={() => setRequestingAdmin(true)}
+        >
+          {t('auth:adminRequest.link')}
+        </button>
+      )}
+
       {serverError && (
         <p role="alert" className="text-sm font-medium text-danger">
           {serverError}
@@ -176,6 +192,71 @@ function PhoneStep({
       <Button type="submit" block loading={isSubmitting}>
         {t('auth:login.sendOtp')}
       </Button>
+    </form>
+  );
+}
+
+function AdminAccessRequestForm({ onDone }: { onDone: () => void }) {
+  const { t } = useTranslation(['auth', 'common']);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [serverError, setServerError] = useState<string>();
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setServerError(undefined);
+    setSubmitting(true);
+    try {
+      await requestAdminAccess({ name: name.trim(), phone: toE164(phone) });
+      toast.success(t('auth:adminRequest.success'));
+      onDone();
+    } catch (err) {
+      setServerError((err as ApiError).message);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <div>
+        <p className="font-semibold">{t('auth:adminRequest.title')}</p>
+        <p className="text-sm text-content-muted">{t('auth:adminRequest.help')}</p>
+      </div>
+
+      <Field label={t('auth:adminRequest.nameLabel')} required>
+        <Input
+          value={name}
+          autoComplete="name"
+          placeholder={t('auth:adminRequest.namePlaceholder')}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </Field>
+
+      <Field label={t('auth:adminRequest.phoneLabel')} required>
+        <Input
+          type="tel"
+          inputMode="numeric"
+          autoComplete="tel-national"
+          placeholder={t('auth:adminRequest.phonePlaceholder')}
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+      </Field>
+
+      {serverError && (
+        <p role="alert" className="text-sm font-medium text-danger">
+          {serverError}
+        </p>
+      )}
+
+      <Button type="submit" block loading={submitting} disabled={!name.trim() || !phone.trim()}>
+        {t('auth:adminRequest.submit')}
+      </Button>
+      <button type="button" className="text-sm text-content-muted hover:underline" onClick={onDone}>
+        {t('auth:adminRequest.cancel')}
+      </button>
     </form>
   );
 }

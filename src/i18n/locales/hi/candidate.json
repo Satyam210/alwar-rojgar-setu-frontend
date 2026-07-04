@@ -28,6 +28,8 @@
     "graduationYear": "उत्तीर्ण वर्ष",
     "workExperienceMonths": "कार्य अनुभव (महीने)",
     "expectedSalary": "अपेक्षित वेतन (मासिक)",
+    "expectedSalaryMin": "अपेक्षित वेतन – न्यूनतम (मासिक)",
+    "expectedSalaryMax": "अपेक्षित वेतन – अधिकतम (मासिक)",
     "skills": "कौशल",
     "skillsHelp": "एक-एक करके कौशल जोड़ें, जैसे वेल्डिंग, एमएस ऑफ़िस।",
     "city": "शहर / कस्बा",

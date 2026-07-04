@@ -3,6 +3,12 @@ import { vmsg } from '@/lib/validation';
 
 export const employerProfileSchema = z.object({
   companyName: z.string().trim().min(2, vmsg('required')),
+  companyDescription: z
+    .string()
+    .trim()
+    .max(1000, vmsg('maxLength', { count: 1000 }))
+    .optional()
+    .or(z.literal('')),
   gstNumber: z
     .string()
     .trim()
@@ -18,16 +24,16 @@ export const jobSchema = z
   .object({
     title: z.string().trim().min(2, vmsg('required')),
     description: z.string().trim().min(10, vmsg('required')),
-    grossSalary: z.coerce.number().int().min(1, vmsg('numberInvalid')),
-    netSalary: z.coerce.number().int().min(1, vmsg('numberInvalid')),
+    salaryMin: z.coerce.number().int().min(1, vmsg('numberInvalid')),
+    salaryMax: z.coerce.number().int().min(1, vmsg('numberInvalid')),
     jobType: z.enum(['permanent', 'contract', 'internship']),
     openings: z.coerce.number().int().min(1, vmsg('min', { min: 1 })),
     tradeRequired: z.string().trim().optional().or(z.literal('')),
     district: z.string().trim().min(1, vmsg('required')),
   })
-  .refine((v) => v.netSalary <= v.grossSalary, {
-    message: vmsg('netGreaterThanGross'),
-    path: ['netSalary'],
+  .refine((v) => v.salaryMax >= v.salaryMin, {
+    message: vmsg('salaryMaxLessThanMin'),
+    path: ['salaryMax'],
   });
 
 export type JobForm = z.input<typeof jobSchema>;

@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { useCandidateProfile, useUpdateCandidateProfile } from './queries';
 import { CandidateProfileFormFields } from './CandidateProfileForm';
-import { DocumentsSection } from './DocumentsSection';
-import { formatCurrency, formatExperience } from '@/lib/format';
+import { formatSalaryRange, formatExperience } from '@/lib/format';
 import { apiErrorMessage } from '@/lib/errors';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -64,7 +63,10 @@ export function CandidateProfilePage() {
                 label={t('fields.workExperienceMonths')}
                 value={formatExperience(profile.workExperienceMonths)}
               />
-              <Item label={t('fields.expectedSalary')} value={formatCurrency(profile.expectedSalary)} />
+              <Item
+                label={t('fields.expectedSalary')}
+                value={formatSalaryRange(profile.expectedSalaryMin, profile.expectedSalaryMax)}
+              />
               <Item label={t('fields.city')} value={profile.city} />
               <Item label={t('fields.district')} value={profile.district} />
               <Item label={t('fields.pincode')} value={profile.pincode} />
@@ -84,8 +86,6 @@ export function CandidateProfilePage() {
           )}
         </CardBody>
       </Card>
-
-      <DocumentsSection profile={profile} />
     </div>
   );
 }

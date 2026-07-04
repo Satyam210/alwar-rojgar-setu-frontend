@@ -28,7 +28,8 @@ export function useCreateCandidateProfile() {
       qc.setQueryData(candidateKeys.profile(), data);
       // Profile now exists → unlock guarded routes.
       const user = useAuthStore.getState().user;
-      if (user) useAuthStore.getState().setUser({ ...user, profileCompleted: true });
+      if (user)
+        useAuthStore.getState().setUser({ ...user, profileCompleted: true, profileUpdated: true });
     },
   });
 }
