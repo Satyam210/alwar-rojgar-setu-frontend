@@ -1,7 +1,7 @@
 {
   "dashboard": {
-    "title": "DEO Dashboard",
-    "subtitle": "Platform metrics for District Employment Office, Alwar.",
+    "title": "Admin Dashboard",
+    "subtitle": "Platform metrics for Alwar Rojgar Setu.",
     "metrics": {
       "candidates": "Registered candidates",
       "employers": "Registered employers",
@@ -21,6 +21,7 @@
     "title": "Employers",
     "search": "Search employers",
     "filterStatus": "Filter by status",
+    "allStatuses": "All statuses",
     "verify": "Verify",
     "reject": "Reject",
     "verifyConfirm": "Verify this employer? They will be able to post jobs.",
@@ -29,7 +30,16 @@
     "verified": "Employer verified",
     "rejected": "Employer rejected",
     "empty": "No employers found",
-    "viewDetails": "View details"
+    "viewDetails": "View details",
+    "noDescription": "No company description provided.",
+    "enable": "Enable",
+    "disable": "Disable",
+    "enableConfirm": "Enable this employer account? They will be able to log in again.",
+    "disableConfirm": "Disable this employer account? They will not be able to log in or post jobs.",
+    "enabled": "Employer account enabled",
+    "disabled": "Employer account disabled",
+    "active": "Active",
+    "inactive": "Disabled"
   },
   "candidates": {
     "title": "Candidates",
@@ -40,14 +50,23 @@
     "viewDetails": "View details"
   },
   "users": {
-    "title": "Users",
-    "enable": "Enable",
-    "disable": "Disable",
-    "enableConfirm": "Enable this account?",
-    "disableConfirm": "Disable this account? The user will not be able to log in.",
-    "enabled": "Account enabled",
-    "disabled": "Account disabled",
-    "active": "Active",
-    "inactive": "Disabled"
+    "title": "Admin Users",
+    "subtitle": "Review and approve admin access requests.",
+    "filterStatus": "Filter by status",
+    "allStatuses": "All",
+    "phone": "Phone",
+    "requestedOn": "Requested on",
+    "status": {
+      "pending": "Pending approval",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "approve": "Approve",
+    "reject": "Reject",
+    "approveConfirm": "Approve this admin request? They will get full admin access.",
+    "rejectConfirm": "Reject this admin access request?",
+    "approved": "Admin request approved",
+    "rejected": "Admin request rejected",
+    "empty": "No admin access requests"
   }
 }

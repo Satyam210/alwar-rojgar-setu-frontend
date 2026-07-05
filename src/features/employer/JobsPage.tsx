@@ -8,11 +8,12 @@ import { useEmployerProfile } from './queries';
 import { JobFormModal } from './JobFormModal';
 import { getJob } from '@/api/jobs';
 import { paths } from '@/routes/paths';
-import { formatCurrency, formatRelative } from '@/lib/format';
+import { formatSalaryRange, formatRelative } from '@/lib/format';
 import type { Job, JobInput } from '@/api/types';
 import { apiErrorMessage } from '@/lib/errors';
 import { Card, CardBody } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { confirmDialog } from '@/components/ui/ConfirmDialog';
 import { JobStatusBadge } from '@/components/common/StatusBadge';
 import { EmptyState, ErrorState, LoadingState } from '@/components/common/States';
 import { toast } from '@/components/ui/toast';
@@ -117,7 +118,7 @@ export function EmployerJobsPage() {
                       <JobStatusBadge status={job.status} />
                     </div>
                     <p className="text-sm text-content-muted">
-                      {formatCurrency(job.netSalary)} · {job.district} ·{' '}
+                      {formatSalaryRange(job.salaryMin, job.salaryMax)} · {job.district} ·{' '}
                       {t('jobs:fields.posted')} {formatRelative(job.postedAt)}
                     </p>
                   </div>
@@ -141,8 +142,14 @@ export function EmployerJobsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => {
-                            if (confirm(t('employer:jobs.closeConfirm'))) {
+                          onClick={async () => {
+                            const ok = await confirmDialog({
+                              title: t('employer:jobs.close'),
+                              body: t('employer:jobs.closeConfirm'),
+                              confirmLabel: t('employer:jobs.close'),
+                              destructive: true,
+                            });
+                            if (ok) {
                               closeJob.mutate(job.id, {
                                 onSuccess: () => toast.success(t('employer:jobs.closed')),
                                 onError: (err) => toast.error(apiErrorMessage(err)),

@@ -5,7 +5,7 @@ import { usePageTitle } from '@/hooks/usePageTitle';
 import { useUpdateApplicationStatus } from '@/features/applications/queries';
 import { useJob, useJobApplicants } from '@/features/jobs/queries';
 import { paths } from '@/routes/paths';
-import { formatCurrency, formatDate, formatExperience } from '@/lib/format';
+import { formatSalaryRange, formatDate, formatExperience } from '@/lib/format';
 import type { Application } from '@/api/types';
 import type { UpdateApplicationStatusPayload } from '@/api/applications';
 import { apiErrorMessage } from '@/lib/errors';
@@ -104,8 +104,8 @@ export function EmployerApplicantsPage() {
                         <p className="text-sm text-content-muted">
                           {t('candidate:fields.workExperienceMonths')}:{' '}
                           {formatExperience(c?.workExperienceMonths)}
-                          {c?.expectedSalary
-                            ? ` · ${t('candidate:fields.expectedSalary')}: ${formatCurrency(c.expectedSalary)}`
+                          {c?.expectedSalaryMin || c?.expectedSalaryMax
+                            ? ` · ${t('candidate:fields.expectedSalary')}: ${formatSalaryRange(c.expectedSalaryMin, c.expectedSalaryMax)}`
                             : ''}
                         </p>
                       </div>

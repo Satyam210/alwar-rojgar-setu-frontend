@@ -11,6 +11,8 @@ export interface VerifyOtpPayload {
   otp: string;
   /** Required by backend on first sign-up; safe to send on every verify call. */
   role?: Role;
+  /** Second admin gate (with the phone allowlist) when role === 'admin'. */
+  adminCode?: string;
 }
 
 interface VerifyOtpResponse {
@@ -26,6 +28,19 @@ export async function requestOtp(payload: RequestOtpPayload): Promise<void> {
 export async function verifyOtp(payload: VerifyOtpPayload): Promise<void> {
   const { data } = await api.post<VerifyOtpResponse>('/auth/otp/verify', payload);
   setAccessToken(data.accessToken);
+}
+
+export interface AdminAccessRequestPayload {
+  name: string;
+  phone: string;
+}
+
+/**
+ * POST /auth/admin/request — submit a new admin access request for an existing
+ * admin to approve. WIP: mock-backed today; backend endpoint is stubbed.
+ */
+export async function requestAdminAccess(payload: AdminAccessRequestPayload): Promise<void> {
+  await api.post('/auth/admin/request', payload);
 }
 
 /** POST /auth/logout — clears the server-side refresh token, then drops local token. */

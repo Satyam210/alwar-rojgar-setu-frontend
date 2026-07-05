@@ -16,7 +16,9 @@
   "profile": {
     "title": "कंपनी प्रोफ़ाइल",
     "edit": "कंपनी प्रोफ़ाइल संपादित करें",
-    "saved": "कंपनी प्रोफ़ाइल सहेजी गई"
+    "saved": "कंपनी प्रोफ़ाइल सहेजी गई",
+    "uploadLogo": "लोगो अपलोड करें",
+    "logoHint": "PNG, JPG या WEBP।"
   },
   "account": {
     "roleOwner": "मालिक",
@@ -25,6 +27,9 @@
   },
   "fields": {
     "companyName": "कंपनी का नाम",
+    "companyDescription": "कंपनी का विवरण",
+    "companyDescriptionPlaceholder": "उम्मीदवारों को अपनी कंपनी के बारे में बताएं…",
+    "logoOptionalHint": "वैकल्पिक। यदि आप इसे छोड़ते हैं, तो हम आपकी कंपनी के आद्याक्षर को लोगो के रूप में उपयोग करेंगे।",
     "gstNumber": "जीएसटी नंबर",
     "udyamNumber": "उद्यम रजिस्ट्रेशन नंबर",
     "contactPerson": "संपर्क व्यक्ति",

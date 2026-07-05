@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import { useCreateEmployerProfile } from './queries';
+import { useCreateEmployerProfile, useUploadEmployerLogo } from './queries';
 import { EmployerProfileFormFields } from './EmployerProfileForm';
 import { paths } from '@/routes/paths';
 import { apiErrorMessage } from '@/lib/errors';
@@ -13,6 +13,7 @@ export function EmployerOnboardingPage() {
   usePageTitle(t('onboarding.title'));
   const navigate = useNavigate();
   const create = useCreateEmployerProfile();
+  const uploadLogo = useUploadEmployerLogo();
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -24,10 +25,20 @@ export function EmployerOnboardingPage() {
         <CardBody>
           <EmployerProfileFormFields
             submitLabel={t('onboarding.submit')}
-            submitting={create.isPending}
-            onSubmit={(input) =>
+            submitting={create.isPending || uploadLogo.isPending}
+            showLogo
+            onSubmit={(input, logoFile) =>
               create.mutate(input, {
-                onSuccess: () => {
+                onSuccess: async () => {
+                  // Logo upload needs the profile to exist first — upload it now.
+                  // A failed upload shouldn't block onboarding (initials are the fallback).
+                  if (logoFile) {
+                    try {
+                      await uploadLogo.mutateAsync(logoFile);
+                    } catch {
+                      /* non-blocking: profile is created, logo can be added later */
+                    }
+                  }
                   toast.success(t('profile.saved'));
                   navigate(paths.employer.profile);
                 },

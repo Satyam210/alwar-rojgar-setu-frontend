@@ -1,5 +1,6 @@
 import type {
   AdminDashboardMetrics,
+  AdminUser,
   Application,
   ApplicationStatus,
   CandidateProfile,
@@ -161,6 +162,34 @@ add('POST', '/auth/logout', (ctx) => {
   return reply({ ok: true });
 });
 
+// Public: request admin access. Creates a pending admin an existing admin can approve.
+add('POST', '/auth/admin/request', (ctx) => {
+  const name = String(ctx.body.name ?? '').trim();
+  const phone = String(ctx.body.phone ?? '').trim();
+  if (!name || !phone) throw new HttpError(400, 'Name and phone are required.');
+  const existing = ctx.db.users.find((u) => u.phone === phone && u.role === 'admin');
+  if (existing) {
+    existing.name = name;
+    existing.adminStatus = existing.adminStatus === 'approved' ? 'approved' : 'pending';
+    if (existing.adminStatus !== 'approved') existing.isActive = false;
+    persist();
+    return reply({ ok: true });
+  }
+  const user: MockUser = {
+    userId: uid('u-admin'),
+    phone,
+    role: 'admin',
+    profileCompleted: true,
+    isActive: false,
+    name,
+    adminStatus: 'pending',
+    createdAt: now(),
+  };
+  ctx.db.users.push(user);
+  persist();
+  return reply({ ok: true }, 201);
+});
+
 add('POST', '/auth/token/refresh', (ctx) => {
   const id = ctx.db.sessionUserId;
   const user = id ? ctx.db.users.find((u) => u.userId === id) : null;
@@ -176,6 +205,7 @@ add('GET', '/users/current', (ctx) => {
     userId: user.userId,
     role: user.role,
     profileCompleted: user.profileCompleted,
+    profileUpdated: user.profileCompleted,
     isActive: user.isActive,
   };
 });
@@ -261,6 +291,9 @@ add('POST', '/employer-profile', (ctx) => {
     id: existing?.id ?? uid('ep'),
     userId: user.userId,
     companyName: String(ctx.body.companyName ?? existing?.companyName ?? ''),
+    companyDescription:
+      (ctx.body.companyDescription as string) ?? existing?.companyDescription ?? null,
+    logoUrl: existing?.logoUrl ?? null,
     gstNumber: (ctx.body.gstNumber as string) ?? existing?.gstNumber ?? null,
     udyamNumber: (ctx.body.udyamNumber as string) ?? existing?.udyamNumber ?? null,
     status: existing?.status ?? 'pending',
@@ -282,12 +315,21 @@ add('GET', '/employer-profile', (ctx) => employerOf(ctx, requireRole(ctx, 'emplo
 
 add('PATCH', '/employer-profile', (ctx) => {
   const profile = employerOf(ctx, requireRole(ctx, 'employer'));
-  const { companyName, gstNumber, udyamNumber } = ctx.body as Partial<EmployerProfile>;
-  Object.assign(
-    profile,
-    { companyName, gstNumber, udyamNumber },
-    { updatedAt: now() },
-  );
+  const body = ctx.body as Partial<EmployerProfile>;
+  const target = profile as unknown as Record<string, unknown>;
+  // Only overwrite fields the client actually sent (partial update).
+  for (const key of ['companyName', 'companyDescription', 'gstNumber', 'udyamNumber', 'logoUrl'] as const) {
+    if (body[key] !== undefined) target[key] = body[key];
+  }
+  profile.updatedAt = now();
+  persist();
+  return profile;
+});
+
+add('POST', '/employer-profile/logo', (ctx) => {
+  const profile = employerOf(ctx, requireRole(ctx, 'employer'));
+  profile.logoUrl = `mock://uploads/${uid('logo')}`;
+  profile.updatedAt = now();
   persist();
   return profile;
 });
@@ -340,8 +382,9 @@ add('GET', '/jobs', (ctx) => {
   if (q.district) items = items.filter((j) => j.district === q.district);
   if (q.tradeRequired) items = items.filter((j) => j.tradeRequired === q.tradeRequired);
   if (q.jobType) items = items.filter((j) => j.jobType === q.jobType);
-  if (q.minSalary) items = items.filter((j) => j.netSalary >= Number(q.minSalary));
-  if (q.maxSalary) items = items.filter((j) => j.netSalary <= Number(q.maxSalary));
+  if (q.minSalary) items = items.filter((j) => j.salaryMax >= Number(q.minSalary));
+  if (q.maxSalary) items = items.filter((j) => j.salaryMin <= Number(q.maxSalary));
+  if (q.companyName) items = items.filter((j) => j.companyName === q.companyName);
   items = items.sort((a, b) => (b.postedAt ?? '').localeCompare(a.postedAt ?? ''));
   return paginate(items, q);
 });
@@ -363,8 +406,8 @@ add('POST', '/jobs', (ctx) => {
     companyName: profile.companyName,
     title: String(b.title ?? ''),
     description: String(b.description ?? ''),
-    grossSalary: Number(b.grossSalary ?? 0),
-    netSalary: Number(b.netSalary ?? 0),
+    salaryMin: Number(b.salaryMin ?? 0),
+    salaryMax: Number(b.salaryMax ?? 0),
     jobType: (b.jobType as Job['jobType']) ?? 'permanent',
     openings: Number(b.openings ?? 1),
     filledCount: 0,
@@ -575,6 +618,44 @@ function setActive(ctx: HandlerCtx, active: boolean) {
 
 add('PATCH', '/admin/users/:id/disable', (ctx) => setActive(ctx, false));
 add('PATCH', '/admin/users/:id/enable', (ctx) => setActive(ctx, true));
+
+// --- Admin users / onboarding requests (WIP: mock-backed) -------------------
+
+function toAdminUser(u: MockUser): AdminUser {
+  return {
+    userId: u.userId,
+    name: u.name ?? 'Admin',
+    phone: u.phone,
+    adminStatus: u.adminStatus ?? 'approved',
+    isActive: u.isActive,
+    createdAt: u.createdAt,
+  };
+}
+
+add('GET', '/admin/admins', (ctx) => {
+  requireRole(ctx, 'admin');
+  let items = ctx.db.users.filter((u) => u.role === 'admin');
+  if (ctx.query.status) {
+    items = items.filter((u) => (u.adminStatus ?? 'approved') === ctx.query.status);
+  }
+  const mapped = items
+    .map(toAdminUser)
+    .sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''));
+  return paginate(mapped, ctx.query);
+});
+
+function reviewAdmin(ctx: HandlerCtx, approve: boolean) {
+  requireRole(ctx, 'admin');
+  const u = ctx.db.users.find((x) => x.userId === ctx.params.id && x.role === 'admin');
+  if (!u) throw new HttpError(404, 'Admin not found.');
+  u.adminStatus = approve ? 'approved' : 'rejected';
+  u.isActive = approve;
+  persist();
+  return toAdminUser(u);
+}
+
+add('PATCH', '/admin/admins/:id/approve', (ctx) => reviewAdmin(ctx, true));
+add('PATCH', '/admin/admins/:id/reject', (ctx) => reviewAdmin(ctx, false));
 
 // --- token / user resolution ------------------------------------------------
 

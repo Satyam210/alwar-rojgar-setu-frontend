@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { Job } from '@/api/types';
 import { paths } from '@/routes/paths';
-import { formatCurrency, formatRelative } from '@/lib/format';
+import { formatSalaryRange, formatRelative } from '@/lib/format';
 import { Card, CardBody } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 
@@ -27,9 +27,9 @@ export function JobCard({ job }: { job: Job }) {
 
         <dl className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
           <div>
-            <dt className="text-content-muted">{t('card.takeHome')}</dt>
+            <dt className="text-content-muted">{t('card.salary')}</dt>
             <dd className="font-semibold">
-              {formatCurrency(job.netSalary)}
+              {formatSalaryRange(job.salaryMin, job.salaryMax)}
               <span className="font-normal text-content-muted">{t('card.perMonth')}</span>
             </dd>
           </div>

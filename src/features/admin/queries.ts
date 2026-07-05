@@ -1,12 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  approveAdmin,
   disableUser,
   enableUser,
+  getAdminAdmins,
   getAdminCandidates,
   getAdminDashboard,
   getAdminEmployers,
+  rejectAdmin,
   verifyEmployer,
   type AdminListParams,
+  type AdminUserListParams,
   type VerifyEmployerPayload,
 } from '@/api/admin';
 
@@ -14,6 +18,7 @@ export const adminKeys = {
   dashboard: () => ['admin', 'dashboard'] as const,
   employers: (params: AdminListParams) => ['admin', 'employers', params] as const,
   candidates: (params: AdminListParams) => ['admin', 'candidates', params] as const,
+  admins: (params: AdminUserListParams) => ['admin', 'admins', params] as const,
 };
 
 export function useAdminDashboard() {
@@ -56,6 +61,25 @@ export function useToggleUser() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin', 'employers'] });
       qc.invalidateQueries({ queryKey: ['admin', 'candidates'] });
+    },
+  });
+}
+
+export function useAdminAdmins(params: AdminUserListParams) {
+  return useQuery({
+    queryKey: adminKeys.admins(params),
+    queryFn: () => getAdminAdmins(params),
+    placeholderData: (prev) => prev,
+  });
+}
+
+export function useReviewAdmin() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ userId, approve }: { userId: string; approve: boolean }) =>
+      approve ? approveAdmin(userId) : rejectAdmin(userId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'admins'] });
     },
   });
 }

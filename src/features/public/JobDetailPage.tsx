@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { useJob } from '@/features/jobs/queries';
 import { useApplyToJob } from '@/features/applications/queries';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore, isProfileComplete } from '@/stores/authStore';
 import { paths } from '@/routes/paths';
-import { formatCurrency, formatNumber, formatRelative } from '@/lib/format';
+import { formatSalaryRange, formatRelative } from '@/lib/format';
 import { apiErrorMessage } from '@/lib/errors';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -36,6 +36,17 @@ export function JobDetailPage() {
       navigate(paths.login, { state: { from: paths.jobDetail(jobId) } });
       return;
     }
+    // Block application until the candidate has completed their profile —
+    // route them to the profile page insisting on completion first.
+    if (user.role === 'candidate' && !isProfileComplete(user)) {
+      toast.error(
+        t('jobs:detail.completeProfileFirst', {
+          defaultValue: 'Please complete your profile before applying to jobs.',
+        }),
+      );
+      navigate(paths.candidate.onboarding);
+      return;
+    }
     apply.mutate(jobId as string, {
       onSuccess: () => toast.success(t('jobs:detail.applySuccess')),
       onError: (err) => toast.error(apiErrorMessage(err)),
@@ -54,7 +65,12 @@ export function JobDetailPage() {
               <div>
                 <h1>{job.title}</h1>
                 {job.companyName && (
-                  <p className="mt-1 text-content-muted">{job.companyName}</p>
+                  <Link
+                    to={`${paths.jobs}?companyName=${encodeURIComponent(job.companyName)}`}
+                    className="mt-1 inline-block font-medium text-brand-700 hover:underline"
+                  >
+                    {job.companyName}
+                  </Link>
                 )}
               </div>
               <div className="flex flex-col items-end gap-2">
@@ -65,8 +81,10 @@ export function JobDetailPage() {
           </CardHeader>
           <CardBody className="flex flex-col gap-6">
             <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-              <Detail label={t('jobs:fields.netSalary')} value={formatCurrency(job.netSalary)} />
-              <Detail label={t('jobs:fields.grossSalary')} value={formatCurrency(job.grossSalary)} />
+              <Detail
+                label={t('jobs:fields.salary')}
+                value={formatSalaryRange(job.salaryMin, job.salaryMax)}
+              />
               <Detail label={t('jobs:fields.district')} value={job.district} />
               {job.tradeRequired && (
                 <Detail label={t('jobs:fields.trade')} value={job.tradeRequired} />
@@ -75,7 +93,6 @@ export function JobDetailPage() {
                 label={t('jobs:fields.openings')}
                 value={t('jobs:detail.openings', { count: job.openings })}
               />
-              <Detail label={t('jobs:fields.filled')} value={formatNumber(job.filledCount)} />
             </dl>
 
             <div>
@@ -95,7 +112,7 @@ export function JobDetailPage() {
           <CardBody className="flex flex-col gap-3">
             <h2 className="text-lg">{t('jobs:detail.applyTitle')}</h2>
             <p className="text-2xl font-bold text-brand-800">
-              {formatCurrency(job.netSalary)}
+              {formatSalaryRange(job.salaryMin, job.salaryMax)}
               <span className="text-base font-normal text-content-muted">
                 {t('jobs:card.perMonth')}
               </span>

@@ -28,6 +28,8 @@
     "graduationYear": "Year of passing",
     "workExperienceMonths": "Work experience (months)",
     "expectedSalary": "Expected salary (monthly)",
+    "expectedSalaryMin": "Expected salary – min (monthly)",
+    "expectedSalaryMax": "Expected salary – max (monthly)",
     "skills": "Skills",
     "skillsHelp": "Add skills one at a time, e.g. Welding, MS Office.",
     "city": "City / Town",

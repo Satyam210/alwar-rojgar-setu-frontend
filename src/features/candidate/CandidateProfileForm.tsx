@@ -43,7 +43,8 @@ export function CandidateProfileFormFields({ initial, submitting, submitLabel, o
       department: initial?.department ?? '',
       graduationYear: initial?.graduationYear ?? undefined,
       workExperienceMonths: initial?.workExperienceMonths ?? undefined,
-      expectedSalary: initial?.expectedSalary ?? undefined,
+      expectedSalaryMin: initial?.expectedSalaryMin ?? undefined,
+      expectedSalaryMax: initial?.expectedSalaryMax ?? undefined,
       city: initial?.city ?? '',
       district: initial?.district ?? 'Alwar',
       pincode: initial?.pincode ?? '',
@@ -165,12 +166,20 @@ export function CandidateProfileFormFields({ initial, submitting, submitLabel, o
 
       <fieldset className="flex flex-col gap-4">
         <legend className="mb-2 text-lg font-semibold">{t('profile.sections.preferences')}</legend>
-        <Field
-          label={t('fields.expectedSalary')}
-          error={translateError(t, errors.expectedSalary?.message)}
-        >
-          <Input type="number" inputMode="numeric" {...register('expectedSalary')} />
-        </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field
+            label={t('fields.expectedSalaryMin')}
+            error={translateError(t, errors.expectedSalaryMin?.message)}
+          >
+            <Input type="number" inputMode="numeric" min={0} {...register('expectedSalaryMin')} />
+          </Field>
+          <Field
+            label={t('fields.expectedSalaryMax')}
+            error={translateError(t, errors.expectedSalaryMax?.message)}
+          >
+            <Input type="number" inputMode="numeric" min={0} {...register('expectedSalaryMax')} />
+          </Field>
+        </div>
       </fieldset>
 
       <div>

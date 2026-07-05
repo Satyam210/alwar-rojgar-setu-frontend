@@ -14,6 +14,13 @@ export interface CurrentUser {
   userId: UUID;
   role: Role;
   profileCompleted: boolean;
+  /**
+   * Whether the user has completed/updated their profile. Distinguishes a
+   * brand-new user (false) from a returning one (true) so the app can pick the
+   * right landing page and gate job applications. Falls back to
+   * `profileCompleted` when the backend doesn't send it.
+   */
+  profileUpdated?: boolean;
   /** Backend CR (HLD §9.5): exposed so guards / disabled-account state work. */
   isActive?: boolean;
 }
@@ -34,7 +41,9 @@ export interface CandidateProfile {
   department?: string | null;
   graduationYear?: number | null;
   workExperienceMonths?: number | null;
-  expectedSalary?: number | null;
+  /** Expected monthly salary range (min–max). */
+  expectedSalaryMin?: number | null;
+  expectedSalaryMax?: number | null;
   skills?: string[];
   city?: string | null;
   district?: string | null;
@@ -74,6 +83,10 @@ export interface EmployerProfile {
   id: UUID;
   userId: UUID;
   companyName: string;
+  /** Short public description of the company (shown on the profile). */
+  companyDescription?: string | null;
+  /** URL of the uploaded company logo/icon. */
+  logoUrl?: string | null;
   /** Distinguishes the company owner from a delegated HR Head account. */
   employerRole?: EmployerRole;
   /** Display name of the person operating the account (e.g. the HR Head). */
@@ -92,7 +105,7 @@ export interface EmployerProfile {
 
 export type EmployerProfileInput = Pick<
   EmployerProfile,
-  'companyName' | 'gstNumber' | 'udyamNumber'
+  'companyName' | 'gstNumber' | 'udyamNumber' | 'companyDescription'
 >;
 
 export type EmployerDocumentType =
@@ -126,8 +139,9 @@ export interface Job {
   employerId: UUID;
   title: string;
   description: string;
-  grossSalary: number;
-  netSalary: number;
+  /** Monthly salary range (min–max), replacing the old gross/net split. */
+  salaryMin: number;
+  salaryMax: number;
   jobType: JobType;
   openings: number;
   filledCount: number;
@@ -144,8 +158,8 @@ export interface Job {
 export interface JobInput {
   title: string;
   description: string;
-  grossSalary: number;
-  netSalary: number;
+  salaryMin: number;
+  salaryMax: number;
   jobType: JobType;
   openings: number;
   tradeRequired?: string;
@@ -158,6 +172,7 @@ export interface JobSearchParams {
   jobType?: JobType;
   minSalary?: number;
   maxSalary?: number;
+  companyName?: string;
   page?: number;
   limit?: number;
 }
@@ -188,6 +203,22 @@ export interface Application {
 }
 
 // --- Admin -------------------------------------------------------------------
+
+/** Lifecycle of an admin access request. */
+export type AdminStatus = 'pending' | 'approved' | 'rejected';
+
+/**
+ * An admin user / admin onboarding request, shown on the Admin Users page.
+ * WIP: backed by mocks today; backend endpoints are stubbed for later.
+ */
+export interface AdminUser {
+  userId: UUID;
+  name: string;
+  phone: string;
+  adminStatus: AdminStatus;
+  isActive?: boolean;
+  createdAt?: ISODateString;
+}
 
 export interface AdminDashboardMetrics {
   totalCandidates: number;
