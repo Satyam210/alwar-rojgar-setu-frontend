@@ -35,7 +35,13 @@ export const candidateProfileSchema = z.object({
     .max(600)
     .optional()
     .or(z.literal('').transform(() => undefined)),
-  expectedSalary: z.coerce
+  expectedSalaryMin: z.coerce
+    .number()
+    .int()
+    .min(0, vmsg('numberInvalid'))
+    .optional()
+    .or(z.literal('').transform(() => undefined)),
+  expectedSalaryMax: z.coerce
     .number()
     .int()
     .min(0, vmsg('numberInvalid'))
@@ -50,6 +56,12 @@ export const candidateProfileSchema = z.object({
     .regex(/^\d{6}$/, vmsg('pincodeInvalid'))
     .optional()
     .or(z.literal('')),
-});
+}).refine(
+  (v) =>
+    v.expectedSalaryMin === undefined ||
+    v.expectedSalaryMax === undefined ||
+    Number(v.expectedSalaryMax) >= Number(v.expectedSalaryMin),
+  { message: vmsg('salaryMaxLessThanMin'), path: ['expectedSalaryMax'] },
+);
 
 export type CandidateProfileForm = z.input<typeof candidateProfileSchema>;

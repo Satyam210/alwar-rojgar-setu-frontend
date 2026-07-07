@@ -1,25 +1,34 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useAuthStore } from '@/stores/authStore';
 import { performLogout } from '@/hooks/useSession';
 import { paths } from '@/routes/paths';
-import { env } from '@/config/env';
 import { cn } from '@/lib/cn';
 import { Button } from '@/components/ui/Button';
 import { LanguageToggle } from './LanguageToggle';
 import { AccessibilityToolbar } from './AccessibilityToolbar';
+import { PageTranslateWidget } from './PageTranslateWidget';
 import { toast } from '@/components/ui/toast';
 
 interface NavItem {
   to: string;
   label: string;
+  /** Extra routes that should also mark this tab active (e.g. onboarding = My Profile). */
+  matchPaths?: string[];
+}
+
+/** True when the current path matches the item's own route or any of its matchPaths. */
+function isNavItemActive(item: NavItem, pathname: string): boolean {
+  if (pathname === item.to) return true;
+  return (item.matchPaths ?? []).some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
 export function Header() {
   const { t } = useTranslation('common');
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const navItems = getNavItems(user?.role, t);
 
@@ -32,39 +41,41 @@ export function Header() {
     }
   }
 
+  const base = import.meta.env.BASE_URL;
+
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-surface/90 backdrop-blur supports-[backdrop-filter]:bg-surface/75">
-      {/* Utility bar: accessibility toolbar + language + helpline. */}
-      <div className="border-b border-border bg-surface-muted">
-        <div className="mx-auto flex h-9 max-w-6xl flex-wrap items-center justify-between gap-2 px-4">
+    <>
+      {/* Top utility strip: accessibility + helpline + language together (gov-portal style). */}
+      <div className="relative z-10 border-b border-accent-100 bg-accent-50 [&_a:hover]:underline [&_a]:text-brand-700">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-end gap-3 px-4 py-1">
           <AccessibilityToolbar />
-          <div className="flex items-center gap-3">
-            <span className="hidden text-sm text-content-muted sm:inline">
-              {t('footer.helpline')}: <a href={`tel:${env.helplineNumber}`}>{env.helplineNumber}</a>
-            </span>
-            <LanguageToggle />
-          </div>
+          <LanguageToggle />
+          <PageTranslateWidget />
         </div>
       </div>
 
-      {/* Main bar: logo + centered nav + actions. */}
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
+      {/* Main bar: national emblem + brand, centered nav, actions. */}
+      <header className="sticky top-0 z-30 border-b border-accent-100 bg-accent-50/90 backdrop-blur supports-[backdrop-filter]:bg-accent-50/75">
+      <div className="mx-auto flex h-24 max-w-6xl items-center gap-3 px-4 sm:h-28 sm:gap-4">
         <Link
           to={paths.home}
-          className="flex shrink-0 items-center gap-2.5 no-underline focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+          className="flex shrink-0 items-center gap-3 text-content no-underline hover:no-underline focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-600 focus-visible:ring-offset-2"
         >
-          <span
-            aria-hidden="true"
-            className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-brand-600 to-brand-800 text-lg font-bold text-white shadow-sm"
-          >
-            र
-          </span>
-          <span className="flex flex-col leading-none">
-            <span className="text-base font-bold tracking-tight text-content sm:text-lg">
+          <img
+            src={`${base}govt-emblem.png`}
+            alt={t('govt.emblemAlt')}
+            className="h-20 w-auto sm:h-[5.5rem]"
+            width={55}
+            height={88}
+            loading="eager"
+          />
+          <span className="hidden h-12 w-px bg-border sm:block" aria-hidden="true" />
+          <span className="flex flex-col gap-1 leading-tight">
+            <span className="text-2xl font-bold tracking-tight text-brand-800 sm:text-[32px]">
               {t('app.name')}
             </span>
-            <span className="mt-0.5 hidden text-[11px] font-medium text-content-muted sm:block">
-              {t('app.subBrand')}
+            <span className="hidden text-[11px] font-medium text-content-muted sm:block">
+              {t('govt.rajasthanGov')} · {t('app.subBrand')}
             </span>
           </span>
         </Link>
@@ -74,11 +85,20 @@ export function Header() {
           className="hidden flex-1 items-center justify-center gap-1 md:flex"
           aria-label={t('nav.menu')}
         >
-          {navItems.map((item) => (
-            <NavLink key={item.to} to={item.to} className={navLinkClass} end>
-              {item.label}
-            </NavLink>
-          ))}
+          {navItems.map((item) => {
+            const active = isNavItemActive(item, pathname);
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end
+                aria-current={active ? 'page' : undefined}
+                className={navLinkClass(active)}
+              >
+                {item.label}
+              </NavLink>
+            );
+          })}
         </nav>
 
         <div className="ml-auto hidden items-center gap-2 md:flex">
@@ -106,15 +126,16 @@ export function Header() {
         </div>
       </div>
     </header>
+    </>
   );
 }
 
-function navLinkClass({ isActive }: { isActive: boolean }) {
+function navLinkClass(isActive: boolean) {
   return cn(
-    'inline-flex h-9 items-center rounded-full px-4 text-sm font-medium no-underline transition-colors focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-600',
+    'inline-flex h-9 items-center rounded-full px-4 text-sm font-bold no-underline transition-colors focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-600',
     isActive
-      ? 'bg-brand-50 text-brand-800'
-      : 'text-content-muted hover:bg-surface-muted hover:text-content',
+      ? 'bg-brand-700 text-white shadow-sm hover:bg-brand-800'
+      : 'text-brand-800 hover:bg-brand-50 hover:text-brand-900',
   );
 }
 
@@ -128,13 +149,21 @@ function getNavItems(role: string | undefined, t: (k: string) => string): NavIte
       return [
         ...common,
         { to: paths.candidate.applications, label: t('nav.myApplications') },
-        { to: paths.candidate.profile, label: t('nav.myProfile') },
+        {
+          to: paths.candidate.profile,
+          label: t('nav.myProfile'),
+          matchPaths: [paths.candidate.onboarding],
+        },
       ];
     case 'employer':
       return [
         { to: paths.home, label: t('nav.home') },
         { to: paths.employer.jobs, label: t('nav.myJobs') },
-        { to: paths.employer.profile, label: t('nav.myProfile') },
+        {
+          to: paths.employer.profile,
+          label: t('nav.myProfile'),
+          matchPaths: [paths.employer.onboarding],
+        },
       ];
     case 'admin':
       return [
@@ -163,8 +192,9 @@ function MobileMenu({
   loginLabel: string;
   logoutLabel: string;
 }) {
+  const { pathname } = useLocation();
   const itemClass =
-    'block w-full rounded px-3 py-2 text-left text-sm no-underline hover:bg-surface-muted focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-600';
+    'block w-full rounded px-3 py-2 text-left text-sm no-underline focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-600';
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -178,13 +208,26 @@ function MobileMenu({
           sideOffset={8}
           className="z-50 min-w-48 rounded-lg border border-border bg-surface p-1 shadow-lg"
         >
-          {navItems.map((item) => (
-            <DropdownMenu.Item key={item.to} asChild>
-              <NavLink to={item.to} className={itemClass} end>
-                {item.label}
-              </NavLink>
-            </DropdownMenu.Item>
-          ))}
+          {navItems.map((item) => {
+            const active = isNavItemActive(item, pathname);
+            return (
+              <DropdownMenu.Item key={item.to} asChild>
+                <NavLink
+                  to={item.to}
+                  end
+                  aria-current={active ? 'page' : undefined}
+                  className={cn(
+                    itemClass,
+                    active
+                      ? 'bg-brand-700 font-semibold text-white'
+                      : 'hover:bg-surface-muted',
+                  )}
+                >
+                  {item.label}
+                </NavLink>
+              </DropdownMenu.Item>
+            );
+          })}
           <DropdownMenu.Separator className="my-1 h-px bg-border" />
           <DropdownMenu.Item asChild>
             {isAuthed ? (

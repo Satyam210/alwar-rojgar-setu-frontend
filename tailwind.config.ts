@@ -11,7 +11,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Brand — deep indigo/blue, mirrors district government sites.
+        // Brand — deep navy, mirrors Indian government portals.
         brand: {
           50: 'rgb(var(--color-brand-50) / <alpha-value>)',
           100: 'rgb(var(--color-brand-100) / <alpha-value>)',
@@ -23,6 +23,14 @@ export default {
           700: 'rgb(var(--color-brand-700) / <alpha-value>)',
           800: 'rgb(var(--color-brand-800) / <alpha-value>)',
           900: 'rgb(var(--color-brand-900) / <alpha-value>)',
+        },
+        // Saffron accent — from the Indian tricolor for CTAs/highlights.
+        accent: {
+          50: 'rgb(var(--color-accent-50) / <alpha-value>)',
+          100: 'rgb(var(--color-accent-100) / <alpha-value>)',
+          500: 'rgb(var(--color-accent-500) / <alpha-value>)',
+          600: 'rgb(var(--color-accent-600) / <alpha-value>)',
+          700: 'rgb(var(--color-accent-700) / <alpha-value>)',
         },
         surface: 'rgb(var(--color-surface) / <alpha-value>)',
         'surface-muted': 'rgb(var(--color-surface-muted) / <alpha-value>)',

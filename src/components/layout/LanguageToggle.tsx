@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { changeLanguage, SUPPORTED_LANGUAGES, type AppLanguage } from '@/i18n';
+import { SUPPORTED_LANGUAGES, type AppLanguage } from '@/i18n';
+import { setAppLanguage } from '@/lib/appLanguage';
 import { cn } from '@/lib/cn';
 
 /**
@@ -20,7 +21,7 @@ export function LanguageToggle() {
         <button
           key={lng}
           type="button"
-          onClick={() => changeLanguage(lng)}
+          onClick={() => setAppLanguage(lng)}
           aria-pressed={current === lng}
           lang={lng}
           className={cn(

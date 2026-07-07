@@ -25,6 +25,21 @@ export function formatNumber(value: number | null | undefined): string {
   return numberFormatter.format(value);
 }
 
+/** Format a monthly salary range as "₹15,000 – ₹20,000" (single value if equal/one-sided). */
+export function formatSalaryRange(
+  min: number | null | undefined,
+  max: number | null | undefined,
+): string {
+  const hasMin = min !== null && min !== undefined && !Number.isNaN(min);
+  const hasMax = max !== null && max !== undefined && !Number.isNaN(max);
+  if (hasMin && hasMax) {
+    return min === max ? formatCurrency(min) : `${formatCurrency(min)} – ${formatCurrency(max)}`;
+  }
+  if (hasMin) return formatCurrency(min);
+  if (hasMax) return formatCurrency(max);
+  return '—';
+}
+
 /** "Posted 3 days ago" style relative time. */
 export function formatRelative(iso: string | null | undefined): string {
   if (!iso) return '—';

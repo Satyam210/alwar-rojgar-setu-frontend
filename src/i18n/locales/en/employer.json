@@ -11,12 +11,15 @@
     "verified": "Verified",
     "verifiedBody": "Your company is verified. You can now post jobs.",
     "rejected": "Verification rejected",
+    "rejectedBody": "Your verification was rejected. Please review the reason below, update your profile, and resubmit.",
     "rejectedReason": "Reason: {{reason}}"
   },
   "profile": {
     "title": "Company Profile",
     "edit": "Edit company profile",
-    "saved": "Company profile saved"
+    "saved": "Company profile saved",
+    "uploadLogo": "Upload logo",
+    "logoHint": "PNG, JPG or WEBP."
   },
   "account": {
     "roleOwner": "Owner",
@@ -25,6 +28,9 @@
   },
   "fields": {
     "companyName": "Company name",
+    "companyDescription": "Company description",
+    "companyDescriptionPlaceholder": "Tell candidates about your company…",
+    "logoOptionalHint": "Optional. If you skip it, we'll use your company initials as the logo.",
     "gstNumber": "GST number",
     "udyamNumber": "Udyam registration number",
     "contactPerson": "Contact person",

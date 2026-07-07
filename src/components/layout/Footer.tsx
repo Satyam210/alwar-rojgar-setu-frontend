@@ -13,15 +13,15 @@ export function Footer() {
   const officer = env.grievanceOfficer;
 
   return (
-    <footer className="mt-auto border-t border-border bg-surface">
+    <footer className="mt-auto border-t border-accent-100 bg-accent-50 text-content-muted [&_a:hover]:text-brand-900 [&_a:hover]:underline [&_a]:text-brand-700">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <h2 className="text-base font-semibold">{t('app.name')}</h2>
+          <h2 className="text-base font-semibold text-content">{t('app.name')}</h2>
           <p className="mt-2 text-sm text-content-muted">{t('footer.aboutText')}</p>
         </div>
 
         <nav aria-label={t('footer.quickLinks')}>
-          <h2 className="text-base font-semibold">{t('footer.quickLinks')}</h2>
+          <h2 className="text-base font-semibold text-content">{t('footer.quickLinks')}</h2>
           <ul className="mt-2 space-y-1.5 text-sm">
             <li>
               <Link to={paths.jobs}>{t('nav.findJobs')}</Link>
@@ -33,7 +33,7 @@ export function Footer() {
         </nav>
 
         <nav aria-label={t('footer.legal')}>
-          <h2 className="text-base font-semibold">{t('footer.legal')}</h2>
+          <h2 className="text-base font-semibold text-content">{t('footer.legal')}</h2>
           <ul className="mt-2 space-y-1.5 text-sm">
             <li>
               <Link to={paths.accessibility}>{t('footer.accessibility')}</Link>
@@ -51,7 +51,7 @@ export function Footer() {
         </nav>
 
         <div>
-          <h2 className="text-base font-semibold">{t('footer.grievanceOfficer')}</h2>
+          <h2 className="text-base font-semibold text-content">{t('footer.grievanceOfficer')}</h2>
           <address className="mt-2 space-y-0.5 text-sm not-italic text-content-muted">
             <p>{officer.name || t('footer.notProvided')}</p>
             {officer.designation && <p>{officer.designation}</p>}
@@ -75,7 +75,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-border">
+      <div className="border-t border-accent-100">
         <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 text-sm text-content-muted sm:flex-row sm:justify-between">
           <p>{t('footer.copyright', { year })}</p>
           <p>

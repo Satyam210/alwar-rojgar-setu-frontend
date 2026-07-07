@@ -10,6 +10,8 @@ export const phoneSchema = z
 export const requestOtpSchema = z.object({
   phone: phoneSchema,
   role: z.enum(['candidate', 'employer', 'admin']),
+  /** Only used when role === 'admin'; validated server-side against the code. */
+  adminCode: z.string().trim().optional(),
 });
 
 export const verifyOtpSchema = z.object({

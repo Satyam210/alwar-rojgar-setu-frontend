@@ -1,4 +1,5 @@
 import type {
+  AdminStatus,
   Application,
   CandidateProfile,
   EmployerDocument,
@@ -15,6 +16,12 @@ export interface MockUser {
   role: Role;
   profileCompleted: boolean;
   isActive: boolean;
+  /** Display name — used for admin access requests on the Admin Users page. */
+  name?: string;
+  /** Admin onboarding lifecycle (only meaningful for role === 'admin'). */
+  adminStatus?: AdminStatus;
+  /** When the (admin) account/request was created. */
+  createdAt?: string;
 }
 
 export interface MockDb {
@@ -30,7 +37,7 @@ export interface MockDb {
   pendingRole: Record<string, Role>;
 }
 
-const STORAGE_KEY = 'ars_mock_db_v2';
+const STORAGE_KEY = 'ars_mock_db_v7';
 
 let db: MockDb | null = null;
 

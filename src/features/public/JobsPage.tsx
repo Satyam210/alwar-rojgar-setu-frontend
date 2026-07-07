@@ -17,12 +17,19 @@ export function JobsPage() {
   usePageTitle(t('jobs:search.title'));
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const rawDistrict = searchParams.get('district');
+  // Default the district filter to the pilot district (Alwar) on first load, but
+  // not when arriving via a company link (so all of that company's jobs show).
+  // 'all' is an explicit sentinel for "Any district".
+  const districtValue = rawDistrict ?? (searchParams.get('companyName') ? 'all' : 'Alwar');
+
   const params: JobSearchParams = {
-    district: searchParams.get('district') || undefined,
+    district: districtValue === 'all' ? undefined : districtValue,
     tradeRequired: searchParams.get('tradeRequired') || undefined,
     jobType: (searchParams.get('jobType') as JobType) || undefined,
     minSalary: numberParam(searchParams.get('minSalary')),
     maxSalary: numberParam(searchParams.get('maxSalary')),
+    companyName: searchParams.get('companyName') || undefined,
     page: Number(searchParams.get('page')) || 1,
     limit: PAGE_SIZE,
   };
@@ -52,10 +59,10 @@ export function JobsPage() {
 
             <Field label={t('jobs:filters.district')}>
               <NativeSelect
-                value={params.district ?? ''}
+                value={districtValue}
                 onChange={(e) => setParam('district', e.target.value)}
               >
-                <option value="">{t('jobs:filters.anyDistrict')}</option>
+                <option value="all">{t('jobs:filters.anyDistrict')}</option>
                 {DISTRICTS.map((d) => (
                   <option key={d} value={d}>
                     {d}
