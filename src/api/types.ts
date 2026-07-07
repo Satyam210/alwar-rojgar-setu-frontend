@@ -23,6 +23,8 @@ export interface CurrentUser {
   profileUpdated?: boolean;
   /** Backend CR (HLD §9.5): exposed so guards / disabled-account state work. */
   isActive?: boolean;
+  /** Only present for employer role. Reflects employer_profiles.status. */
+  employerStatus?: 'pending' | 'verified' | 'rejected';
 }
 
 // --- Candidate ---------------------------------------------------------------
