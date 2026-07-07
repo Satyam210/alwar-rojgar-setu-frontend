@@ -120,7 +120,7 @@ export function EmployerProfilePage() {
                   {t('fields.companyDescription', { defaultValue: 'Company description' })}
                 </dt>
                 <dd className="whitespace-pre-line font-medium">
-                  {profile.companyDescription || '—'}
+                  {profile.description || '—'}
                 </dd>
               </div>
             </dl>

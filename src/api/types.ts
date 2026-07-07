@@ -84,7 +84,7 @@ export interface EmployerProfile {
   userId: UUID;
   companyName: string;
   /** Short public description of the company (shown on the profile). */
-  companyDescription?: string | null;
+  description?: string | null;
   /** URL of the uploaded company logo/icon. */
   logoUrl?: string | null;
   /** Distinguishes the company owner from a delegated HR Head account. */
@@ -105,7 +105,7 @@ export interface EmployerProfile {
 
 export type EmployerProfileInput = Pick<
   EmployerProfile,
-  'companyName' | 'gstNumber' | 'udyamNumber' | 'companyDescription'
+  'companyName' | 'gstNumber' | 'udyamNumber' | 'description' | 'logoUrl'
 >;
 
 export type EmployerDocumentType =
@@ -153,6 +153,8 @@ export interface Job {
   updatedAt?: ISODateString;
   /** Optional, denormalised for listing convenience. */
   companyName?: string;
+  companyLogoUrl?: string | null;
+  companyDescription?: string | null;
 }
 
 export interface JobInput {
@@ -239,10 +241,19 @@ export interface AdminDashboardMetrics {
 
 // --- Public homepage stats ---------------------------------------------------
 
+export interface TopEmployer {
+  id: UUID;
+  companyName: string;
+  logoUrl?: string | null;
+  activeJobCount: number;
+  totalApplications: number;
+}
+
 export interface PublicStats {
   activeJobs: number;
   registeredEmployers: number;
-  successfulHires: number;
+  successfulConnects: number;
+  topEmployers: TopEmployer[];
 }
 
 // --- Shared pagination envelope ---------------------------------------------

@@ -14,18 +14,12 @@ import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { confirmDialog } from '@/components/ui/ConfirmDialog';
 import { Pagination } from '@/components/ui/Pagination';
-import { CompanyBrandLogo } from '@/components/ui/CompanyLogo';
+import { AuthedCompanyLogo } from '@/components/ui/CompanyLogo';
 import { EmployerStatusBadge } from '@/components/common/StatusBadge';
 import { EmptyState, ErrorState, LoadingState } from '@/components/common/States';
 import { toast } from '@/components/ui/toast';
 
 const STATUSES: EmployerStatus[] = ['pending', 'verified', 'rejected'];
-
-/** Only pass real, loadable logo URLs to the <img>; mock URLs fall back to initials. */
-function logoSrc(url?: string | null): string | undefined {
-  if (!url) return undefined;
-  return /^(https?:|blob:|\/uploads)/.test(url) ? url : undefined;
-}
 
 export function AdminEmployersPage() {
   const { t } = useTranslation(['admin', 'employer', 'common']);
@@ -174,7 +168,7 @@ export function AdminEmployersPage() {
                   <Card>
                     <CardBody className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                       <div className="flex gap-4">
-                        <CompanyBrandLogo name={emp.companyName} src={logoSrc(emp.logoUrl)} />
+                        <AuthedCompanyLogo name={emp.companyName} logoUrl={emp.logoUrl} />
                         <div className="flex flex-col gap-1">
                           <div className="flex flex-wrap items-center gap-2">
                             <h2 className="text-base font-semibold">{emp.companyName}</h2>
@@ -186,7 +180,7 @@ export function AdminEmployersPage() {
                             )}
                           </div>
                           <p className="max-w-prose text-sm text-content">
-                            {emp.companyDescription?.trim() || (
+                            {emp.description?.trim() || (
                               <span className="italic text-content-muted">
                                 {t('admin:employers.noDescription')}
                               </span>

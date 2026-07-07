@@ -3,7 +3,7 @@ import { vmsg } from '@/lib/validation';
 
 export const employerProfileSchema = z.object({
   companyName: z.string().trim().min(2, vmsg('required')),
-  companyDescription: z
+  description: z
     .string()
     .trim()
     .max(1000, vmsg('maxLength', { count: 1000 }))

@@ -19,12 +19,15 @@ export function HomePage() {
   // Light-touch live stats (HLD §4 homepage: search bar + live stats).
   const { data: stats } = usePublicStats();
 
+  
+
   function onSearch(e: React.FormEvent) {
     e.preventDefault();
     const params = new URLSearchParams();
     if (query.trim()) params.set('tradeRequired', query.trim());
     navigate(`${paths.jobs}?${params.toString()}`);
   }
+
 
   return (
     <div className="flex flex-col gap-12">
@@ -116,13 +119,13 @@ export function HomePage() {
         />
         <StatCard
           icon={<CheckBadgeIcon />}
-          value={formatNumber(stats?.successfulHires ?? 0)}
-          label={t('common:home.stats.successfulHires')}
+          value={formatNumber(stats?.successfulConnects ?? 0)}
+          label={t('common:home.stats.successfulConnects')}
         />
       </section>
 
       {/* Featured employers */}
-      <FeaturedCompanies />
+      <FeaturedCompanies topEmployers={stats?.topEmployers} />
 
       {/* Browse by trade */}
       <section aria-labelledby="trades-heading">

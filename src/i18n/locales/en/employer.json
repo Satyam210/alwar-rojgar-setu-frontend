@@ -11,6 +11,7 @@
     "verified": "Verified",
     "verifiedBody": "Your company is verified. You can now post jobs.",
     "rejected": "Verification rejected",
+    "rejectedBody": "Your verification was rejected. Please review the reason below, update your profile, and resubmit.",
     "rejectedReason": "Reason: {{reason}}"
   },
   "profile": {

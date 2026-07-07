@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/cn';
+import { fetchDocumentBlobUrl } from '@/api/documents';
 
 /**
  * Deterministic, brand-like logo icon for a company.
@@ -97,4 +98,46 @@ export function CompanyBrandLogo({ name, src, className }: CompanyBrandLogoProps
       />
     </span>
   );
+}
+
+/**
+ * Like CompanyBrandLogo but handles auth-gated URLs (local /api/v1/documents/
+ * paths) by fetching with the Bearer token and converting to a blob URL.
+ * Public https:// URLs (Vercel Blob) are passed through directly.
+ */
+export function AuthedCompanyLogo({
+  name,
+  logoUrl,
+  className,
+}: {
+  name: string;
+  logoUrl?: string | null;
+  className?: string;
+}) {
+  const [src, setSrc] = useState<string>();
+
+  useEffect(() => {
+    if (!logoUrl || logoUrl.startsWith('mock://')) {
+      setSrc(undefined);
+      return;
+    }
+    if (/^https?:/.test(logoUrl)) {
+      setSrc(logoUrl);
+      return;
+    }
+    let revoke: string | undefined;
+    let active = true;
+    fetchDocumentBlobUrl(logoUrl).then((url) => {
+      if (active && url) {
+        revoke = url;
+        setSrc(url);
+      }
+    });
+    return () => {
+      active = false;
+      if (revoke) URL.revokeObjectURL(revoke);
+    };
+  }, [logoUrl]);
+
+  return <CompanyBrandLogo name={name} src={src} className={className} />;
 }

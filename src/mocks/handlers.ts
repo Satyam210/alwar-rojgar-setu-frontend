@@ -291,8 +291,8 @@ add('POST', '/employer-profile', (ctx) => {
     id: existing?.id ?? uid('ep'),
     userId: user.userId,
     companyName: String(ctx.body.companyName ?? existing?.companyName ?? ''),
-    companyDescription:
-      (ctx.body.companyDescription as string) ?? existing?.companyDescription ?? null,
+    description:
+      (ctx.body.description as string) ?? existing?.description ?? null,
     logoUrl: existing?.logoUrl ?? null,
     gstNumber: (ctx.body.gstNumber as string) ?? existing?.gstNumber ?? null,
     udyamNumber: (ctx.body.udyamNumber as string) ?? existing?.udyamNumber ?? null,
@@ -318,7 +318,7 @@ add('PATCH', '/employer-profile', (ctx) => {
   const body = ctx.body as Partial<EmployerProfile>;
   const target = profile as unknown as Record<string, unknown>;
   // Only overwrite fields the client actually sent (partial update).
-  for (const key of ['companyName', 'companyDescription', 'gstNumber', 'udyamNumber', 'logoUrl'] as const) {
+  for (const key of ['companyName', 'description', 'gstNumber', 'udyamNumber', 'logoUrl'] as const) {
     if (body[key] !== undefined) target[key] = body[key];
   }
   profile.updatedAt = now();
@@ -367,10 +367,35 @@ add('DELETE', '/employer-profile/documents/:id', (ctx) => {
 
 add('GET', '/stats', (ctx) => {
   const { jobs, employerProfiles, applications } = ctx.db;
+
+  // Unique candidates who submitted applications
+  const uniqueCandidates = new Set(applications.map((a: any) => a.candidateId));
+
+  // Top employers by active jobs + applications
+  const employerStats = employerProfiles.map((ep: any) => {
+    const employerJobs = jobs.filter((j: any) => j.employerId === ep.id);
+    const activeJobCount = employerJobs.filter((j: any) => j.status === 'active').length;
+    const totalApplications = applications.filter((a: any) =>
+      employerJobs.some((j: any) => j.id === a.jobId)
+    ).length;
+    return {
+      id: ep.id,
+      companyName: ep.companyName,
+      logoUrl: ep.logoUrl,
+      activeJobCount,
+      totalApplications,
+    };
+  });
+
+  const topEmployers = employerStats
+    .sort((a: any, b: any) => b.activeJobCount - a.activeJobCount || b.totalApplications - a.totalApplications)
+    .slice(0, 5);
+
   return {
-    activeJobs: jobs.filter((j) => j.status === 'active').length,
+    activeJobs: jobs.filter((j: any) => j.status === 'active').length,
     registeredEmployers: employerProfiles.length,
-    successfulHires: applications.filter((a) => a.status === 'hired').length,
+    successfulConnects: uniqueCandidates.size,
+    topEmployers,
   };
 });
 

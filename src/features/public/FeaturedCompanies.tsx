@@ -5,6 +5,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/cn';
 import { Card, CardBody } from '@/components/ui/Card';
 import { CompanyBrandLogo } from '@/components/ui/CompanyLogo';
+import type { TopEmployer } from '@/api/types';
 
 type RoleType = 'unskilled' | 'graduate';
 
@@ -95,7 +96,11 @@ const SECTORS: Sector[] = [
   },
 ];
 
-export function FeaturedCompanies() {
+interface FeaturedCompaniesProps {
+  topEmployers?: TopEmployer[];
+}
+
+export function FeaturedCompanies({ topEmployers }: FeaturedCompaniesProps) {
   const { t } = useTranslation('common');
   const base = import.meta.env.BASE_URL;
   const isEmployer = useAuthStore((s) => s.user?.role === 'employer');
@@ -114,16 +119,53 @@ export function FeaturedCompanies() {
       </div>
 
       <div className="flex flex-col gap-8">
-        {SECTORS.map((sector) => (
-          <div key={sector.id}>
+        {topEmployers && topEmployers.length > 0 ? (
+          // Show API top employers
+          <div>
             <div className="mb-3 flex items-center gap-3">
               <h3 className="text-xs font-bold uppercase tracking-wider text-content-muted">
-                {t(`home.featured.sectors.${sector.id}`)}
+                {t('home.featured.title')}
               </h3>
               <span className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {sector.companies.map((company) => {
+              {topEmployers.map((employer) => (
+                <Card key={employer.id} className="h-full rounded-xl border border-border bg-white shadow-sm">
+                  <CardBody className="flex h-full flex-col gap-3.5">
+                    <div className="flex items-center gap-3">
+                      <CompanyBrandLogo
+                        name={employer.companyName}
+                        src={employer.logoUrl || undefined}
+                      />
+                      <div className="min-w-0">
+                        <p className="truncate font-semibold leading-snug">{employer.companyName}</p>
+                        <p className="text-xs text-content-muted">
+                          {employer.activeJobCount} open role{employer.activeJobCount !== 1 ? 's' : ''}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-auto flex items-center gap-2 border-t border-border/60 pt-3">
+                      <span className="inline-flex items-center rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 ring-1 ring-inset ring-brand-100">
+                        {employer.totalApplications} application{employer.totalApplications !== 1 ? 's' : ''}
+                      </span>
+                    </div>
+                  </CardBody>
+                </Card>
+              ))}
+            </div>
+          </div>
+        ) : (
+          // Fallback to curated list
+          SECTORS.map((sector) => (
+            <div key={sector.id}>
+              <div className="mb-3 flex items-center gap-3">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-content-muted">
+                  {t(`home.featured.sectors.${sector.id}`)}
+                </h3>
+                <span className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {sector.companies.map((company) => {
                 const card = (
                   <Card
                     className={cn(
@@ -190,7 +232,8 @@ export function FeaturedCompanies() {
               })}
             </div>
           </div>
-        ))}
+            ))
+        )}
       </div>
 
       <div className="mt-7 text-center">
