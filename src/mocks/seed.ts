@@ -132,6 +132,7 @@ export function createSeedDb(): MockDb {
       id: 'ep-1',
       userId: 'u-e1',
       companyName: 'Bhiwadi Auto Components Pvt. Ltd.',
+      description: 'Manufacturing auto components for leading automotive brands across India.',
       employerRole: 'owner',
       contactPersonName: 'Rakesh Gupta',
       gstNumber: '08ABCDE1234F1Z5',

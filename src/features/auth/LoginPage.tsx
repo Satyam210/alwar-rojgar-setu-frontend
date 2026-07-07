@@ -12,6 +12,7 @@ import { translateError } from '@/lib/validation';
 import type { ApiError } from '@/api/client';
 import type { Role } from '@/api/types';
 import {
+  phoneSchema,
   requestOtpSchema,
   verifyOtpSchema,
   toE164,
@@ -197,15 +198,24 @@ function PhoneStep({
 }
 
 function AdminAccessRequestForm({ onDone }: { onDone: () => void }) {
-  const { t } = useTranslation(['auth', 'common']);
+  const { t } = useTranslation(['auth', 'common', 'validation']);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [phoneError, setPhoneError] = useState<string>();
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string>();
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setServerError(undefined);
+    setPhoneError(undefined);
+
+    const parsed = phoneSchema.safeParse(phone.trim());
+    if (!parsed.success) {
+      setPhoneError(translateError(t, parsed.error.errors[0]?.message));
+      return;
+    }
+
     setSubmitting(true);
     try {
       await requestAdminAccess({ name: name.trim(), phone: toE164(phone) });
@@ -234,14 +244,19 @@ function AdminAccessRequestForm({ onDone }: { onDone: () => void }) {
         />
       </Field>
 
-      <Field label={t('auth:adminRequest.phoneLabel')} required>
+      <Field
+        label={t('auth:adminRequest.phoneLabel')}
+        help={t('auth:login.phoneHelp')}
+        error={phoneError}
+        required
+      >
         <Input
           type="tel"
           inputMode="numeric"
           autoComplete="tel-national"
-          placeholder={t('auth:adminRequest.phonePlaceholder')}
+          placeholder={t('auth:login.phonePlaceholder')}
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) => { setPhone(e.target.value); setPhoneError(undefined); }}
         />
       </Field>
 

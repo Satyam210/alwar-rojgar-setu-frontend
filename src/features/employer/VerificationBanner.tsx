@@ -17,7 +17,7 @@ export function VerificationBanner({ profile }: { profile: EmployerProfile }) {
       <p className="font-semibold">{t(`verification.${profile.status}`)}</p>
       <p className="text-sm text-content">{t(`verification.${profile.status}Body`)}</p>
       {profile.status === 'rejected' && profile.rejectionReason && (
-        <p className="mt-1 text-sm text-content">
+        <p className="mt-2 text-sm font-semibold text-danger">
           {t('verification.rejectedReason', { reason: profile.rejectionReason })}
         </p>
       )}

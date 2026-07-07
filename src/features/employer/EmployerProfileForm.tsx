@@ -37,7 +37,7 @@ export function EmployerProfileFormFields({
     resolver: zodResolver(employerProfileSchema),
     defaultValues: {
       companyName: initial?.companyName ?? '',
-      companyDescription: initial?.companyDescription ?? '',
+      description: initial?.description ?? '',
       gstNumber: initial?.gstNumber ?? '',
       udyamNumber: initial?.udyamNumber ?? '',
     },
@@ -63,7 +63,7 @@ export function EmployerProfileFormFields({
     onSubmit(
       {
         companyName: parsed.companyName,
-        companyDescription: parsed.companyDescription || undefined,
+        description: parsed.description || undefined,
         gstNumber: parsed.gstNumber || undefined,
         udyamNumber: parsed.udyamNumber || undefined,
       },
@@ -126,14 +126,14 @@ export function EmployerProfileFormFields({
       </Field>
       <Field
         label={t('fields.companyDescription', { defaultValue: 'Company description' })}
-        error={translateError(t, errors.companyDescription?.message)}
+        error={translateError(t, errors.description?.message)}
       >
         <Textarea
           rows={4}
           placeholder={t('fields.companyDescriptionPlaceholder', {
             defaultValue: 'Tell candidates about your company…',
           })}
-          {...register('companyDescription')}
+          {...register('description')}
         />
       </Field>
       <div className="grid gap-4 sm:grid-cols-2">

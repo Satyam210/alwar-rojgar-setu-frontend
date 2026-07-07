@@ -8,6 +8,7 @@ import { cn } from '@/lib/cn';
 import { Button } from '@/components/ui/Button';
 import { LanguageToggle } from './LanguageToggle';
 import { AccessibilityToolbar } from './AccessibilityToolbar';
+import { PageTranslateWidget } from './PageTranslateWidget';
 import { toast } from '@/components/ui/toast';
 
 interface NavItem {
@@ -49,6 +50,7 @@ export function Header() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-end gap-3 px-4 py-1">
           <AccessibilityToolbar />
           <LanguageToggle />
+          <PageTranslateWidget />
         </div>
       </div>
 
