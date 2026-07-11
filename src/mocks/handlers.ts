@@ -136,21 +136,41 @@ const STATUS_STAMP: Record<ApplicationStatus, keyof Application | null> = {
 
 // --- Auth -------------------------------------------------------------------
 
-add('POST', '/auth/otp/request', (ctx) => {
-  const phone = String(ctx.body.phone ?? '');
-  if (ctx.body.role) ctx.db.pendingRole[phone] = ctx.body.role as Role;
+add('POST', '/auth/register', (ctx) => {
+  const email = String(ctx.body.email ?? '').toLowerCase();
+  const password = String(ctx.body.password ?? '');
+  const role = ctx.body.role as Role;
+
+  if (!email || !password) throw new HttpError(400, 'Email and password are required');
+  if (password.length < 8) throw new HttpError(400, 'Password must be at least 8 characters');
+
+  let user = ctx.db.users.find((u) => u.email === email);
+  if (!user) {
+    user = {
+      userId: `u-${Math.random().toString(36).slice(2, 9)}`,
+      email,
+      role: role || 'candidate',
+      profileCompleted: false,
+      isActive: true,
+      createdAt: now(),
+    };
+    ctx.db.users.push(user);
+  }
+  ctx.db.sessionUserId = user.userId;
   persist();
-  return reply({ sent: true });
+  return reply({ accessToken: `mock.${user.userId}` }, 201);
 });
 
-add('POST', '/auth/otp/verify', (ctx) => {
-  const phone = String(ctx.body.phone ?? '');
-  const role = ctx.db.pendingRole[phone] ?? 'candidate';
-  // Role decides the canonical demo account.
-  const user =
-    ctx.db.users.find((u) => u.phone === phone && u.role === role) ??
-    ctx.db.users.find((u) => u.role === role);
-  if (!user) throw new HttpError(400, 'No demo account for that role.');
+add('POST', '/auth/login', (ctx) => {
+  const email = String(ctx.body.email ?? '').toLowerCase();
+  const password = String(ctx.body.password ?? '');
+
+  if (!email || !password) throw new HttpError(400, 'Email and password are required');
+
+  const user = ctx.db.users.find((u) => u.email === email);
+  if (!user) throw new HttpError(401, 'Invalid credentials');
+  if (!user.isActive) throw new HttpError(403, 'Account is disabled');
+
   ctx.db.sessionUserId = user.userId;
   persist();
   return reply({ accessToken: `mock.${user.userId}` });
@@ -160,34 +180,6 @@ add('POST', '/auth/logout', (ctx) => {
   ctx.db.sessionUserId = null;
   persist();
   return reply({ ok: true });
-});
-
-// Public: request admin access. Creates a pending admin an existing admin can approve.
-add('POST', '/auth/admin/request', (ctx) => {
-  const name = String(ctx.body.name ?? '').trim();
-  const phone = String(ctx.body.phone ?? '').trim();
-  if (!name || !phone) throw new HttpError(400, 'Name and phone are required.');
-  const existing = ctx.db.users.find((u) => u.phone === phone && u.role === 'admin');
-  if (existing) {
-    existing.name = name;
-    existing.adminStatus = existing.adminStatus === 'approved' ? 'approved' : 'pending';
-    if (existing.adminStatus !== 'approved') existing.isActive = false;
-    persist();
-    return reply({ ok: true });
-  }
-  const user: MockUser = {
-    userId: uid('u-admin'),
-    phone,
-    role: 'admin',
-    profileCompleted: true,
-    isActive: false,
-    name,
-    adminStatus: 'pending',
-    createdAt: now(),
-  };
-  ctx.db.users.push(user);
-  persist();
-  return reply({ ok: true }, 201);
 });
 
 add('POST', '/auth/token/refresh', (ctx) => {
