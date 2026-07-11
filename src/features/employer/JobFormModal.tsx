@@ -33,8 +33,7 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
     defaultValues: {
       title: initial?.title ?? '',
       description: initial?.description ?? '',
-      salaryMin: initial?.salaryMin ?? undefined,
-      salaryMax: initial?.salaryMax ?? undefined,
+      grossSalary: initial?.grossSalary ?? undefined,
       jobType: initial?.jobType ?? 'permanent',
       openings: initial?.openings ?? 1,
       tradeRequired: initial?.tradeRequired ?? '',
@@ -46,8 +45,7 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
     reset({
       title: initial?.title ?? '',
       description: initial?.description ?? '',
-      salaryMin: initial?.salaryMin ?? undefined,
-      salaryMax: initial?.salaryMax ?? undefined,
+      grossSalary: initial?.grossSalary ?? undefined,
       jobType: initial?.jobType ?? 'permanent',
       openings: initial?.openings ?? 1,
       tradeRequired: initial?.tradeRequired ?? '',
@@ -85,18 +83,11 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
-            label={t('jobs:fields.salaryMin')}
-            error={translateError(t, errors.salaryMin?.message)}
+            label={t('jobs:fields.grossSalary')}
+            error={translateError(t, errors.grossSalary?.message)}
             required
           >
-            <Input type="number" inputMode="numeric" min={1} {...register('salaryMin')} />
-          </Field>
-          <Field
-            label={t('jobs:fields.salaryMax')}
-            error={translateError(t, errors.salaryMax?.message)}
-            required
-          >
-            <Input type="number" inputMode="numeric" min={1} {...register('salaryMax')} />
+            <Input type="number" inputMode="numeric" min={1} {...register('grossSalary')} />
           </Field>
           <Field
             label={t('jobs:fields.jobType')}

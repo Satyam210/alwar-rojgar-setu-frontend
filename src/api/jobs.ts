@@ -19,6 +19,12 @@ export async function getOwnedJobs(params: Pick<JobSearchParams, 'page' | 'limit
   return data;
 }
 
+/** GET /jobs/recommended — jobs matched to the logged-in candidate's skills. */
+export async function getRecommendedJobs(limit = 6): Promise<Paginated<Job>> {
+  const { data } = await api.get<Paginated<Job>>('/jobs/recommended', { params: { limit } });
+  return data;
+}
+
 /** POST /jobs — create job (employer). */
 export async function createJob(input: JobInput): Promise<Job> {
   const { data } = await api.post<Job>('/jobs', input);

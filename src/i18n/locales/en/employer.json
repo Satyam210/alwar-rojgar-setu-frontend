@@ -34,6 +34,11 @@
     "gstNumber": "GST number",
     "udyamNumber": "Udyam registration number",
     "contactPerson": "Contact person",
+    "contactPersonSection": "Contact person",
+    "contactPersonName": "Contact person name",
+    "contactPersonPhone": "Contact person phone",
+    "contactPersonEmail": "Contact person email",
+    "contactPersonDesignation": "Designation",
     "status": "Verification status"
   },
   "documents": {

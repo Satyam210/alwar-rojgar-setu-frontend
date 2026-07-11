@@ -286,6 +286,14 @@ add('POST', '/employer-profile', (ctx) => {
     description:
       (ctx.body.description as string) ?? existing?.description ?? null,
     logoUrl: existing?.logoUrl ?? null,
+    contactPersonName:
+      (ctx.body.contactPersonName as string) ?? existing?.contactPersonName ?? null,
+    contactPersonPhone:
+      (ctx.body.contactPersonPhone as string) ?? existing?.contactPersonPhone ?? null,
+    contactPersonEmail:
+      (ctx.body.contactPersonEmail as string) ?? existing?.contactPersonEmail ?? null,
+    contactPersonDesignation:
+      (ctx.body.contactPersonDesignation as string) ?? existing?.contactPersonDesignation ?? null,
     gstNumber: (ctx.body.gstNumber as string) ?? existing?.gstNumber ?? null,
     udyamNumber: (ctx.body.udyamNumber as string) ?? existing?.udyamNumber ?? null,
     status: existing?.status ?? 'pending',
@@ -310,7 +318,17 @@ add('PATCH', '/employer-profile', (ctx) => {
   const body = ctx.body as Partial<EmployerProfile>;
   const target = profile as unknown as Record<string, unknown>;
   // Only overwrite fields the client actually sent (partial update).
-  for (const key of ['companyName', 'description', 'gstNumber', 'udyamNumber', 'logoUrl'] as const) {
+  for (const key of [
+    'companyName',
+    'description',
+    'gstNumber',
+    'udyamNumber',
+    'logoUrl',
+    'contactPersonName',
+    'contactPersonPhone',
+    'contactPersonEmail',
+    'contactPersonDesignation',
+  ] as const) {
     if (body[key] !== undefined) target[key] = body[key];
   }
   profile.updatedAt = now();
@@ -396,11 +414,19 @@ add('GET', '/stats', (ctx) => {
 add('GET', '/jobs', (ctx) => {
   const q = ctx.query;
   let items = ctx.db.jobs.filter((j) => j.status === 'active');
+  if (q.q) {
+    const term = String(q.q).toLowerCase();
+    items = items.filter((j) =>
+      [j.title, j.tradeRequired, j.companyName, j.description]
+        .filter(Boolean)
+        .some((field) => String(field).toLowerCase().includes(term)),
+    );
+  }
   if (q.district) items = items.filter((j) => j.district === q.district);
   if (q.tradeRequired) items = items.filter((j) => j.tradeRequired === q.tradeRequired);
   if (q.jobType) items = items.filter((j) => j.jobType === q.jobType);
-  if (q.minSalary) items = items.filter((j) => j.salaryMax >= Number(q.minSalary));
-  if (q.maxSalary) items = items.filter((j) => j.salaryMin <= Number(q.maxSalary));
+  if (q.minSalary) items = items.filter((j) => j.grossSalary >= Number(q.minSalary));
+  if (q.maxSalary) items = items.filter((j) => j.grossSalary <= Number(q.maxSalary));
   if (q.companyName) items = items.filter((j) => j.companyName === q.companyName);
   items = items.sort((a, b) => (b.postedAt ?? '').localeCompare(a.postedAt ?? ''));
   return paginate(items, q);
@@ -414,6 +440,54 @@ add('GET', '/jobs/owned', (ctx) => {
   return paginate(items, { ...ctx.query, limit: ctx.query.limit ?? 100 });
 });
 
+add('GET', '/jobs/recommended', (ctx) => {
+  const profile = candidateOf(ctx, requireRole(ctx, 'candidate'));
+  const terms = [...(profile.skills ?? []), profile.itiTrade].filter(Boolean).map(String);
+  if (terms.length === 0) return paginate([], ctx.query);
+
+  const limitRaw = Number(ctx.query.limit);
+  const limit = Number.isFinite(limitRaw) && limitRaw > 0 ? Math.min(limitRaw, 20) : 6;
+
+  const scored = ctx.db.jobs
+    .filter((j) => j.status === 'active')
+    .map((job) => {
+      const haystack = [job.title, job.description, job.tradeRequired]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+      const matchedSkills: string[] = [];
+      let matchScore = 0;
+      for (const raw of terms) {
+        const term = raw.trim();
+        if (term && haystack.includes(term.toLowerCase())) {
+          if (!matchedSkills.includes(term)) matchedSkills.push(term);
+          matchScore += 1;
+        }
+      }
+      if (
+        profile.itiTrade &&
+        job.tradeRequired &&
+        profile.itiTrade.toLowerCase() === job.tradeRequired.toLowerCase()
+      ) {
+        matchScore += 3;
+      }
+      if (
+        matchScore > 0 &&
+        profile.district &&
+        job.district &&
+        profile.district.toLowerCase() === job.district.toLowerCase()
+      ) {
+        matchScore += 1;
+      }
+      return { ...job, matchScore, matchedSkills };
+    })
+    .filter((j) => j.matchScore > 0)
+    .sort((a, b) => b.matchScore - a.matchScore)
+    .slice(0, limit);
+
+  return paginate(scored, { ...ctx.query, limit: scored.length || 1 });
+});
+
 add('POST', '/jobs', (ctx) => {
   const profile = employerOf(ctx, requireRole(ctx, 'employer'));
   const b = ctx.body as Partial<Job>;
@@ -423,8 +497,8 @@ add('POST', '/jobs', (ctx) => {
     companyName: profile.companyName,
     title: String(b.title ?? ''),
     description: String(b.description ?? ''),
-    salaryMin: Number(b.salaryMin ?? 0),
-    salaryMax: Number(b.salaryMax ?? 0),
+    grossSalary: Number(b.grossSalary ?? 0),
+    netSalary: b.netSalary != null ? Number(b.netSalary) : null,
     jobType: (b.jobType as Job['jobType']) ?? 'permanent',
     openings: Number(b.openings ?? 1),
     filledCount: 0,

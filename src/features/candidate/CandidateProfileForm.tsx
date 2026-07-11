@@ -6,14 +6,14 @@ import { candidateProfileSchema, type CandidateProfileForm } from './schema';
 import type { CandidateProfile, CandidateProfileInput } from '@/api/types';
 import { translateError } from '@/lib/validation';
 import {
+  ALWAR_COLLEGES,
   DISTRICTS,
   EDUCATION_LEVELS,
-  ITI_COLLEGES,
   ITI_DEPARTMENTS,
   ITI_TRADES,
 } from '@/lib/constants';
 import { Field } from '@/components/ui/Field';
-import { Input, NativeSelect } from '@/components/ui/Input';
+import { Input, NativeSelect, Textarea } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { SkillsInput } from './SkillsInput';
 
@@ -36,15 +36,15 @@ export function CandidateProfileFormFields({ initial, submitting, submitLabel, o
     resolver: zodResolver(candidateProfileSchema),
     defaultValues: {
       fullName: initial?.fullName ?? '',
+      phone: initial?.phone ?? '',
       email: initial?.email ?? '',
+      description: initial?.description ?? '',
       highestEducation: initial?.highestEducation ?? '',
       itiTrade: initial?.itiTrade ?? '',
       itiCollege: initial?.itiCollege ?? '',
       department: initial?.department ?? '',
       graduationYear: initial?.graduationYear ?? undefined,
       workExperienceMonths: initial?.workExperienceMonths ?? undefined,
-      expectedSalaryMin: initial?.expectedSalaryMin ?? undefined,
-      expectedSalaryMax: initial?.expectedSalaryMax ?? undefined,
       city: initial?.city ?? '',
       district: initial?.district ?? 'Alwar',
       pincode: initial?.pincode ?? '',
@@ -53,7 +53,12 @@ export function CandidateProfileFormFields({ initial, submitting, submitLabel, o
 
   function submit(values: CandidateProfileForm) {
     const parsed = candidateProfileSchema.parse(values);
-    onSubmit({ ...parsed, email: parsed.email || undefined, skills } as CandidateProfileInput);
+    onSubmit({
+      ...parsed,
+      email: parsed.email || undefined,
+      description: parsed.description || undefined,
+      skills,
+    } as CandidateProfileInput);
   }
 
   return (
@@ -67,12 +72,29 @@ export function CandidateProfileFormFields({ initial, submitting, submitLabel, o
         >
           <Input autoComplete="name" {...register('fullName')} />
         </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field
+            label={t('fields.phone')}
+            help={t('fields.phoneHelp')}
+            error={translateError(t, errors.phone?.message)}
+            required
+          >
+            <Input type="tel" inputMode="numeric" maxLength={10} autoComplete="tel" {...register('phone')} />
+          </Field>
+          <Field
+            label={t('fields.email')}
+            help={t('fields.emailHelp')}
+            error={translateError(t, errors.email?.message)}
+          >
+            <Input type="email" autoComplete="email" {...register('email')} />
+          </Field>
+        </div>
         <Field
-          label={t('fields.email')}
-          help={t('fields.emailHelp')}
-          error={translateError(t, errors.email?.message)}
+          label={t('fields.description')}
+          help={t('fields.descriptionHelp')}
+          error={translateError(t, errors.description?.message)}
         >
-          <Input type="email" autoComplete="email" {...register('email')} />
+          <Textarea rows={4} {...register('description')} />
         </Field>
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label={t('fields.city')} error={translateError(t, errors.city?.message)}>
@@ -124,14 +146,17 @@ export function CandidateProfileFormFields({ initial, submitting, submitLabel, o
             help={t('fields.itiCollegeHelp')}
             error={translateError(t, errors.itiCollege?.message)}
           >
-            <NativeSelect {...register('itiCollege')}>
-              <option value="">—</option>
-              {ITI_COLLEGES.map((college) => (
-                <option key={college} value={college}>
-                  {college}
-                </option>
+            <Input
+              {...register('itiCollege')}
+              list="college-suggestions"
+              placeholder={t('fields.itiCollegePlaceholder')}
+              autoComplete="off"
+            />
+            <datalist id="college-suggestions">
+              {ALWAR_COLLEGES.map((college) => (
+                <option key={college} value={college} />
               ))}
-            </NativeSelect>
+            </datalist>
           </Field>
           <Field
             label={t('fields.department')}
@@ -162,24 +187,6 @@ export function CandidateProfileFormFields({ initial, submitting, submitLabel, o
         <Field label={t('fields.skills')} help={t('fields.skillsHelp')}>
           <SkillsInput value={skills} onChange={setSkills} />
         </Field>
-      </fieldset>
-
-      <fieldset className="flex flex-col gap-4">
-        <legend className="mb-2 text-lg font-semibold">{t('profile.sections.preferences')}</legend>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field
-            label={t('fields.expectedSalaryMin')}
-            error={translateError(t, errors.expectedSalaryMin?.message)}
-          >
-            <Input type="number" inputMode="numeric" min={0} {...register('expectedSalaryMin')} />
-          </Field>
-          <Field
-            label={t('fields.expectedSalaryMax')}
-            error={translateError(t, errors.expectedSalaryMax?.message)}
-          >
-            <Input type="number" inputMode="numeric" min={0} {...register('expectedSalaryMax')} />
-          </Field>
-        </div>
       </fieldset>
 
       <div>

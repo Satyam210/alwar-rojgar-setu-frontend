@@ -12,7 +12,7 @@ export function AppShell() {
   const { t } = useTranslation('common');
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Subtle Alwar heritage wallpaper (Bala Qila & City Palace) behind the whole page. */}
+      {/* Subtle Rajasthan heritage wallpaper behind the whole page. */}
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 -z-10 bg-cover bg-center bg-fixed opacity-[0.45]"

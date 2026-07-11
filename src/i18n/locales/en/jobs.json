@@ -7,15 +7,23 @@
     "noResults": "No jobs match your filters",
     "noResultsBody": "Try removing some filters or searching a different skill category."
   },
+  "recommended": {
+    "title": "Recommended for you",
+    "subtitle": "Jobs that match the skills and trade in your profile.",
+    "allJobs": "All jobs"
+  },
   "filters": {
     "title": "Filters",
+    "keyword": "Search",
     "district": "District",
+    "location": "Location",
     "trade": "Skill Category",
     "jobType": "Job type",
     "minSalary": "Minimum salary",
     "maxSalary": "Maximum salary",
     "all": "All",
     "anyDistrict": "Any district",
+    "anyLocation": "Any location",
     "anyTrade": "Any category",
     "anyType": "Any type"
   },
@@ -39,8 +47,8 @@
     "trade": "Skill Category",
     "jobType": "Job type",
     "salary": "Salary (monthly)",
-    "salaryMin": "Minimum salary (monthly)",
-    "salaryMax": "Maximum salary (monthly)",
+    "grossSalary": "Gross salary (monthly)",
+    "netSalary": "Net / take-home salary (monthly)",
     "openings": "Number of openings",
     "filled": "Positions filled",
     "posted": "Posted"
@@ -62,6 +70,7 @@
   },
   "card": {
     "salary": "Salary",
-    "perMonth": "/month"
+    "perMonth": "/month",
+    "matchedSkills": "Matches your skills:"
   }
 }

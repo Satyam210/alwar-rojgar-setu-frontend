@@ -5,7 +5,7 @@ import { usePageTitle } from '@/hooks/usePageTitle';
 import { useUpdateApplicationStatus } from '@/features/applications/queries';
 import { useJob, useJobApplicants } from '@/features/jobs/queries';
 import { paths } from '@/routes/paths';
-import { formatSalaryRange, formatDate, formatExperience } from '@/lib/format';
+import { formatDate, formatExperience } from '@/lib/format';
 import type { Application } from '@/api/types';
 import type { UpdateApplicationStatusPayload } from '@/api/applications';
 import { apiErrorMessage } from '@/lib/errors';
@@ -104,21 +104,27 @@ export function EmployerApplicantsPage() {
                         <p className="text-sm text-content-muted">
                           {t('candidate:fields.workExperienceMonths')}:{' '}
                           {formatExperience(c?.workExperienceMonths)}
-                          {c?.expectedSalaryMin || c?.expectedSalaryMax
-                            ? ` · ${t('candidate:fields.expectedSalary')}: ${formatSalaryRange(c.expectedSalaryMin, c.expectedSalaryMax)}`
-                            : ''}
                         </p>
                       </div>
                       <ApplicationStatusBadge status={app.status} />
                     </div>
 
-                    {/* Contact details — candidate adds email; employer contacts directly (HLD #5). */}
-                    {(app.status === 'shortlisted' || app.status === 'hired') && c?.email && (
-                      <p className="text-sm">
-                        {t('applications:employer.contact')}:{' '}
-                        <a href={`mailto:${c.email}`}>{c.email}</a>
+                    {/* Contact + about — phone and description are always visible to the employer. */}
+                    <div className="flex flex-col gap-1 text-sm">
+                      <p>
+                        {t('candidate:fields.phone')}:{' '}
+                        {c?.phone ? <a href={`tel:${c.phone}`}>{c.phone}</a> : '—'}
                       </p>
-                    )}
+                      {(app.status === 'shortlisted' || app.status === 'hired') && c?.email && (
+                        <p>
+                          {t('applications:employer.contact')}:{' '}
+                          <a href={`mailto:${c.email}`}>{c.email}</a>
+                        </p>
+                      )}
+                      {c?.description && (
+                        <p className="whitespace-pre-line text-content-muted">{c.description}</p>
+                      )}
+                    </div>
 
                     {/* Hire attribution — proof the placement happened via the platform. */}
                     {app.status === 'hired' && app.attributedToPlatform && (

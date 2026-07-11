@@ -2,13 +2,19 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { useAdminCandidates } from './queries';
+import { getAdminCandidates } from '@/api/admin';
 import { ITI_DEPARTMENTS, PAGE_SIZE } from '@/lib/constants';
-import { formatSalaryRange, formatExperience } from '@/lib/format';
+import { formatExperience, formatDate } from '@/lib/format';
+import { downloadCsv, stampedFilename, type CsvColumn } from '@/lib/export';
+import { apiErrorMessage } from '@/lib/errors';
+import type { CandidateProfile } from '@/api/types';
 import { Card, CardBody } from '@/components/ui/Card';
 import { Field } from '@/components/ui/Field';
 import { Input, NativeSelect } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
 import { Pagination } from '@/components/ui/Pagination';
 import { EmptyState, ErrorState, LoadingState } from '@/components/common/States';
+import { toast } from '@/components/ui/toast';
 
 export function AdminCandidatesPage() {
   const { t } = useTranslation(['admin', 'candidate']);
@@ -17,6 +23,7 @@ export function AdminCandidatesPage() {
   const [search, setSearch] = useState('');
   const [department, setDepartment] = useState('');
   const [page, setPage] = useState(1);
+  const [exporting, setExporting] = useState(false);
   const { data, isLoading, isError, refetch } = useAdminCandidates({
     search: search || undefined,
     department: department || undefined,
@@ -24,9 +31,52 @@ export function AdminCandidatesPage() {
     limit: PAGE_SIZE,
   });
 
+  async function handleExport() {
+    setExporting(true);
+    try {
+      // Export the full filtered set, not just the current page.
+      const all = await getAdminCandidates({
+        search: search || undefined,
+        department: department || undefined,
+        page: 1,
+        limit: 1000,
+      });
+      const columns: CsvColumn<CandidateProfile>[] = [
+        { header: 'Full Name', value: (c) => c.fullName },
+        { header: 'Phone', value: (c) => c.phone },
+        { header: 'Email', value: (c) => c.email },
+        { header: 'ITI Trade', value: (c) => c.itiTrade },
+        { header: 'Highest Education', value: (c) => c.highestEducation },
+        { header: 'Department', value: (c) => c.department },
+        { header: 'ITI College', value: (c) => c.itiCollege },
+        { header: 'District', value: (c) => c.district },
+        { header: 'City', value: (c) => c.city },
+        { header: 'Experience (months)', value: (c) => c.workExperienceMonths },
+        { header: 'About', value: (c) => c.description },
+        { header: 'Skills', value: (c) => c.skills?.join('; ') },
+        { header: 'Registered On', value: (c) => formatDate(c.createdAt) },
+      ];
+      downloadCsv(stampedFilename('candidates'), all.data, columns);
+    } catch (err) {
+      toast.error(apiErrorMessage(err));
+    } finally {
+      setExporting(false);
+    }
+  }
+
   return (
     <div className="flex flex-col gap-6">
-      <h1>{t('admin:candidates.title')}</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1>{t('admin:candidates.title')}</h1>
+        <Button
+          variant="secondary"
+          onClick={handleExport}
+          loading={exporting}
+          disabled={!data || data.total === 0}
+        >
+          {t('admin:candidates.download')}
+        </Button>
+      </div>
 
       <div className="flex flex-wrap items-end gap-4">
         <div className="w-64">
@@ -84,15 +134,12 @@ export function AdminCandidatesPage() {
                     <p className="text-sm text-content-muted">
                       {t('candidate:fields.workExperienceMonths')}:{' '}
                       {formatExperience(c.workExperienceMonths)}
-                      {c.expectedSalaryMin || c.expectedSalaryMax
-                        ? ` · ${t('candidate:fields.expectedSalary')}: ${formatSalaryRange(c.expectedSalaryMin, c.expectedSalaryMax)}`
-                        : ''}
                     </p>
-                    {c.email && (
-                      <p className="text-sm">
-                        <a href={`mailto:${c.email}`}>{c.email}</a>
-                      </p>
-                    )}
+                    <p className="text-sm">
+                      {c.phone && <a href={`tel:${c.phone}`}>{c.phone}</a>}
+                      {c.phone && c.email ? ' · ' : ''}
+                      {c.email && <a href={`mailto:${c.email}`}>{c.email}</a>}
+                    </p>
                   </CardBody>
                 </Card>
               </li>

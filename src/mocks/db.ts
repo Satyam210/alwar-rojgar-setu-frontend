@@ -37,7 +37,7 @@ export interface MockDb {
   pendingRole: Record<string, Role>;
 }
 
-const STORAGE_KEY = 'ars_mock_db_v7';
+const STORAGE_KEY = 'ars_mock_db_v9';
 
 let db: MockDb | null = null;
 

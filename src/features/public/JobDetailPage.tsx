@@ -5,7 +5,7 @@ import { useJob } from '@/features/jobs/queries';
 import { useApplyToJob } from '@/features/applications/queries';
 import { useAuthStore, isProfileComplete } from '@/stores/authStore';
 import { paths } from '@/routes/paths';
-import { formatSalaryRange, formatRelative } from '@/lib/format';
+import { formatCurrency, formatRelative } from '@/lib/format';
 import { apiErrorMessage } from '@/lib/errors';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -83,7 +83,7 @@ export function JobDetailPage() {
             <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               <Detail
                 label={t('jobs:fields.salary')}
-                value={formatSalaryRange(job.salaryMin, job.salaryMax)}
+                value={formatCurrency(job.grossSalary)}
               />
               <Detail label={t('jobs:fields.district')} value={job.district} />
               {job.tradeRequired && (
@@ -112,7 +112,7 @@ export function JobDetailPage() {
           <CardBody className="flex flex-col gap-3">
             <h2 className="text-lg">{t('jobs:detail.applyTitle')}</h2>
             <p className="text-2xl font-bold text-brand-800">
-              {formatSalaryRange(job.salaryMin, job.salaryMax)}
+              {formatCurrency(job.grossSalary)}
               <span className="text-base font-normal text-content-muted">
                 {t('jobs:card.perMonth')}
               </span>

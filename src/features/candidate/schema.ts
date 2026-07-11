@@ -11,10 +11,20 @@ const optionalString = z
 
 export const candidateProfileSchema = z.object({
   fullName: z.string().trim().min(2, vmsg('required')),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^[6-9]\d{9}$/, vmsg('phoneInvalid')),
   email: z
     .string()
     .trim()
     .email(vmsg('emailInvalid'))
+    .optional()
+    .or(z.literal('')),
+  description: z
+    .string()
+    .trim()
+    .refine((v) => v.split(/\s+/).filter(Boolean).length <= 100, vmsg('maxWords', { count: 100 }))
     .optional()
     .or(z.literal('')),
   highestEducation: optionalString,
@@ -35,18 +45,6 @@ export const candidateProfileSchema = z.object({
     .max(600)
     .optional()
     .or(z.literal('').transform(() => undefined)),
-  expectedSalaryMin: z.coerce
-    .number()
-    .int()
-    .min(0, vmsg('numberInvalid'))
-    .optional()
-    .or(z.literal('').transform(() => undefined)),
-  expectedSalaryMax: z.coerce
-    .number()
-    .int()
-    .min(0, vmsg('numberInvalid'))
-    .optional()
-    .or(z.literal('').transform(() => undefined)),
   skills: z.array(z.string().trim().min(1)).optional(),
   city: optionalString,
   district: optionalString,
@@ -56,12 +54,6 @@ export const candidateProfileSchema = z.object({
     .regex(/^\d{6}$/, vmsg('pincodeInvalid'))
     .optional()
     .or(z.literal('')),
-}).refine(
-  (v) =>
-    v.expectedSalaryMin === undefined ||
-    v.expectedSalaryMax === undefined ||
-    Number(v.expectedSalaryMax) >= Number(v.expectedSalaryMin),
-  { message: vmsg('salaryMaxLessThanMin'), path: ['expectedSalaryMax'] },
-);
+});
 
 export type CandidateProfileForm = z.input<typeof candidateProfileSchema>;

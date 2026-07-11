@@ -34,6 +34,11 @@
     "gstNumber": "जीएसटी नंबर",
     "udyamNumber": "उद्यम रजिस्ट्रेशन नंबर",
     "contactPerson": "संपर्क व्यक्ति",
+    "contactPersonSection": "संपर्क व्यक्ति",
+    "contactPersonName": "संपर्क व्यक्ति का नाम",
+    "contactPersonPhone": "संपर्क व्यक्ति का फ़ोन",
+    "contactPersonEmail": "संपर्क व्यक्ति का ईमेल",
+    "contactPersonDesignation": "पदनाम",
     "status": "सत्यापन स्थिति"
   },
   "documents": {

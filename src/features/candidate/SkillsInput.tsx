@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SKILL_SUGGESTIONS } from '@/lib/constants';
 
 interface SkillsInputProps {
   value: string[];
@@ -33,9 +34,16 @@ export function SkillsInput({ value, onChange }: SkillsInputProps) {
               add();
             }
           }}
+          list="skill-suggestions"
+          autoComplete="off"
           className="w-full rounded border border-border bg-surface px-3 py-2.5 focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-600"
           aria-label={t('actions.add', { defaultValue: 'Add' })}
         />
+        <datalist id="skill-suggestions">
+          {SKILL_SUGGESTIONS.map((skill) => (
+            <option key={skill} value={skill} />
+          ))}
+        </datalist>
         <button
           type="button"
           onClick={add}

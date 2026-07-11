@@ -10,11 +10,15 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardBody } from '@/components/ui/Card';
 import { FeaturedCompanies } from './FeaturedCompanies';
 
+/** Trades shown before the "Show more" toggle expands the full list. */
+const TRADES_PREVIEW_COUNT = 12;
+
 export function HomePage() {
   const { t } = useTranslation(['common', 'jobs']);
   usePageTitle('');
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
+  const [showAllTrades, setShowAllTrades] = useState(false);
 
   // Light-touch live stats (HLD §4 homepage: search bar + live stats).
   const { data: stats } = usePublicStats();
@@ -24,7 +28,13 @@ export function HomePage() {
   function onSearch(e: React.FormEvent) {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (query.trim()) params.set('tradeRequired', query.trim());
+    // Free-text keyword search — matches title, skill, company or description
+    // (works for anon and logged-in users alike). Also widen to any location so
+    // a keyword search isn't silently constrained to the default (Alwar).
+    if (query.trim()) {
+      params.set('q', query.trim());
+      params.set('district', 'all');
+    }
     navigate(`${paths.jobs}?${params.toString()}`);
   }
 
@@ -36,7 +46,7 @@ export function HomePage() {
         {/* Background photo */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-[center_28%]"
           style={{ backgroundImage: `url('${import.meta.env.BASE_URL}hero-bg.png')` }}
         />
         {/* Readability overlays — softer so the photo stays visible, strongest on the left where the text sits. */}
@@ -50,12 +60,7 @@ export function HomePage() {
         />
 
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-medium text-brand-50 backdrop-blur">
-            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-brand-200" />
-            {t('common:home.hero.eyebrow')}
-          </span>
-
-          <h1 className="mt-5 max-w-3xl text-3xl font-bold leading-tight text-white sm:text-5xl">
+          <h1 className="max-w-3xl text-3xl font-bold leading-tight text-white sm:text-5xl">
             {t('common:app.tagline')}
           </h1>
           <p className="mt-4 max-w-2xl text-base text-brand-100 sm:text-lg">
@@ -137,7 +142,7 @@ export function HomePage() {
           {t('jobs:filters.trade')}
         </h2>
         <div className="flex flex-wrap gap-2.5">
-          {ITI_TRADES.map((trade) => (
+          {(showAllTrades ? ITI_TRADES : ITI_TRADES.slice(0, TRADES_PREVIEW_COUNT)).map((trade) => (
             <Link
               key={trade}
               to={`${paths.jobs}?tradeRequired=${encodeURIComponent(trade)}`}
@@ -150,6 +155,20 @@ export function HomePage() {
               {trade}
             </Link>
           ))}
+
+          {ITI_TRADES.length > TRADES_PREVIEW_COUNT && (
+            <button
+              type="button"
+              onClick={() => setShowAllTrades((v) => !v)}
+              aria-expanded={showAllTrades}
+              className="inline-flex items-center gap-1.5 rounded-full bg-brand-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-800 focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+            >
+              {showAllTrades ? t('common:actions.showLess') : t('common:actions.showMore')}
+              <span aria-hidden="true" className={showAllTrades ? 'rotate-180 transition-transform' : 'transition-transform'}>
+                ⌄
+              </span>
+            </button>
+          )}
         </div>
       </section>
     </div>

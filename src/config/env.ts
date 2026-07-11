@@ -54,4 +54,20 @@ export const env = {
     email: import.meta.env.VITE_GRIEVANCE_OFFICER_EMAIL ?? '',
     phone: import.meta.env.VITE_GRIEVANCE_OFFICER_PHONE ?? '',
   },
+  /**
+   * Official Alwar District Administration social handles shown in the footer.
+   * Defaults to the verified handles where known; the rest can be filled in via
+   * env vars. Icons only render when a URL is present.
+   */
+  social: {
+    facebook: import.meta.env.VITE_SOCIAL_FACEBOOK ?? 'https://www.facebook.com/DmAlwar/',
+    instagram: import.meta.env.VITE_SOCIAL_INSTAGRAM ?? 'https://www.instagram.com/alwardistrict/',
+    twitter: import.meta.env.VITE_SOCIAL_TWITTER ?? 'https://x.com/DMDCAlwar/',
+    youtube: import.meta.env.VITE_SOCIAL_YOUTUBE ?? 'https://www.youtube.com/@alwardistrict1911/',
+  },
+  /**
+   * "Content last updated" date shown in the footer (GIGW compliance). Set via
+   * VITE_LAST_UPDATED (e.g. "11 July 2026"); the line is hidden when unset.
+   */
+  lastUpdated: import.meta.env.VITE_LAST_UPDATED ?? '',
 } as const;

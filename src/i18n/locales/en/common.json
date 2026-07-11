@@ -50,7 +50,9 @@
     "remove": "Remove",
     "confirm": "Confirm",
     "close": "Close",
-    "continue": "Continue"
+    "continue": "Continue",
+    "showMore": "Show more",
+    "showLess": "Show less"
   },
   "states": {
     "loading": "Loading…",
@@ -134,7 +136,16 @@
   },
   "footer": {
     "about": "About",
-    "aboutText": "A District Administration, Alwar initiative to connect local youth with local employers, all year round.",
+    "aboutText": "Alwar District Administration's initiative to connect local youth with local employers, all year round.",
+    "usefulLinks": "Useful Links",
+    "links": {
+      "collectorate": "Collectorate, Alwar",
+      "tourism": "Alwar Tourism",
+      "zilaPortal": "Zila Alwar Portal",
+      "atulyaAlwar": "Atulya Alwar",
+      "awms": "AWMS Portal (Potable Water Grievance)"
+    },
+    "followUs": "Follow us",
     "quickLinks": "Quick Links",
     "legal": "Legal & Policies",
     "accessibility": "Accessibility Statement",

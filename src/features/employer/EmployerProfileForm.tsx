@@ -38,6 +38,10 @@ export function EmployerProfileFormFields({
     defaultValues: {
       companyName: initial?.companyName ?? '',
       description: initial?.description ?? '',
+      contactPersonName: initial?.contactPersonName ?? '',
+      contactPersonPhone: initial?.contactPersonPhone ?? '',
+      contactPersonEmail: initial?.contactPersonEmail ?? '',
+      contactPersonDesignation: initial?.contactPersonDesignation ?? '',
       gstNumber: initial?.gstNumber ?? '',
       udyamNumber: initial?.udyamNumber ?? '',
     },
@@ -64,6 +68,10 @@ export function EmployerProfileFormFields({
       {
         companyName: parsed.companyName,
         description: parsed.description || undefined,
+        contactPersonName: parsed.contactPersonName,
+        contactPersonPhone: parsed.contactPersonPhone,
+        contactPersonEmail: parsed.contactPersonEmail || undefined,
+        contactPersonDesignation: parsed.contactPersonDesignation || undefined,
         gstNumber: parsed.gstNumber || undefined,
         udyamNumber: parsed.udyamNumber || undefined,
       },
@@ -136,6 +144,41 @@ export function EmployerProfileFormFields({
           {...register('description')}
         />
       </Field>
+
+      <fieldset className="flex flex-col gap-4">
+        <legend className="mb-1 text-base font-semibold">
+          {t('fields.contactPersonSection', { defaultValue: 'Contact person' })}
+        </legend>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field
+            label={t('fields.contactPersonName')}
+            error={translateError(t, errors.contactPersonName?.message)}
+            required
+          >
+            <Input autoComplete="name" {...register('contactPersonName')} />
+          </Field>
+          <Field
+            label={t('fields.contactPersonDesignation')}
+            error={translateError(t, errors.contactPersonDesignation?.message)}
+          >
+            <Input {...register('contactPersonDesignation')} />
+          </Field>
+          <Field
+            label={t('fields.contactPersonPhone')}
+            error={translateError(t, errors.contactPersonPhone?.message)}
+            required
+          >
+            <Input type="tel" inputMode="numeric" maxLength={10} autoComplete="tel" {...register('contactPersonPhone')} />
+          </Field>
+          <Field
+            label={t('fields.contactPersonEmail')}
+            error={translateError(t, errors.contactPersonEmail?.message)}
+          >
+            <Input type="email" autoComplete="email" {...register('contactPersonEmail')} />
+          </Field>
+        </div>
+      </fieldset>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={t('fields.gstNumber')} error={translateError(t, errors.gstNumber?.message)}>
           <Input {...register('gstNumber')} />

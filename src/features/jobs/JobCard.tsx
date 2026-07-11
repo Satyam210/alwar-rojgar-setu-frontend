@@ -2,9 +2,8 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { Job } from '@/api/types';
 import { paths } from '@/routes/paths';
-import { formatSalaryRange, formatRelative } from '@/lib/format';
+import { formatCurrency, formatRelative } from '@/lib/format';
 import { Card, CardBody } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
 
 /** Job card — schema fields only (HLD decision #7: no trust badges / distance). */
 export function JobCard({ job }: { job: Job }) {
@@ -22,14 +21,31 @@ export function JobCard({ job }: { job: Job }) {
             </h3>
             {job.companyName && <p className="text-content-muted">{job.companyName}</p>}
           </div>
-          <Badge tone="info">{t(`type.${job.jobType}`)}</Badge>
         </div>
+
+        {job.matchedSkills && job.matchedSkills.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-medium text-content-muted">
+              {t('card.matchedSkills')}
+            </span>
+            <ul className="flex flex-wrap gap-1.5">
+              {job.matchedSkills.map((skill) => (
+                <li
+                  key={skill}
+                  className="inline-flex items-center rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-800"
+                >
+                  {skill}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <dl className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
           <div>
             <dt className="text-content-muted">{t('card.salary')}</dt>
             <dd className="font-semibold">
-              {formatSalaryRange(job.salaryMin, job.salaryMax)}
+              {formatCurrency(job.grossSalary)}
               <span className="font-normal text-content-muted">{t('card.perMonth')}</span>
             </dd>
           </div>

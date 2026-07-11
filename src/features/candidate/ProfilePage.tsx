@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { useCandidateProfile, useUpdateCandidateProfile } from './queries';
 import { CandidateProfileFormFields } from './CandidateProfileForm';
-import { formatSalaryRange, formatExperience } from '@/lib/format';
+import { formatExperience } from '@/lib/format';
 import { apiErrorMessage } from '@/lib/errors';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -54,6 +54,7 @@ export function CandidateProfilePage() {
           ) : (
             <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               <Item label={t('fields.fullName')} value={profile.fullName} />
+              <Item label={t('fields.phone')} value={profile.phone} />
               <Item label={t('fields.email')} value={profile.email} />
               <Item label={t('fields.highestEducation')} value={profile.highestEducation} />
               <Item label={t('fields.itiTrade')} value={profile.itiTrade} />
@@ -63,13 +64,15 @@ export function CandidateProfilePage() {
                 label={t('fields.workExperienceMonths')}
                 value={formatExperience(profile.workExperienceMonths)}
               />
-              <Item
-                label={t('fields.expectedSalary')}
-                value={formatSalaryRange(profile.expectedSalaryMin, profile.expectedSalaryMax)}
-              />
               <Item label={t('fields.city')} value={profile.city} />
               <Item label={t('fields.district')} value={profile.district} />
               <Item label={t('fields.pincode')} value={profile.pincode} />
+              {profile.description && (
+                <div className="col-span-full">
+                  <dt className="text-sm text-content-muted">{t('fields.description')}</dt>
+                  <dd className="mt-1 whitespace-pre-line font-medium">{profile.description}</dd>
+                </div>
+              )}
               {profile.skills && profile.skills.length > 0 && (
                 <div className="col-span-full">
                   <dt className="text-sm text-content-muted">{t('fields.skills')}</dt>
@@ -92,9 +95,9 @@ export function CandidateProfilePage() {
 
 function Item({ label, value }: { label: string; value?: string | null }) {
   return (
-    <div>
+    <div className="min-w-0">
       <dt className="text-sm text-content-muted">{label}</dt>
-      <dd className="font-medium">{value || '—'}</dd>
+      <dd className="break-words font-medium">{value || '—'}</dd>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import {
   getJob,
   getJobApplicants,
   getOwnedJobs,
+  getRecommendedJobs,
   reopenJob,
   searchJobs,
   updateJob,
@@ -16,6 +17,7 @@ export const jobKeys = {
   search: (params: JobSearchParams) => ['jobs', 'search', params] as const,
   detail: (id: string) => ['jobs', 'detail', id] as const,
   owned: () => ['jobs', 'owned'] as const,
+  recommended: (limit: number) => ['jobs', 'recommended', limit] as const,
   applicants: (id: string) => ['jobs', id, 'applicants'] as const,
 };
 
@@ -37,6 +39,15 @@ export function useJob(jobId: string | undefined) {
 
 export function useOwnedJobs() {
   return useQuery({ queryKey: jobKeys.owned(), queryFn: () => getOwnedJobs() });
+}
+
+export function useRecommendedJobs(enabled: boolean, limit = 6) {
+  return useQuery({
+    queryKey: jobKeys.recommended(limit),
+    queryFn: () => getRecommendedJobs(limit),
+    enabled,
+    staleTime: 60_000,
+  });
 }
 
 export function useJobApplicants(jobId: string | undefined) {

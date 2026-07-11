@@ -24,6 +24,11 @@ const STATUS_TONE: Record<AdminStatus, 'warning' | 'success' | 'danger'> = {
   rejected: 'danger',
 };
 
+/** Legacy/seeded admins may have a null admin_status; treat them as approved. */
+function normalizeStatus(status: AdminStatus | null): AdminStatus {
+  return status ?? 'approved';
+}
+
 export function AdminUsersPage() {
   const { t } = useTranslation(['admin', 'common']);
   usePageTitle(t('admin:users.title'));
@@ -105,15 +110,17 @@ export function AdminUsersPage() {
       {data && rows.length > 0 && (
         <>
           <ul className="flex flex-col gap-3">
-            {rows.map((row) => (
+            {rows.map((row) => {
+              const st = normalizeStatus(row.adminStatus);
+              return (
               <li key={row.userId}>
                 <Card>
                   <CardBody className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex flex-col gap-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h2 className="text-base font-semibold">{row.name}</h2>
-                        <Badge tone={STATUS_TONE[row.adminStatus]}>
-                          {t(`admin:users.status.${row.adminStatus}`)}
+                        <h2 className="text-base font-semibold">{row.name || row.phone}</h2>
+                        <Badge tone={STATUS_TONE[st]}>
+                          {t(`admin:users.status.${st}`)}
                         </Badge>
                       </div>
                       <p className="text-sm text-content-muted">
@@ -125,7 +132,7 @@ export function AdminUsersPage() {
                         </p>
                       )}
                     </div>
-                    {row.adminStatus === 'pending' && (
+                    {st === 'pending' && (
                       <div className="flex gap-2">
                         <Button size="sm" onClick={() => handleReview(row, true)}>
                           {t('admin:users.approve')}
@@ -138,7 +145,8 @@ export function AdminUsersPage() {
                   </CardBody>
                 </Card>
               </li>
-            ))}
+              );
+            })}
           </ul>
           <Pagination
             page={data.page}

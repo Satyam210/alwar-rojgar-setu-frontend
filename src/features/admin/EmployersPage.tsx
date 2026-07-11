@@ -4,6 +4,7 @@ import { usePageTitle } from '@/hooks/usePageTitle';
 import { useAdminEmployers, useToggleUser, useVerifyEmployer } from './queries';
 import { PAGE_SIZE } from '@/lib/constants';
 import { formatDate } from '@/lib/format';
+import { downloadCsv, stampedFilename, type CsvColumn } from '@/lib/export';
 import type { EmployerProfile, EmployerStatus } from '@/api/types';
 import { apiErrorMessage } from '@/lib/errors';
 import { Card, CardBody } from '@/components/ui/Card';
@@ -54,6 +55,24 @@ export function AdminEmployersPage() {
 
   function resetPage() {
     setPage(1);
+  }
+
+  function handleExport() {
+    const columns: CsvColumn<EmployerProfile>[] = [
+      { header: 'Company Name', value: (e) => e.companyName },
+      { header: 'Contact Person', value: (e) => e.contactPersonName },
+      { header: 'Contact Phone', value: (e) => e.contactPersonPhone },
+      { header: 'Contact Email', value: (e) => e.contactPersonEmail },
+      { header: 'Designation', value: (e) => e.contactPersonDesignation },
+      { header: 'Status', value: (e) => e.status },
+      { header: 'Active', value: (e) => (e.isActive === false ? 'No' : 'Yes') },
+      { header: 'GST Number', value: (e) => e.gstNumber },
+      { header: 'Udyam Number', value: (e) => e.udyamNumber },
+      { header: 'Description', value: (e) => e.description },
+      { header: 'Rejection Reason', value: (e) => e.rejectionReason },
+      { header: 'Registered On', value: (e) => formatDate(e.createdAt) },
+    ];
+    downloadCsv(stampedFilename('employers'), filtered, columns);
   }
 
   async function approve(emp: EmployerProfile) {
@@ -108,7 +127,12 @@ export function AdminEmployersPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1>{t('admin:employers.title')}</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1>{t('admin:employers.title')}</h1>
+        <Button variant="secondary" onClick={handleExport} disabled={filtered.length === 0}>
+          {t('admin:employers.download')}
+        </Button>
+      </div>
 
       <div className="flex flex-wrap items-end gap-3">
         <div className="w-64">
@@ -186,6 +210,16 @@ export function AdminEmployersPage() {
                               </span>
                             )}
                           </p>
+                          {emp.contactPersonName && (
+                            <p className="text-sm text-content">
+                              {t('employer:fields.contactPerson')}: {emp.contactPersonName}
+                              {emp.contactPersonDesignation ? ` (${emp.contactPersonDesignation})` : ''}
+                              {emp.contactPersonPhone ? ' · ' : ''}
+                              {emp.contactPersonPhone && (
+                                <a href={`tel:${emp.contactPersonPhone}`}>{emp.contactPersonPhone}</a>
+                              )}
+                            </p>
+                          )}
                           <p className="text-sm text-content-muted">
                             {[emp.gstNumber, emp.udyamNumber].filter(Boolean).join(' · ') || '—'}
                           </p>

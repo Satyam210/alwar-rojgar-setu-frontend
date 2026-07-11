@@ -35,6 +35,10 @@ export interface CandidateProfile {
   fullName: string;
   /** Candidate-supplied contact (HLD decision #5 / backend CR #1). */
   email?: string | null;
+  /** Contact phone the employer can reach the candidate on. */
+  phone?: string | null;
+  /** Short self-description / bio (≤100 words) shown to employers. */
+  description?: string | null;
   highestEducation?: string | null;
   itiTrade?: string | null;
   /** Which ITI the candidate studied at (department reporting / grouping). */
@@ -43,9 +47,6 @@ export interface CandidateProfile {
   department?: string | null;
   graduationYear?: number | null;
   workExperienceMonths?: number | null;
-  /** Expected monthly salary range (min–max). */
-  expectedSalaryMin?: number | null;
-  expectedSalaryMax?: number | null;
   skills?: string[];
   city?: string | null;
   district?: string | null;
@@ -91,8 +92,11 @@ export interface EmployerProfile {
   logoUrl?: string | null;
   /** Distinguishes the company owner from a delegated HR Head account. */
   employerRole?: EmployerRole;
-  /** Display name of the person operating the account (e.g. the HR Head). */
+  /** Contact person the admin/candidates can reach the company through. */
   contactPersonName?: string | null;
+  contactPersonPhone?: string | null;
+  contactPersonEmail?: string | null;
+  contactPersonDesignation?: string | null;
   gstNumber?: string | null;
   udyamNumber?: string | null;
   status: EmployerStatus;
@@ -107,7 +111,15 @@ export interface EmployerProfile {
 
 export type EmployerProfileInput = Pick<
   EmployerProfile,
-  'companyName' | 'gstNumber' | 'udyamNumber' | 'description' | 'logoUrl'
+  | 'companyName'
+  | 'gstNumber'
+  | 'udyamNumber'
+  | 'description'
+  | 'logoUrl'
+  | 'contactPersonName'
+  | 'contactPersonPhone'
+  | 'contactPersonEmail'
+  | 'contactPersonDesignation'
 >;
 
 export type EmployerDocumentType =
@@ -141,9 +153,10 @@ export interface Job {
   employerId: UUID;
   title: string;
   description: string;
-  /** Monthly salary range (min–max), replacing the old gross/net split. */
-  salaryMin: number;
-  salaryMax: number;
+  /** Monthly gross salary. */
+  grossSalary: number;
+  /** Deprecated: net/take-home salary is no longer collected; kept optional for legacy rows. */
+  netSalary?: number | null;
   jobType: JobType;
   openings: number;
   filledCount: number;
@@ -157,13 +170,16 @@ export interface Job {
   companyName?: string;
   companyLogoUrl?: string | null;
   companyDescription?: string | null;
+  /** Set by GET /jobs/recommended — relative skill-overlap score (higher = better). */
+  matchScore?: number;
+  /** Set by GET /jobs/recommended — candidate skills/trade that matched this job. */
+  matchedSkills?: string[];
 }
 
 export interface JobInput {
   title: string;
   description: string;
-  salaryMin: number;
-  salaryMax: number;
+  grossSalary: number;
   jobType: JobType;
   openings: number;
   tradeRequired?: string;
@@ -171,6 +187,8 @@ export interface JobInput {
 }
 
 export interface JobSearchParams {
+  /** Free-text keyword — matches job title, skill/trade, company or description. */
+  q?: string;
   district?: string;
   tradeRequired?: string;
   jobType?: JobType;
@@ -217,9 +235,10 @@ export type AdminStatus = 'pending' | 'approved' | 'rejected';
  */
 export interface AdminUser {
   userId: UUID;
-  name: string;
+  name: string | null;
   phone: string;
-  adminStatus: AdminStatus;
+  /** May be null for legacy/seeded admins created before the status column existed. */
+  adminStatus: AdminStatus | null;
   isActive?: boolean;
   createdAt?: ISODateString;
 }

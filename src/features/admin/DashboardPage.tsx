@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import {
   Bar,
   BarChart,
@@ -13,6 +14,7 @@ import {
 } from 'recharts';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { useAdminDashboard } from './queries';
+import { paths } from '@/routes/paths';
 import { formatNumber } from '@/lib/format';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
 import { ErrorState, LoadingState } from '@/components/common/States';
@@ -25,13 +27,11 @@ export function AdminDashboardPage() {
   if (isLoading) return <LoadingState />;
   if (isError || !data) return <ErrorState onRetry={refetch} />;
 
-  const metrics = [
-    { label: t('dashboard.metrics.candidates'), value: data.totalCandidates },
-    { label: t('dashboard.metrics.employers'), value: data.totalEmployers },
+  const metrics: { label: string; value: number; to?: string }[] = [
+    { label: t('dashboard.metrics.candidates'), value: data.totalCandidates, to: paths.admin.candidates },
+    { label: t('dashboard.metrics.employers'), value: data.totalEmployers, to: paths.admin.employers },
     { label: t('dashboard.metrics.pendingEmployers'), value: data.pendingEmployers },
-    { label: t('dashboard.metrics.activeJobs'), value: data.activeJobs },
-    { label: t('dashboard.metrics.applications'), value: data.totalApplications },
-    { label: t('dashboard.metrics.placements'), value: data.totalPlacements ?? data.successfulHires ?? 0 },
+    { label: t('dashboard.metrics.activeJobs'), value: data.activeJobs, to: paths.jobs },
     { label: t('dashboard.metrics.verifiedPlacements'), value: data.verifiedPlacements ?? 0 },
   ];
 
@@ -43,14 +43,27 @@ export function AdminDashboardPage() {
       </div>
 
       <section aria-label={t('dashboard.title')} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {metrics.map((m) => (
-          <Card key={m.label}>
-            <CardBody>
-              <p className="text-3xl font-bold text-brand-800">{formatNumber(m.value)}</p>
-              <p className="text-content-muted">{m.label}</p>
-            </CardBody>
-          </Card>
-        ))}
+        {metrics.map((m) => {
+          const card = (
+            <Card className={m.to ? 'h-full transition-shadow hover:shadow-md' : 'h-full'}>
+              <CardBody>
+                <p className="text-3xl font-bold text-brand-800">{formatNumber(m.value)}</p>
+                <p className="text-content-muted">{m.label}</p>
+              </CardBody>
+            </Card>
+          );
+          return m.to ? (
+            <Link
+              key={m.label}
+              to={m.to}
+              className="block rounded-lg no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+            >
+              {card}
+            </Link>
+          ) : (
+            <div key={m.label}>{card}</div>
+          );
+        })}
       </section>
 
       <div className="grid gap-6 lg:grid-cols-2">

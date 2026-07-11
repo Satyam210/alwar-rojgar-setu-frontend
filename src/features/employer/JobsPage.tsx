@@ -8,7 +8,7 @@ import { useEmployerProfile } from './queries';
 import { JobFormModal } from './JobFormModal';
 import { getJob } from '@/api/jobs';
 import { paths } from '@/routes/paths';
-import { formatSalaryRange, formatRelative } from '@/lib/format';
+import { formatCurrency, formatRelative } from '@/lib/format';
 import type { Job, JobInput } from '@/api/types';
 import { apiErrorMessage } from '@/lib/errors';
 import { Card, CardBody } from '@/components/ui/Card';
@@ -118,7 +118,7 @@ export function EmployerJobsPage() {
                       <JobStatusBadge status={job.status} />
                     </div>
                     <p className="text-sm text-content-muted">
-                      {formatSalaryRange(job.salaryMin, job.salaryMax)} · {job.district} ·{' '}
+                      {formatCurrency(job.grossSalary)} · {job.district} ·{' '}
                       {t('jobs:fields.posted')} {formatRelative(job.postedAt)}
                     </p>
                   </div>

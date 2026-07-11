@@ -112,7 +112,10 @@ export function EmployerProfilePage() {
           ) : (
             <dl className="grid grid-cols-2 gap-4">
               <Item label={t('fields.companyName')} value={profile.companyName} />
-              <Item label={t('fields.contactPerson')} value={profile.contactPersonName} />
+              <Item label={t('fields.contactPersonName')} value={profile.contactPersonName} />
+              <Item label={t('fields.contactPersonDesignation')} value={profile.contactPersonDesignation} />
+              <Item label={t('fields.contactPersonPhone')} value={profile.contactPersonPhone} />
+              <Item label={t('fields.contactPersonEmail')} value={profile.contactPersonEmail} />
               <Item label={t('fields.gstNumber')} value={profile.gstNumber} />
               <Item label={t('fields.udyamNumber')} value={profile.udyamNumber} />
               <div className="col-span-2">
@@ -133,9 +136,9 @@ export function EmployerProfilePage() {
 
 function Item({ label, value }: { label: string; value?: string | null }) {
   return (
-    <div>
+    <div className="min-w-0">
       <dt className="text-sm text-content-muted">{label}</dt>
-      <dd className="font-medium">{value || '—'}</dd>
+      <dd className="break-words font-medium">{value || '—'}</dd>
     </div>
   );
 }

@@ -47,7 +47,7 @@ export function Header() {
     <>
       {/* Top utility strip: accessibility + helpline + language together (gov-portal style). */}
       <div className="relative z-10 border-b border-accent-100 bg-accent-50 [&_a:hover]:underline [&_a]:text-brand-700">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-end gap-3 px-4 py-1">
+        <div className="flex w-full flex-wrap items-center justify-end gap-3 px-4 py-1 sm:px-6">
           <AccessibilityToolbar />
           <LanguageToggle />
           <PageTranslateWidget />
@@ -80,28 +80,27 @@ export function Header() {
           </span>
         </Link>
 
-        {/* Desktop nav (centered) */}
-        <nav
-          className="hidden flex-1 items-center justify-center gap-1 md:flex"
-          aria-label={t('nav.menu')}
-        >
-          {navItems.map((item) => {
-            const active = isNavItemActive(item, pathname);
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end
-                aria-current={active ? 'page' : undefined}
-                className={navLinkClass(active)}
-              >
-                {item.label}
-              </NavLink>
-            );
-          })}
-        </nav>
+        {/* Desktop nav + primary action grouped as one right-aligned cluster. */}
+        <div className="ml-auto hidden items-center gap-4 md:flex">
+          <nav className="flex items-center gap-1" aria-label={t('nav.menu')}>
+            {navItems.map((item) => {
+              const active = isNavItemActive(item, pathname);
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end
+                  aria-current={active ? 'page' : undefined}
+                  className={navLinkClass(active)}
+                >
+                  {item.label}
+                </NavLink>
+              );
+            })}
+          </nav>
 
-        <div className="ml-auto hidden items-center gap-2 md:flex">
+          <span className="h-8 w-px bg-border" aria-hidden="true" />
+
           {user ? (
             <Button variant="secondary" size="sm" onClick={handleLogout}>
               {t('nav.logout')}

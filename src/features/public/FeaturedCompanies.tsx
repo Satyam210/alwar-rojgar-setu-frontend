@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { paths } from '@/routes/paths';
+import { env } from '@/config/env';
 import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/cn';
 import { Card, CardBody } from '@/components/ui/Card';
@@ -104,6 +105,15 @@ export function FeaturedCompanies({ topEmployers }: FeaturedCompaniesProps) {
   const { t } = useTranslation('common');
   const base = import.meta.env.BASE_URL;
   const isEmployer = useAuthStore((s) => s.user?.role === 'employer');
+
+  const hasTopEmployers = Boolean(topEmployers && topEmployers.length > 0);
+  // The curated company list is demo-only data. Show it as a fallback ONLY in
+  // mock/demo mode; against the real backend we show DB employers or nothing.
+  const showCurated = !hasTopEmployers && env.useMocks;
+
+  // Real backend with no verified employers yet → hide the section entirely
+  // rather than showing hardcoded/dummy companies.
+  if (!hasTopEmployers && !showCurated) return null;
 
   return (
     <section aria-labelledby="featured-heading">

@@ -1,10 +1,11 @@
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import { useJobSearch } from '@/features/jobs/queries';
+import { useJobSearch, useRecommendedJobs } from '@/features/jobs/queries';
 import { JobCard } from '@/features/jobs/JobCard';
-import { DISTRICTS, ITI_TRADES, JOB_TYPES, PAGE_SIZE } from '@/lib/constants';
-import type { JobSearchParams, JobType } from '@/api/types';
+import { DISTRICTS, ITI_TRADES, PAGE_SIZE } from '@/lib/constants';
+import type { JobSearchParams } from '@/api/types';
+import { useAuthStore } from '@/stores/authStore';
 import { Card, CardBody } from '@/components/ui/Card';
 import { Field } from '@/components/ui/Field';
 import { Input, NativeSelect } from '@/components/ui/Input';
@@ -16,25 +17,31 @@ export function JobsPage() {
   const { t } = useTranslation(['jobs', 'common']);
   usePageTitle(t('jobs:search.title'));
   const [searchParams, setSearchParams] = useSearchParams();
+  const isCandidate = useAuthStore((s) => s.user?.role === 'candidate');
 
   const rawDistrict = searchParams.get('district');
-  // Default the district filter to the pilot district (Alwar) on first load, but
+  // Default the location filter to the pilot location (Alwar) on first load, but
   // not when arriving via a company link (so all of that company's jobs show).
-  // 'all' is an explicit sentinel for "Any district".
+  // 'all' is an explicit sentinel for "Any location".
   const districtValue = rawDistrict ?? (searchParams.get('companyName') ? 'all' : 'Alwar');
 
   const params: JobSearchParams = {
+    q: searchParams.get('q') || undefined,
     district: districtValue === 'all' ? undefined : districtValue,
     tradeRequired: searchParams.get('tradeRequired') || undefined,
-    jobType: (searchParams.get('jobType') as JobType) || undefined,
-    minSalary: numberParam(searchParams.get('minSalary')),
-    maxSalary: numberParam(searchParams.get('maxSalary')),
     companyName: searchParams.get('companyName') || undefined,
     page: Number(searchParams.get('page')) || 1,
     limit: PAGE_SIZE,
   };
 
   const { data, isLoading, isError, refetch } = useJobSearch(params);
+
+  // Show personalised recommendations only on the default view (no active
+  // keyword/trade/company filter and first page) so they don't fight the search.
+  const hasActiveFilters = Boolean(params.q || params.tradeRequired || params.companyName);
+  const showRecommended = isCandidate && !hasActiveFilters && (params.page ?? 1) === 1;
+  const { data: recommended } = useRecommendedJobs(showRecommended);
+  const recommendedJobs = showRecommended ? recommended?.data ?? [] : [];
 
   function setParam(key: string, value: string) {
     setSearchParams((prev) => {
@@ -57,12 +64,24 @@ export function JobsPage() {
           <CardBody className="flex flex-col gap-4">
             <h2 className="text-lg">{t('jobs:filters.title')}</h2>
 
-            <Field label={t('jobs:filters.district')}>
+            <Field label={t('jobs:filters.keyword')}>
+              <Input
+                type="search"
+                defaultValue={params.q ?? ''}
+                placeholder={t('jobs:search.placeholder')}
+                onBlur={(e) => setParam('q', e.target.value.trim())}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') setParam('q', e.currentTarget.value.trim());
+                }}
+              />
+            </Field>
+
+            <Field label={t('jobs:filters.location')}>
               <NativeSelect
                 value={districtValue}
                 onChange={(e) => setParam('district', e.target.value)}
               >
-                <option value="all">{t('jobs:filters.anyDistrict')}</option>
+                <option value="all">{t('jobs:filters.anyLocation')}</option>
                 {DISTRICTS.map((d) => (
                   <option key={d} value={d}>
                     {d}
@@ -85,41 +104,6 @@ export function JobsPage() {
               </NativeSelect>
             </Field>
 
-            <Field label={t('jobs:filters.jobType')}>
-              <NativeSelect
-                value={params.jobType ?? ''}
-                onChange={(e) => setParam('jobType', e.target.value)}
-              >
-                <option value="">{t('jobs:filters.anyType')}</option>
-                {JOB_TYPES.map((jt) => (
-                  <option key={jt.value} value={jt.value}>
-                    {t(`jobs:type.${jt.value}`)}
-                  </option>
-                ))}
-              </NativeSelect>
-            </Field>
-
-            <div className="grid grid-cols-2 gap-3">
-              <Field label={t('jobs:filters.minSalary')}>
-                <Input
-                  type="number"
-                  inputMode="numeric"
-                  min={0}
-                  defaultValue={params.minSalary ?? ''}
-                  onBlur={(e) => setParam('minSalary', e.target.value)}
-                />
-              </Field>
-              <Field label={t('jobs:filters.maxSalary')}>
-                <Input
-                  type="number"
-                  inputMode="numeric"
-                  min={0}
-                  defaultValue={params.maxSalary ?? ''}
-                  onBlur={(e) => setParam('maxSalary', e.target.value)}
-                />
-              </Field>
-            </div>
-
             <Button variant="ghost" onClick={clearFilters}>
               {t('common:actions.clear')}
             </Button>
@@ -127,9 +111,26 @@ export function JobsPage() {
         </Card>
       </aside>
 
-      <section aria-label={t('jobs:search.title')}>
-        <div className="mb-4 flex items-center justify-between">
-          <h1>{t('jobs:search.title')}</h1>
+      <div className="flex flex-col gap-6">
+        {recommendedJobs.length > 0 && (
+          <section aria-label={t('jobs:recommended.title')}>
+            <div className="mb-3">
+              <h2 className="text-2xl font-bold text-content">{t('jobs:recommended.title')}</h2>
+              <p className="text-base font-semibold text-content">{t('jobs:recommended.subtitle')}</p>
+            </div>
+            <ul className="flex flex-col gap-4">
+              {recommendedJobs.map((job) => (
+                <li key={job.id}>
+                  <JobCard job={job} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section aria-label={t('jobs:search.title')}>
+          <div className="mb-4 flex items-center justify-between">
+            <h1>{recommendedJobs.length > 0 ? t('jobs:recommended.allJobs') : t('jobs:search.title')}</h1>
           {data && (
             <p className="text-content-muted" aria-live="polite">
               {t('jobs:search.resultsCount', { count: data.total })}
@@ -161,13 +162,8 @@ export function JobsPage() {
             />
           </>
         )}
-      </section>
+        </section>
+      </div>
     </div>
   );
-}
-
-function numberParam(value: string | null): number | undefined {
-  if (!value) return undefined;
-  const n = Number(value);
-  return Number.isFinite(n) ? n : undefined;
 }

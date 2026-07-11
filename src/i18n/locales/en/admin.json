@@ -9,7 +9,7 @@
       "activeJobs": "Active jobs",
       "applications": "Total applications",
       "placements": "Placements",
-      "verifiedPlacements": "Placements via platform"
+      "verifiedPlacements": "Successful matches"
     },
     "charts": {
       "registrations": "Candidate registrations by month",
@@ -22,6 +22,7 @@
     "search": "Search employers",
     "filterStatus": "Filter by status",
     "allStatuses": "All statuses",
+    "download": "Download Excel",
     "verify": "Verify",
     "reject": "Reject",
     "verifyConfirm": "Verify this employer? They will be able to post jobs.",
@@ -46,6 +47,7 @@
     "search": "Search candidates",
     "filterDepartment": "Filter by department",
     "allDepartments": "All departments",
+    "download": "Download Excel",
     "empty": "No candidates found",
     "viewDetails": "View details"
   },
@@ -59,7 +61,8 @@
     "status": {
       "pending": "Pending approval",
       "approved": "Approved",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "unknown": "Unknown"
     },
     "approve": "Approve",
     "reject": "Reject",
