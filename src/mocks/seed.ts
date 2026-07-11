@@ -7,39 +7,39 @@ import type {
 } from '@/api/types';
 import type { MockDb, MockUser } from './db';
 
-/** Demo phone numbers surfaced by the login panel (any OTP works). */
-export const DEMO_PHONES = {
-  candidate: '9999900001',
-  employer: '9999900002',
-  admin: '9999900000',
+/** Demo email addresses surfaced by the login panel. */
+export const DEMO_EMAILS = {
+  candidate: 'demo.candidate@example.com',
+  employer: 'demo.employer@example.com',
+  admin: 'admin@alwar-rojgar.gov.in',
   /** Employer-side HR Head account (delegated hiring manager). */
-  hrHead: '9999900003',
+  hrHead: 'hr.head@example.com',
   /** Brand-new job seeker: no profile yet, so the onboarding/fill flow shows. */
-  newCandidate: '9999900004',
+  newCandidate: 'newcandidate@example.com',
   /** Brand-new employer: no profile yet → must complete profile + await verification. */
-  newEmployer: '9999900005',
+  newEmployer: 'newemployer@example.com',
 } as const;
 
 const daysAgo = (n: number): string => new Date(Date.now() - n * 86_400_000).toISOString();
 
 export function createSeedDb(): MockDb {
   const users: MockUser[] = [
-    { userId: 'u-admin', phone: DEMO_PHONES.admin, role: 'admin', profileCompleted: true, isActive: true, name: 'District Admin', adminStatus: 'approved', createdAt: daysAgo(120) },
+    { userId: 'u-admin', email: DEMO_EMAILS.admin, role: 'admin', profileCompleted: true, isActive: true, name: 'District Admin', adminStatus: 'approved', createdAt: daysAgo(120) },
     // Pending admin onboarding requests awaiting approval on the Admin Users page.
-    { userId: 'u-admin-req1', phone: '9990011001', role: 'admin', profileCompleted: true, isActive: false, name: 'Neha Sharma', adminStatus: 'pending', createdAt: daysAgo(3) },
-    { userId: 'u-admin-req2', phone: '9990011002', role: 'admin', profileCompleted: true, isActive: false, name: 'Vikram Singh', adminStatus: 'pending', createdAt: daysAgo(1) },
-    { userId: 'u-c1', phone: DEMO_PHONES.candidate, role: 'candidate', profileCompleted: true, isActive: true },
+    { userId: 'u-admin-req1', email: 'neha.sharma@example.com', role: 'admin', profileCompleted: true, isActive: false, name: 'Neha Sharma', adminStatus: 'pending', createdAt: daysAgo(3) },
+    { userId: 'u-admin-req2', email: 'vikram.singh@example.com', role: 'admin', profileCompleted: true, isActive: false, name: 'Vikram Singh', adminStatus: 'pending', createdAt: daysAgo(1) },
+    { userId: 'u-c1', email: DEMO_EMAILS.candidate, role: 'candidate', profileCompleted: true, isActive: true },
     // New job seeker with no profile yet — used to demo the "fill your profile" flow.
-    { userId: 'u-c-new', phone: DEMO_PHONES.newCandidate, role: 'candidate', profileCompleted: false, isActive: true },
-    { userId: 'u-c2', phone: '9811100002', role: 'candidate', profileCompleted: true, isActive: true },
-    { userId: 'u-c3', phone: '9811100003', role: 'candidate', profileCompleted: true, isActive: true },
-    { userId: 'u-c4', phone: '9811100004', role: 'candidate', profileCompleted: true, isActive: false },
-    { userId: 'u-e1', phone: DEMO_PHONES.employer, role: 'employer', profileCompleted: true, isActive: true },
+    { userId: 'u-c-new', email: DEMO_EMAILS.newCandidate, role: 'candidate', profileCompleted: false, isActive: true },
+    { userId: 'u-c2', email: 'priya.verma@example.com', role: 'candidate', profileCompleted: true, isActive: true },
+    { userId: 'u-c3', email: 'amit.kumar@example.com', role: 'candidate', profileCompleted: true, isActive: true },
+    { userId: 'u-c4', email: 'sunil.yadav@example.com', role: 'candidate', profileCompleted: true, isActive: false },
+    { userId: 'u-e1', email: DEMO_EMAILS.employer, role: 'employer', profileCompleted: true, isActive: true },
     // New employer with no profile yet — demos the "complete profile → await verification → post jobs" flow.
-    { userId: 'u-e-new', phone: DEMO_PHONES.newEmployer, role: 'employer', profileCompleted: false, isActive: true },
-    { userId: 'u-e2', phone: '9822200002', role: 'employer', profileCompleted: true, isActive: true },
-    { userId: 'u-e3', phone: '9822200003', role: 'employer', profileCompleted: true, isActive: true },
-    { userId: 'u-ehr', phone: DEMO_PHONES.hrHead, role: 'employer', profileCompleted: true, isActive: true },
+    { userId: 'u-e-new', email: DEMO_EMAILS.newEmployer, role: 'employer', profileCompleted: false, isActive: true },
+    { userId: 'u-e2', email: 'contact@tijara-textiles.com', role: 'employer', profileCompleted: true, isActive: true },
+    { userId: 'u-e3', email: 'contact@alwar-engineering.com', role: 'employer', profileCompleted: true, isActive: true },
+    { userId: 'u-ehr', email: DEMO_EMAILS.hrHead, role: 'employer', profileCompleted: true, isActive: true },
   ];
 
   const candidateProfiles: CandidateProfile[] = [
