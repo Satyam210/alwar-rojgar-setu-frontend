@@ -12,14 +12,12 @@ import { translateError } from '@/lib/validation';
 import type { ApiError } from '@/api/client';
 import type { Role } from '@/api/types';
 import {
-  emailSchema,
-  passwordSchema,
   loginSchema,
   registerSchema,
   type LoginForm,
   type RegisterForm,
 } from './schemas';
-import { Card, CardBody, CardHeader } from '@/components/ui/Card';
+import { Card } from '@/components/ui/Card';
 import { Field } from '@/components/ui/Field';
 import { Input, NativeSelect } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -48,44 +46,94 @@ export function LoginPage() {
 
   return (
     <div className="mx-auto max-w-md">
-      <Card>
-        <CardHeader>
-          <div className="flex gap-2 border-b border-border pb-4">
-            <button
-              onClick={() => setMode('login')}
-              className={`px-4 py-2 font-medium transition-colors ${
-                mode === 'login' ? 'border-b-2 border-brand-700 text-brand-700' : 'text-content-muted'
-              }`}
-            >
-              {t('auth:login.title')}
-            </button>
-            <button
-              onClick={() => setMode('signup')}
-              className={`px-4 py-2 font-medium transition-colors ${
-                mode === 'signup' ? 'border-b-2 border-brand-700 text-brand-700' : 'text-content-muted'
-              }`}
-            >
-              {t('auth:signup.title')}
-            </button>
+      <Card className="p-6 sm:p-8">
+        {env.useMocks && <DemoLoginPanel />}
+
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold tracking-tight text-content">
+            {mode === 'login' ? t('auth:login.title') : t('auth:signup.title')}
+          </h1>
+          <p className="mt-1 text-sm text-content-muted">
+            {mode === 'login' ? t('auth:login.subtitle') : t('auth:signup.subtitle')}
+          </p>
+        </div>
+
+        {disabled && (
+          <div className="mb-5 rounded-lg border border-danger/30 bg-red-50 p-3" role="alert">
+            <p className="font-semibold text-danger">{t('auth:disabled.title')}</p>
+            <p className="text-sm text-content">{t('auth:disabled.body')}</p>
           </div>
-        </CardHeader>
-        <CardBody>
-          {env.useMocks && <DemoLoginPanel />}
+        )}
 
-          {disabled && (
-            <div className="mb-4 rounded border border-danger/30 bg-red-50 p-3" role="alert">
-              <p className="font-semibold text-danger">{t('auth:disabled.title')}</p>
-              <p className="text-sm text-content">{t('auth:disabled.body')}</p>
-            </div>
-          )}
+        <GoogleAuthButton
+          label={mode === 'login' ? t('auth:login.googleButton') : t('auth:signup.googleButton')}
+        />
 
-          {mode === 'login' ? (
-            <LoginForm onSuccess={completeLogin} />
-          ) : (
-            <SignupForm onSuccess={completeLogin} />
-          )}
-        </CardBody>
+        <AuthDivider label={t('common:common.or')} />
+
+        {mode === 'login' ? (
+          <LoginForm onSuccess={completeLogin} />
+        ) : (
+          <SignupForm onSuccess={completeLogin} />
+        )}
+
+        <p className="mt-6 text-center text-sm text-content-muted">
+          {mode === 'login' ? t('auth:login.noAccount') : t('auth:signup.haveAccount')}{' '}
+          <button
+            type="button"
+            onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+            className="font-semibold text-brand-700 underline-offset-2 hover:underline"
+          >
+            {mode === 'login' ? t('auth:login.createOne') : t('auth:signup.loginLink')}
+          </button>
+        </p>
       </Card>
+    </div>
+  );
+}
+
+function GoogleLogo() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" className="shrink-0">
+      <path
+        fill="#4285F4"
+        d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62Z"
+      />
+      <path
+        fill="#34A853"
+        d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.34A9 9 0 0 0 9 18Z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M3.97 10.72a5.41 5.41 0 0 1 0-3.44V4.94H.96a9 9 0 0 0 0 8.12l3.01-2.34Z"
+      />
+      <path
+        fill="#EA4335"
+        d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.47.9 11.43 0 9 0A9 9 0 0 0 .96 4.94l3.01 2.34C4.68 5.16 6.66 3.58 9 3.58Z"
+      />
+    </svg>
+  );
+}
+
+function GoogleAuthButton({ label }: { label: string }) {
+  return (
+    <button
+      type="button"
+      onClick={() => initiateGoogleLogin()}
+      className="flex w-full items-center justify-center gap-3 rounded-lg border border-border bg-white px-4 py-3 text-sm font-semibold text-content shadow-sm transition-all hover:border-content-muted hover:shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700"
+    >
+      <GoogleLogo />
+      {label}
+    </button>
+  );
+}
+
+function AuthDivider({ label }: { label: string }) {
+  return (
+    <div className="my-5 flex items-center gap-4">
+      <span className="h-px flex-1 bg-border" />
+      <span className="text-xs font-medium lowercase text-content-muted">{label}</span>
+      <span className="h-px flex-1 bg-border" />
     </div>
   );
 }
@@ -108,7 +156,7 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
       await onSuccess();
     } catch (err) {
       setServerError((err as ApiError).message);
-      toast({ type: 'error', message: (err as ApiError).message });
+      toast.error((err as ApiError).message);
     }
   }
 
@@ -149,19 +197,6 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
       <Button type="submit" block loading={isSubmitting}>
         {t('auth:login.submit')}
       </Button>
-
-      <div className="relative flex items-center gap-2 before:flex-1 before:border-t before:border-border after:flex-1 after:border-t after:border-border">
-        <span className="text-xs text-content-muted">{t('auth:common.or')}</span>
-      </div>
-
-      <Button
-        type="button"
-        variant="secondary"
-        block
-        onClick={() => initiateGoogleLogin()}
-      >
-        {t('auth:login.googleButton')}
-      </Button>
     </form>
   );
 }
@@ -193,7 +228,7 @@ function SignupForm({ onSuccess }: { onSuccess: () => void }) {
       await onSuccess();
     } catch (err) {
       setServerError((err as ApiError).message);
-      toast({ type: 'error', message: (err as ApiError).message });
+      toast.error((err as ApiError).message);
     }
   }
 
@@ -278,19 +313,6 @@ function SignupForm({ onSuccess }: { onSuccess: () => void }) {
 
       <Button type="submit" block loading={isSubmitting}>
         {t('auth:signup.submit')}
-      </Button>
-
-      <div className="relative flex items-center gap-2 before:flex-1 before:border-t before:border-border after:flex-1 after:border-t after:border-border">
-        <span className="text-xs text-content-muted">{t('auth:common.or')}</span>
-      </div>
-
-      <Button
-        type="button"
-        variant="secondary"
-        block
-        onClick={() => initiateGoogleLogin()}
-      >
-        {t('auth:signup.googleButton')}
       </Button>
     </form>
   );

@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore, isProfileComplete } from '@/stores/authStore';
 import { postLoginPath } from '@/routes/paths';
 import { getCurrentUser } from '@/api/users';
-import { api, setAccessToken } from '@/api/client';
+import { setAccessToken } from '@/api/client';
 import { toast } from '@/components/ui/toast';
 
 export function GoogleOAuthCallback() {
@@ -22,17 +22,17 @@ export function GoogleOAuthCallback() {
           const user = await getCurrentUser();
           setUser(user);
           navigate(postLoginPath(user.role, isProfileComplete(user)), { replace: true });
-          toast({ type: 'success', message: 'Login successful!' });
+          toast.success('Login successful!');
         } catch (err) {
           console.error('Failed to complete Google login:', err);
-          toast({ type: 'error', message: 'Failed to complete login' });
+          toast.error('Failed to complete login');
           navigate('/login', { replace: true });
         }
       } else if (status === 'disabled') {
-        toast({ type: 'error', message: 'Account is disabled. Contact support.' });
+        toast.error('Account is disabled. Contact support.');
         navigate('/login', { state: { disabled: true }, replace: true });
       } else {
-        toast({ type: 'error', message: 'Login failed' });
+        toast.error('Login failed');
         navigate('/login', { replace: true });
       }
     }

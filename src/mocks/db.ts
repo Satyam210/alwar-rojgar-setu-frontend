@@ -12,7 +12,10 @@ import { createSeedDb } from './seed';
 /** A mock auth account. The access token in the app encodes `userId`. */
 export interface MockUser {
   userId: string;
-  phone: string;
+  /** Email/password is the primary login method. */
+  email?: string;
+  /** Legacy phone identifier (kept optional for admin display / older records). */
+  phone?: string;
   role: Role;
   profileCompleted: boolean;
   isActive: boolean;
