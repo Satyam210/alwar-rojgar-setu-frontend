@@ -152,5 +152,8 @@
     "candidate": "Job Seeker",
     "employer": "Employer",
     "admin": "Administrator"
+  },
+  "common": {
+    "or": "OR"
   }
 }

@@ -3,7 +3,7 @@ import { env } from '@/config/env';
 import { api } from '@/api/client';
 import { mockAdapter } from './adapter';
 import { ensureSeeded, resetDb } from './db';
-import { DEMO_PHONES } from './seed';
+import { DEMO_EMAILS } from './seed';
 
 /**
  * Mock backend installer. When VITE_USE_MOCKS is on (default in dev), every
@@ -26,7 +26,7 @@ if (env.useMocks) {
   console.info(
     '%c[mocks] Alwar Rojgar Setu running on mock data',
     'color:#1d4ed8;font-weight:bold',
-    `\nDemo logins (any 6-digit OTP): candidate ${DEMO_PHONES.candidate}, employer ${DEMO_PHONES.employer}, admin ${DEMO_PHONES.admin}`,
+    `\nDemo logins: candidate ${DEMO_EMAILS.candidate}, employer ${DEMO_EMAILS.employer}, admin ${DEMO_EMAILS.admin}`,
   );
 }
 

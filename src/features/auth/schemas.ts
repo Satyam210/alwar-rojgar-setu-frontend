@@ -1,30 +1,31 @@
 import { z } from 'zod';
 import { vmsg } from '@/lib/validation';
 
-/** 10-digit Indian mobile number (leading 6-9). */
-export const phoneSchema = z
+export const emailSchema = z
   .string()
   .trim()
-  .regex(/^[6-9]\d{9}$/, vmsg('phoneInvalid'));
+  .email(vmsg('emailInvalid'))
+  .toLowerCase();
 
-export const requestOtpSchema = z.object({
-  phone: phoneSchema,
+export const passwordSchema = z
+  .string()
+  .min(8, vmsg('passwordTooShort'));
+
+export const loginSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+});
+
+export const registerSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+  confirmPassword: z.string(),
   role: z.enum(['candidate', 'employer', 'admin']),
-  /** Only used when role === 'admin'; validated server-side against the code. */
-  adminCode: z.string().trim().optional(),
+  adminInviteCode: z.string().optional(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: vmsg('passwordMismatch'),
+  path: ['confirmPassword'],
 });
 
-export const verifyOtpSchema = z.object({
-  otp: z
-    .string()
-    .trim()
-    .regex(/^\d{6}$/, vmsg('otpInvalid')),
-});
-
-export type RequestOtpForm = z.infer<typeof requestOtpSchema>;
-export type VerifyOtpForm = z.infer<typeof verifyOtpSchema>;
-
-/** Normalise to the +91 E.164 form the backend expects. */
-export function toE164(phone: string): string {
-  return `+91${phone.trim()}`;
-}
+export type LoginForm = z.infer<typeof loginSchema>;
+export type RegisterForm = z.infer<typeof registerSchema>;

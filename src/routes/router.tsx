@@ -14,6 +14,7 @@ import {
   TermsPage,
 } from '@/features/public/StaticPages';
 import { LoginPage } from '@/features/auth/LoginPage';
+import { GoogleOAuthCallback } from '@/features/auth/GoogleOAuthCallback';
 
 import { CandidateOnboardingPage } from '@/features/candidate/OnboardingPage';
 import { CandidateProfilePage } from '@/features/candidate/ProfilePage';
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
             <LoginPage />
           </RedirectIfAuthed>
         ),
+      },
+      {
+        path: '/auth/google/callback',
+        element: <GoogleOAuthCallback />,
       },
 
       // Candidate
@@ -98,7 +103,6 @@ export const router = createBrowserRouter([
   },
 ],
   {
-    // Honour the Vite `base` (e.g. '/alwar-rojgar-setu/' on GitHub Pages).
     basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/',
   },
 );

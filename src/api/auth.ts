@@ -1,49 +1,37 @@
 import { api, setAccessToken } from './client';
 import type { Role } from './types';
 
-export interface RequestOtpPayload {
-  phone: string;
-  role?: Role;
+export interface RegisterPayload {
+  email: string;
+  password: string;
+  role: Role;
+  adminInviteCode?: string;
 }
 
-export interface VerifyOtpPayload {
-  phone: string;
-  otp: string;
-  /** Required by backend on first sign-up; safe to send on every verify call. */
-  role?: Role;
-  /** Second admin gate (with the phone allowlist) when role === 'admin'. */
-  adminCode?: string;
+export interface LoginPayload {
+  email: string;
+  password: string;
 }
 
-interface VerifyOtpResponse {
+interface AuthResponse {
   accessToken: string;
 }
 
-/** POST /auth/otp/request */
-export async function requestOtp(payload: RequestOtpPayload): Promise<void> {
-  await api.post('/auth/otp/request', payload);
-}
-
-/** POST /auth/otp/verify — stores the in-memory access token on success. */
-export async function verifyOtp(payload: VerifyOtpPayload): Promise<void> {
-  const { data } = await api.post<VerifyOtpResponse>('/auth/otp/verify', payload);
+export async function registerWithEmailPassword(payload: RegisterPayload): Promise<void> {
+  const { data } = await api.post<AuthResponse>('/auth/register', payload);
   setAccessToken(data.accessToken);
 }
 
-export interface AdminAccessRequestPayload {
-  name: string;
-  phone: string;
+export async function loginWithEmailPassword(payload: LoginPayload): Promise<void> {
+  const { data } = await api.post<AuthResponse>('/auth/login', payload);
+  setAccessToken(data.accessToken);
 }
 
-/**
- * POST /auth/admin/request — submit a new admin access request for an existing
- * admin to approve. WIP: mock-backed today; backend endpoint is stubbed.
- */
-export async function requestAdminAccess(payload: AdminAccessRequestPayload): Promise<void> {
-  await api.post('/auth/admin/request', payload);
+export function initiateGoogleLogin(): void {
+  const apiBase = api.defaults.baseURL || 'http://localhost:4000/api/v1';
+  window.location.href = `${apiBase}/auth/google`;
 }
 
-/** POST /auth/logout — clears the server-side refresh token, then drops local token. */
 export async function logout(): Promise<void> {
   try {
     await api.post('/auth/logout');
