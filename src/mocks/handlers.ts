@@ -716,7 +716,7 @@ function toAdminUser(u: MockUser): AdminUser {
   return {
     userId: u.userId,
     name: u.name ?? 'Admin',
-    phone: u.phone ?? u.email ?? '',
+    email: u.email ?? '',
     adminStatus: u.adminStatus ?? 'approved',
     isActive: u.isActive,
     createdAt: u.createdAt,

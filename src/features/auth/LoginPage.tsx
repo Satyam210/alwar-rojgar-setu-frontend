@@ -312,14 +312,11 @@ function SignupDetailsForm({ onComplete }: { onComplete: (values: RegisterForm) 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
     defaultValues: { role: 'candidate' },
   });
-
-  const selectedRole = watch('role');
 
   async function onSubmit(values: RegisterForm) {
     setServerError(undefined);

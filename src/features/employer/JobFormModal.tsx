@@ -34,6 +34,7 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
       title: initial?.title ?? '',
       description: initial?.description ?? '',
       grossSalary: initial?.grossSalary ?? undefined,
+      netSalary: initial?.netSalary ?? undefined,
       jobType: initial?.jobType ?? 'permanent',
       openings: initial?.openings ?? 1,
       tradeRequired: initial?.tradeRequired ?? '',
@@ -46,6 +47,7 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
       title: initial?.title ?? '',
       description: initial?.description ?? '',
       grossSalary: initial?.grossSalary ?? undefined,
+      netSalary: initial?.netSalary ?? undefined,
       jobType: initial?.jobType ?? 'permanent',
       openings: initial?.openings ?? 1,
       tradeRequired: initial?.tradeRequired ?? '',
@@ -88,6 +90,13 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
             required
           >
             <Input type="number" inputMode="numeric" min={1} {...register('grossSalary')} />
+          </Field>
+          <Field
+            label={t('jobs:fields.netSalary')}
+            error={translateError(t, errors.netSalary?.message)}
+            required
+          >
+            <Input type="number" inputMode="numeric" min={1} {...register('netSalary')} />
           </Field>
           <Field
             label={t('jobs:fields.jobType')}

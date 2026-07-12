@@ -36,6 +36,7 @@ export const jobSchema = z.object({
   title: z.string().trim().min(2, vmsg('required')),
   description: z.string().trim().min(10, vmsg('required')),
   grossSalary: z.coerce.number().int().min(1, vmsg('numberInvalid')),
+  netSalary: z.coerce.number().int().min(1, vmsg('numberInvalid')),
   jobType: z.enum(['permanent', 'contract', 'internship']),
   openings: z.coerce.number().int().min(1, vmsg('min', { min: 1 })),
   tradeRequired: z.string().trim().optional().or(z.literal('')),
