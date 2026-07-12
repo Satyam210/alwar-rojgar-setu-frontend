@@ -115,7 +115,7 @@ export function EmployerApplicantsPage() {
                         {t('candidate:fields.phone')}:{' '}
                         {c?.phone ? <a href={`tel:${c.phone}`}>{c.phone}</a> : '—'}
                       </p>
-                      {(app.status === 'shortlisted' || app.status === 'hired') && c?.email && (
+                      {c?.email && (
                         <p>
                           {t('applications:employer.contact')}:{' '}
                           <a href={`mailto:${c.email}`}>{c.email}</a>

@@ -200,14 +200,21 @@ export function getPersistedPageLang(): string | null {
   }
 }
 
-/** Restore original text by clearing the choice and reloading the page. */
-export function restoreOriginal(): void {
+/** Clear page-translation state without reloading. React re-renders restore UI strings; dynamic content stays translated until next navigation. */
+export function clearPageTranslateState(): void {
   activeTarget = null;
   observer?.disconnect();
+  observer = null;
+  if (retranslateTimer) clearTimeout(retranslateTimer);
   try {
     localStorage.removeItem(PAGE_LANG_KEY);
   } catch {
     /* ignore */
   }
+}
+
+/** Restore original text by clearing the choice and reloading the page. */
+export function restoreOriginal(): void {
+  clearPageTranslateState();
   window.location.reload();
 }

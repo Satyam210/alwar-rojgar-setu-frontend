@@ -1,5 +1,5 @@
 import i18n, { changeLanguage, type AppLanguage } from '@/i18n';
-import { translatePage, restoreOriginal, getActivePageLang } from '@/lib/pageTranslate';
+import { translatePage, clearPageTranslateState, getActivePageLang } from '@/lib/pageTranslate';
 
 /**
  * Unified language switch: the single UI control (LanguageToggle) drives both
@@ -25,7 +25,7 @@ export function setAppLanguage(lng: AppLanguage): void {
   changeLanguage(lng);
 
   if (lng === 'en') {
-    if (getActivePageLang()) restoreOriginal();
+    if (getActivePageLang()) clearPageTranslateState();
     return;
   }
 

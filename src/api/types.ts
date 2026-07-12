@@ -180,6 +180,7 @@ export interface JobInput {
   title: string;
   description: string;
   grossSalary: number;
+  netSalary: number;
   jobType: JobType;
   openings: number;
   tradeRequired?: string;
@@ -236,7 +237,7 @@ export type AdminStatus = 'pending' | 'approved' | 'rejected';
 export interface AdminUser {
   userId: UUID;
   name: string | null;
-  phone: string;
+  email: string;
   /** May be null for legacy/seeded admins created before the status column existed. */
   adminStatus: AdminStatus | null;
   isActive?: boolean;

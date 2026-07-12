@@ -172,9 +172,8 @@ export function EmployerProfileFormFields({
           </Field>
           <Field
             label={t('fields.contactPersonEmail')}
-            error={translateError(t, errors.contactPersonEmail?.message)}
           >
-            <Input type="email" autoComplete="email" {...register('contactPersonEmail')} />
+            <Input type="email" autoComplete="email" readOnly disabled {...register('contactPersonEmail')} />
           </Field>
         </div>
       </fieldset>

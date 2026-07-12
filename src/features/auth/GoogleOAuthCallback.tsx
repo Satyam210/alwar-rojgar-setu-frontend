@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore, isProfileComplete } from '@/stores/authStore';
 import { postLoginPath } from '@/routes/paths';
 import { getCurrentUser } from '@/api/users';
@@ -10,41 +11,79 @@ export function GoogleOAuthCallback() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const setUser = useAuthStore((s) => s.setUser);
+  const { t } = useTranslation('auth');
+  const hasHandled = useRef(false);
 
   useEffect(() => {
+    if (hasHandled.current) return;
+    hasHandled.current = true;
+
     async function handleCallback() {
       const status = searchParams.get('status');
       const token = searchParams.get('token');
+      const method = searchParams.get('method') as 'email' | 'google' | null;
 
-      if (status === 'success' && token) {
-        try {
-          setAccessToken(token);
-          const user = await getCurrentUser();
-          setUser(user);
-          navigate(postLoginPath(user.role, isProfileComplete(user)), { replace: true });
-          toast.success('Login successful!');
-        } catch (err) {
-          console.error('Failed to complete Google login:', err);
-          toast.error('Failed to complete login');
+      switch (status) {
+        case 'success': {
+          if (!token) {
+            toast.error('Login failed');
+            navigate('/login', { replace: true });
+            return;
+          }
+          try {
+            setAccessToken(token);
+            const user = await getCurrentUser();
+            setUser(user);
+            navigate(postLoginPath(user.role, isProfileComplete(user)), { replace: true });
+            toast.success('Login successful!');
+          } catch {
+            toast.error('Failed to complete login');
+            navigate('/login', { replace: true });
+          }
+          break;
+        }
+
+        case 'conflict': {
+          const message =
+            method === 'email'
+              ? t('errors.conflictEmail')
+              : t('errors.conflictGoogle');
+          toast.error(message);
+          navigate('/login', { replace: true });
+          break;
+        }
+
+        case 'disabled': {
+          toast.error(t('disabled.body'));
+          navigate('/login', { state: { disabled: true }, replace: true });
+          break;
+        }
+
+        case 'pending': {
+          navigate('/login', { state: { pending: true }, replace: true });
+          break;
+        }
+
+        case 'rejected': {
+          navigate('/login', { state: { rejected: true }, replace: true });
+          break;
+        }
+
+        default: {
+          toast.error('Google sign-in failed. Please try again.');
           navigate('/login', { replace: true });
         }
-      } else if (status === 'disabled') {
-        toast.error('Account is disabled. Contact support.');
-        navigate('/login', { state: { disabled: true }, replace: true });
-      } else {
-        toast.error('Login failed');
-        navigate('/login', { replace: true });
       }
     }
 
     handleCallback();
-  }, [searchParams, navigate, setUser]);
+  }, [searchParams, navigate, setUser, t]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex min-h-screen items-center justify-center">
       <div className="text-center">
-        <div className="inline-block w-8 h-8 border-4 border-brand-700 border-t-transparent rounded-full animate-spin" />
-        <p className="mt-4 text-content-muted">Completing login...</p>
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-brand-700 border-t-transparent" />
+        <p className="mt-4 text-content-muted">Completing login…</p>
       </div>
     </div>
   );
