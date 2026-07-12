@@ -9,8 +9,8 @@ import type {
 
 /** Application status — text + icon so it's never colour-only (WCAG 1.4.1). */
 const applicationTone: Record<ApplicationStatus, { tone: BadgeProps['tone']; icon: string }> = {
-  received: { tone: 'neutral', icon: '•' },
-  viewed: { tone: 'info', icon: '👁' },
+  received: { tone: 'info', icon: '•' },
+  viewed: { tone: 'warning', icon: '👁' },
   shortlisted: { tone: 'success', icon: '★' },
   rejected: { tone: 'danger', icon: '✕' },
   hired: { tone: 'success', icon: '✓' },

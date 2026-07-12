@@ -12,11 +12,15 @@ export const applicationKeys = {
     ['applications', 'candidate', params] as const,
 };
 
-export function useCandidateApplications(params: CandidateApplicationsParams) {
+export function useCandidateApplications(
+  params: CandidateApplicationsParams,
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: applicationKeys.candidate(params),
     queryFn: () => getCandidateApplications(params),
     placeholderData: (prev) => prev,
+    enabled: options?.enabled ?? true,
   });
 }
 

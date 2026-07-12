@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { useJob } from '@/features/jobs/queries';
-import { useApplyToJob } from '@/features/applications/queries';
+import { useApplyToJob, useCandidateApplications } from '@/features/applications/queries';
 import { useAuthStore, isProfileComplete } from '@/stores/authStore';
 import { paths } from '@/routes/paths';
 import { formatCurrency, formatRelative } from '@/lib/format';
@@ -22,6 +23,15 @@ export function JobDetailPage() {
 
   const { data: job, isLoading, isError, refetch } = useJob(jobId);
   const apply = useApplyToJob();
+  const [justApplied, setJustApplied] = useState(false);
+
+  const isCandidate = user?.role === 'candidate';
+  const { data: myApplications } = useCandidateApplications(
+    { limit: 100 },
+    { enabled: isCandidate },
+  );
+  const hasApplied =
+    justApplied || !!myApplications?.data.some((a) => a.jobId === jobId);
 
   usePageTitle(job?.title ?? t('jobs:search.title'));
 
@@ -48,7 +58,10 @@ export function JobDetailPage() {
       return;
     }
     apply.mutate(jobId as string, {
-      onSuccess: () => toast.success(t('jobs:detail.applySuccess')),
+      onSuccess: () => {
+        setJustApplied(true);
+        toast.success(t('jobs:detail.applySuccess'));
+      },
       onError: (err) => toast.error(apiErrorMessage(err)),
     });
   }
@@ -126,6 +139,25 @@ export function JobDetailPage() {
 
             {user && user.role !== 'candidate' ? (
               <p className="text-sm text-content-muted">{t('jobs:detail.candidatesOnly')}</p>
+            ) : hasApplied ? (
+              <div
+                role="status"
+                className="flex w-full items-center justify-center gap-2 rounded border border-success/40 bg-success/10 px-6 py-3 text-lg font-semibold text-success"
+              >
+                <svg
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.79 6.8-6.79a1 1 0 0 1 1.4 0Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {t('jobs:detail.appliedCta')}
+              </div>
             ) : (
               <Button block size="lg" onClick={handleApply} loading={apply.isPending} disabled={!canApply}>
                 {user ? t('jobs:detail.applyCta') : t('jobs:detail.loginToApply')}
