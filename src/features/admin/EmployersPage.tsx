@@ -214,9 +214,11 @@ export function AdminEmployersPage() {
                             <p className="text-sm text-content">
                               {t('employer:fields.contactPerson')}: {emp.contactPersonName}
                               {emp.contactPersonDesignation ? ` (${emp.contactPersonDesignation})` : ''}
-                              {emp.contactPersonPhone ? ' · ' : ''}
                               {emp.contactPersonPhone && (
-                                <a href={`tel:${emp.contactPersonPhone}`}>{emp.contactPersonPhone}</a>
+                                <> · <a href={`tel:${emp.contactPersonPhone}`}>{emp.contactPersonPhone}</a></>
+                              )}
+                              {emp.contactPersonEmail && (
+                                <> · <a href={`mailto:${emp.contactPersonEmail}`}>{emp.contactPersonEmail}</a></>
                               )}
                             </p>
                           )}

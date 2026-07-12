@@ -13,7 +13,7 @@ export const passwordSchema = z
 
 export const loginSchema = z.object({
   email: emailSchema,
-  password: passwordSchema,
+  password: z.string().min(1, vmsg('required')),
 });
 
 export const registerSchema = z.object({
@@ -21,11 +21,33 @@ export const registerSchema = z.object({
   password: passwordSchema,
   confirmPassword: z.string(),
   role: z.enum(['candidate', 'employer', 'admin']),
-  adminInviteCode: z.string().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
+  message: vmsg('passwordMismatch'),
+  path: ['confirmPassword'],
+});
+
+export const otpSchema = z.object({
+  otp: z
+    .string()
+    .trim()
+    .length(6, vmsg('otpInvalidLength'))
+    .regex(/^\d{6}$/, vmsg('otpDigitsOnly')),
+});
+
+export const forgotPasswordSchema = z.object({
+  email: emailSchema,
+});
+
+export const resetPasswordSchema = z.object({
+  newPassword: passwordSchema,
+  confirmPassword: z.string(),
+}).refine((data) => data.newPassword === data.confirmPassword, {
   message: vmsg('passwordMismatch'),
   path: ['confirmPassword'],
 });
 
 export type LoginForm = z.infer<typeof loginSchema>;
 export type RegisterForm = z.infer<typeof registerSchema>;
+export type OtpForm = z.infer<typeof otpSchema>;
+export type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordForm = z.infer<typeof resetPasswordSchema>;

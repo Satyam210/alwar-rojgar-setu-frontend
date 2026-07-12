@@ -1,11 +1,15 @@
 import { api, setAccessToken } from './client';
 import type { Role } from './types';
 
-export interface RegisterPayload {
+export interface SendOtpPayload {
   email: string;
   password: string;
   role: Role;
-  adminInviteCode?: string;
+}
+
+export interface VerifyOtpPayload {
+  email: string;
+  otp: string;
 }
 
 export interface LoginPayload {
@@ -17,9 +21,27 @@ interface AuthResponse {
   accessToken: string;
 }
 
-export async function registerWithEmailPassword(payload: RegisterPayload): Promise<void> {
-  const { data } = await api.post<AuthResponse>('/auth/register', payload);
+export interface ConflictError {
+  message: string;
+  conflictMethod: 'email' | 'google';
+}
+
+export async function sendOtp(payload: SendOtpPayload): Promise<{ message: string }> {
+  const { data } = await api.post<{ message: string }>('/auth/send-otp', payload);
+  return data;
+}
+
+export async function verifyOtpAndRegister(payload: VerifyOtpPayload): Promise<{ pending: boolean }> {
+  const { data } = await api.post<AuthResponse & { pending?: boolean }>('/auth/verify-otp', payload);
+  if (data.pending) return { pending: true };
   setAccessToken(data.accessToken);
+  return { pending: false };
+}
+
+export interface RegisterPayload {
+  email: string;
+  password: string;
+  role: Role;
 }
 
 export async function loginWithEmailPassword(payload: LoginPayload): Promise<void> {
@@ -38,4 +60,18 @@ export async function logout(): Promise<void> {
   } finally {
     setAccessToken(null);
   }
+}
+
+export async function forgotPassword(email: string): Promise<{ message: string }> {
+  const { data } = await api.post<{ message: string }>('/auth/forgot-password', { email });
+  return data;
+}
+
+export async function resetPassword(payload: {
+  email: string;
+  otp: string;
+  newPassword: string;
+}): Promise<{ message: string }> {
+  const { data } = await api.post<{ message: string }>('/auth/reset-password', payload);
+  return data;
 }

@@ -84,9 +84,8 @@ export function CandidateProfileFormFields({ initial, submitting, submitLabel, o
           <Field
             label={t('fields.email')}
             help={t('fields.emailHelp')}
-            error={translateError(t, errors.email?.message)}
           >
-            <Input type="email" autoComplete="email" {...register('email')} />
+            <Input type="email" autoComplete="email" readOnly disabled {...register('email')} />
           </Field>
         </div>
         <Field

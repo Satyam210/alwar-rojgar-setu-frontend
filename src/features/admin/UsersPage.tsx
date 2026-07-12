@@ -118,13 +118,13 @@ export function AdminUsersPage() {
                   <CardBody className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex flex-col gap-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h2 className="text-base font-semibold">{row.name || row.phone}</h2>
+                        <h2 className="text-base font-semibold">{row.name || row.email}</h2>
                         <Badge tone={STATUS_TONE[st]}>
                           {t(`admin:users.status.${st}`)}
                         </Badge>
                       </div>
                       <p className="text-sm text-content-muted">
-                        {t('admin:users.phone')}: {row.phone}
+                        {row.email}
                       </p>
                       {row.createdAt && (
                         <p className="text-xs text-content-muted">
