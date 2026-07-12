@@ -50,7 +50,7 @@ export async function loginWithEmailPassword(payload: LoginPayload): Promise<voi
 }
 
 export function initiateGoogleLogin(): void {
-  const apiBase = api.defaults.baseURL || 'http://localhost:4000/api/v1';
+  const apiBase = api.defaults.baseURL || '/api/v1';
   window.location.href = `${apiBase}/auth/google`;
 }
 
