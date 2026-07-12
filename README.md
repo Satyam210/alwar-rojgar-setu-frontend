@@ -1,5 +1,6 @@
 # Alwar Rojgar Setu — Frontend
 
+
 A mobile-first job-matching portal connecting Alwar's youth with local employers. This is the
 **Phase 1** web frontend: a client-side rendered React SPA that consumes the backend REST API.
 
