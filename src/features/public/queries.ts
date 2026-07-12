@@ -3,7 +3,7 @@ import { getPublicStats } from '@/api/stats';
 import { searchJobs } from '@/api/jobs';
 
 export function usePublicStats() {
-  return useQuery({ queryKey: ['public', 'stats'], queryFn: getPublicStats });
+  return useQuery({ queryKey: ['public', 'stats'], queryFn: getPublicStats, staleTime: 60_000 });
 }
 
 /** GET /jobs — recent active jobs for the homepage featured section. */
