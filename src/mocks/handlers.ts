@@ -681,7 +681,7 @@ add('PATCH', '/admin/employers/:id/verification', (ctx) => {
 add('GET', '/admin/candidates', (ctx) => {
   requireRole(ctx, 'admin');
   let items = ctx.db.candidateProfiles;
-  if (ctx.query.department) items = items.filter((c) => c.department === ctx.query.department);
+  if (ctx.query.trade) items = items.filter((c) => c.itiTrade === ctx.query.trade);
   return adminList(items, ctx, (c, term) => c.fullName.toLowerCase().includes(term));
 });
 
@@ -710,7 +710,7 @@ function setActive(ctx: HandlerCtx, active: boolean) {
 add('PATCH', '/admin/users/:id/disable', (ctx) => setActive(ctx, false));
 add('PATCH', '/admin/users/:id/enable', (ctx) => setActive(ctx, true));
 
-// --- Admin users / onboarding requests (WIP: mock-backed) -------------------
+// --- Admin management: current admins + grant/invite access -----------------
 
 function toAdminUser(u: MockUser): AdminUser {
   return {
@@ -725,28 +725,62 @@ function toAdminUser(u: MockUser): AdminUser {
 
 add('GET', '/admin/admins', (ctx) => {
   requireRole(ctx, 'admin');
-  let items = ctx.db.users.filter((u) => u.role === 'admin');
-  if (ctx.query.status) {
-    items = items.filter((u) => (u.adminStatus ?? 'approved') === ctx.query.status);
-  }
-  const mapped = items
+  const mapped = ctx.db.users
+    .filter((u) => u.role === 'admin')
     .map(toAdminUser)
     .sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''));
   return paginate(mapped, ctx.query);
 });
 
-function reviewAdmin(ctx: HandlerCtx, approve: boolean) {
+add('GET', '/admin/admin-invites', (ctx) => {
   requireRole(ctx, 'admin');
-  const u = ctx.db.users.find((x) => x.userId === ctx.params.id && x.role === 'admin');
-  if (!u) throw new HttpError(404, 'Admin not found.');
-  u.adminStatus = approve ? 'approved' : 'rejected';
-  u.isActive = approve;
-  persist();
-  return toAdminUser(u);
-}
+  const invites = [...ctx.db.adminInvites].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  return reply({ data: invites });
+});
 
-add('PATCH', '/admin/admins/:id/approve', (ctx) => reviewAdmin(ctx, true));
-add('PATCH', '/admin/admins/:id/reject', (ctx) => reviewAdmin(ctx, false));
+add('DELETE', '/admin/admin-invites/:inviteId', (ctx) => {
+  requireRole(ctx, 'admin');
+  const before = ctx.db.adminInvites.length;
+  ctx.db.adminInvites = ctx.db.adminInvites.filter((i) => i.id !== ctx.params.inviteId);
+  if (ctx.db.adminInvites.length === before) throw new HttpError(404, 'Invite not found.');
+  persist();
+  return reply({ message: 'Invite cancelled' });
+});
+
+/**
+ * Grant admin access by email. Promotes an existing account immediately;
+ * otherwise stores an invite. (The mock doesn't wire invite-consumption into
+ * every signup handler — that's exercised against the real backend instead.)
+ */
+add('POST', '/admin/admins/grant', (ctx) => {
+  const admin = requireRole(ctx, 'admin');
+  const email = String(ctx.body.email ?? '').toLowerCase().trim();
+  if (!email) throw new HttpError(400, 'Email is required.');
+
+  const existing = ctx.db.users.find((u) => u.email === email);
+  if (existing) {
+    if (existing.role === 'admin') throw new HttpError(409, 'This user is already an admin');
+    existing.role = 'admin';
+    existing.adminStatus = 'approved';
+    existing.isActive = true;
+    persist();
+    return reply({ kind: 'promoted', user: toAdminUser(existing) }, 201);
+  }
+
+  let invite = ctx.db.adminInvites.find((i) => i.email === email);
+  if (!invite) {
+    invite = {
+      id: uid('invite'),
+      email,
+      invitedByName: admin.name ?? null,
+      invitedByEmail: admin.email ?? null,
+      createdAt: new Date().toISOString(),
+    };
+    ctx.db.adminInvites.push(invite);
+  }
+  persist();
+  return reply({ kind: 'invited', invite }, 201);
+});
 
 // --- token / user resolution ------------------------------------------------
 

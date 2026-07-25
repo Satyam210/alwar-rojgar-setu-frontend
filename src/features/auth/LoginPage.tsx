@@ -39,7 +39,7 @@ import { DemoLoginPanel } from '@/components/dev/DemoLoginPanel';
 import { toast } from '@/components/ui/toast';
 
 type AuthMode = 'login' | 'signup' | 'forgot';
-type SignupStep = 'form' | 'otp' | 'pending';
+type SignupStep = 'form' | 'otp';
 type ForgotStep = 'email' | 'otp' | 'newPassword';
 
 const OTP_EXPIRY_SECONDS = 10 * 60;
@@ -286,21 +286,11 @@ function SignupFlow({ onSuccess }: SignupFlowProps) {
     );
   }
 
-  if (step === 'pending') {
-    return (
-      <div className="rounded-lg border border-brand-200 bg-brand-50 p-5 text-center">
-        <p className="text-base font-semibold text-brand-800">{t('auth:signup.adminPendingTitle')}</p>
-        <p className="mt-2 text-sm text-content-muted">{t('auth:signup.adminPendingBody')}</p>
-      </div>
-    );
-  }
-
   return (
     <OtpVerificationForm
       email={pendingEmail}
       registrationPayload={pendingPayload!}
       onSuccess={onSuccess}
-      onPending={() => setStep('pending')}
       onChangeEmail={handleChangeEmail}
     />
   );
@@ -335,7 +325,7 @@ function SignupDetailsForm({ onComplete }: { onComplete: (values: RegisterForm) 
     }
   }
 
-  const roles: Role[] = ['candidate', 'employer', 'admin'];
+  const roles: Role[] = ['candidate', 'employer'];
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
@@ -696,7 +686,6 @@ interface OtpVerificationFormProps {
   email: string;
   registrationPayload: RegisterForm;
   onSuccess: () => void;
-  onPending: () => void;
   onChangeEmail: () => void;
 }
 
@@ -704,7 +693,6 @@ function OtpVerificationForm({
   email,
   registrationPayload,
   onSuccess,
-  onPending,
   onChangeEmail,
 }: OtpVerificationFormProps) {
   const { t } = useTranslation(['auth', 'validation']);
@@ -766,11 +754,7 @@ function OtpVerificationForm({
   async function onSubmit(values: OtpForm) {
     setServerError(undefined);
     try {
-      const result = await verifyOtpAndRegister({ email, otp: values.otp });
-      if (result.pending) {
-        onPending();
-        return;
-      }
+      await verifyOtpAndRegister({ email, otp: values.otp });
       toast.success(t('auth:otp.success'));
       onSuccess();
     } catch (err) {

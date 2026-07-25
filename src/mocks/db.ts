@@ -19,12 +19,21 @@ export interface MockUser {
   role: Role;
   profileCompleted: boolean;
   isActive: boolean;
-  /** Display name — used for admin access requests on the Admin Users page. */
+  /** Display name — shown on the Admin Users page. */
   name?: string;
-  /** Admin onboarding lifecycle (only meaningful for role === 'admin'). */
+  /** Legacy field — every admin from here on is approved by construction. */
   adminStatus?: AdminStatus;
-  /** When the (admin) account/request was created. */
+  /** When the account was created. */
   createdAt?: string;
+}
+
+/** An email granted admin access ahead of time, not yet registered. */
+export interface MockAdminInvite {
+  id: string;
+  email: string;
+  invitedByName: string | null;
+  invitedByEmail: string | null;
+  createdAt: string;
 }
 
 export interface MockDb {
@@ -38,9 +47,11 @@ export interface MockDb {
   sessionUserId: string | null;
   /** phone → role chosen at OTP-request time (verify carries no role). */
   pendingRole: Record<string, Role>;
+  /** Emails granted admin access before they've signed up yet. */
+  adminInvites: MockAdminInvite[];
 }
 
-const STORAGE_KEY = 'ars_mock_db_v9';
+const STORAGE_KEY = 'ars_mock_db_v10';
 
 let db: MockDb | null = null;
 

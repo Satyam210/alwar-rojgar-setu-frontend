@@ -227,21 +227,26 @@ export interface Application {
 
 // --- Admin -------------------------------------------------------------------
 
-/** Lifecycle of an admin access request. */
+/** Legacy field, kept only because some historical admin rows still carry a status. */
 export type AdminStatus = 'pending' | 'approved' | 'rejected';
 
-/**
- * An admin user / admin onboarding request, shown on the Admin Users page.
- * WIP: backed by mocks today; backend endpoints are stubbed for later.
- */
+/** A current admin user, shown on the Admin Users page. */
 export interface AdminUser {
   userId: UUID;
   name: string | null;
   email: string;
-  /** May be null for legacy/seeded admins created before the status column existed. */
   adminStatus: AdminStatus | null;
   isActive?: boolean;
   createdAt?: ISODateString;
+}
+
+/** An email granted admin access ahead of time, not yet registered. */
+export interface AdminInvite {
+  id: UUID;
+  email: string;
+  invitedByName: string | null;
+  invitedByEmail: string | null;
+  createdAt: ISODateString;
 }
 
 export interface AdminDashboardMetrics {

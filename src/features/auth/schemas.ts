@@ -20,7 +20,7 @@ export const registerSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
   confirmPassword: z.string(),
-  role: z.enum(['candidate', 'employer', 'admin']),
+  role: z.enum(['candidate', 'employer']),
 }).refine((data) => data.password === data.confirmPassword, {
   message: vmsg('passwordMismatch'),
   path: ['confirmPassword'],

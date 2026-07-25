@@ -1,7 +1,7 @@
 import { api } from './client';
 import type {
   AdminDashboardMetrics,
-  AdminStatus,
+  AdminInvite,
   AdminUser,
   CandidateProfile,
   EmployerProfile,
@@ -20,8 +20,8 @@ export interface AdminListParams {
   limit?: number;
   status?: EmployerStatus;
   search?: string;
-  /** Candidate-only: filter the list to a single ITI department / branch. */
-  department?: string;
+  /** Candidate-only: filter the list to a single ITI trade. */
+  trade?: string;
 }
 
 /** GET /admin/employers */
@@ -79,31 +79,41 @@ export async function enableUser(userId: string): Promise<void> {
   await api.patch(`/admin/users/${userId}/enable`, {});
 }
 
-// --- Admin onboarding requests (WIP: mock-backed; backend endpoints stubbed) ---
+// --- Admin management: current admins + grant/invite access ------------------
 
 export interface AdminUserListParams {
   page?: number;
   limit?: number;
-  status?: AdminStatus;
   search?: string;
 }
 
-/** GET /admin/admins — list admin users / access requests. */
-export async function getAdminAdmins(
-  params: AdminUserListParams = {},
-): Promise<Paginated<AdminUser>> {
+/** GET /admin/admins — list current admins. */
+export async function getAdmins(params: AdminUserListParams = {}): Promise<Paginated<AdminUser>> {
   const { data } = await api.get<Paginated<AdminUser>>('/admin/admins', { params });
   return data;
 }
 
-/** PATCH /admin/admins/{userId}/approve — grant admin access. */
-export async function approveAdmin(userId: string): Promise<AdminUser> {
-  const { data } = await api.patch<AdminUser>(`/admin/admins/${userId}/approve`, {});
+export type GrantAdminResult =
+  | { kind: 'promoted'; user: AdminUser }
+  | { kind: 'invited'; invite: AdminInvite };
+
+/**
+ * POST /admin/admins/grant — grant admin access by email. Promotes an
+ * existing account immediately, or stores an invite that's consumed the
+ * moment that email signs up.
+ */
+export async function grantAdminAccess(email: string): Promise<GrantAdminResult> {
+  const { data } = await api.post<GrantAdminResult>('/admin/admins/grant', { email });
   return data;
 }
 
-/** PATCH /admin/admins/{userId}/reject — reject an admin access request. */
-export async function rejectAdmin(userId: string): Promise<AdminUser> {
-  const { data } = await api.patch<AdminUser>(`/admin/admins/${userId}/reject`, {});
+/** GET /admin/admin-invites — list emails granted admin access but not yet registered. */
+export async function getAdminInvites(): Promise<{ data: AdminInvite[] }> {
+  const { data } = await api.get<{ data: AdminInvite[] }>('/admin/admin-invites');
   return data;
+}
+
+/** DELETE /admin/admin-invites/{inviteId} — cancel a pending admin invite. */
+export async function cancelAdminInvite(inviteId: string): Promise<void> {
+  await api.delete(`/admin/admin-invites/${inviteId}`);
 }

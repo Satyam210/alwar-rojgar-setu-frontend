@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { useAdminCandidates } from './queries';
 import { getAdminCandidates } from '@/api/admin';
-import { ITI_DEPARTMENTS, PAGE_SIZE } from '@/lib/constants';
+import { ITI_TRADES, PAGE_SIZE } from '@/lib/constants';
 import { formatExperience, formatDate } from '@/lib/format';
 import { downloadCsv, stampedFilename, type CsvColumn } from '@/lib/export';
 import { apiErrorMessage } from '@/lib/errors';
@@ -21,12 +21,12 @@ export function AdminCandidatesPage() {
   usePageTitle(t('admin:candidates.title'));
 
   const [search, setSearch] = useState('');
-  const [department, setDepartment] = useState('');
+  const [trade, setTrade] = useState('');
   const [page, setPage] = useState(1);
   const [exporting, setExporting] = useState(false);
   const { data, isLoading, isError, refetch } = useAdminCandidates({
     search: search || undefined,
-    department: department || undefined,
+    trade: trade || undefined,
     page,
     limit: PAGE_SIZE,
   });
@@ -37,7 +37,7 @@ export function AdminCandidatesPage() {
       // Export the full filtered set, not just the current page.
       const all = await getAdminCandidates({
         search: search || undefined,
-        department: department || undefined,
+        trade: trade || undefined,
         page: 1,
         limit: 1000,
       });
@@ -91,18 +91,18 @@ export function AdminCandidatesPage() {
           </Field>
         </div>
         <div className="w-64">
-          <Field label={t('admin:candidates.filterDepartment')}>
+          <Field label={t('admin:candidates.filterTrade')}>
             <NativeSelect
-              value={department}
+              value={trade}
               onChange={(e) => {
-                setDepartment(e.target.value);
+                setTrade(e.target.value);
                 setPage(1);
               }}
             >
-              <option value="">{t('admin:candidates.allDepartments')}</option>
-              {ITI_DEPARTMENTS.map((d) => (
-                <option key={d} value={d}>
-                  {d}
+              <option value="">{t('admin:candidates.allTrades')}</option>
+              {ITI_TRADES.map((tr) => (
+                <option key={tr} value={tr}>
+                  {tr}
                 </option>
               ))}
             </NativeSelect>

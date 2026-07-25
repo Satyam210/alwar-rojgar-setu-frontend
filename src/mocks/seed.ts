@@ -25,9 +25,6 @@ const daysAgo = (n: number): string => new Date(Date.now() - n * 86_400_000).toI
 export function createSeedDb(): MockDb {
   const users: MockUser[] = [
     { userId: 'u-admin', email: DEMO_EMAILS.admin, role: 'admin', profileCompleted: true, isActive: true, name: 'District Admin', adminStatus: 'approved', createdAt: daysAgo(120) },
-    // Pending admin onboarding requests awaiting approval on the Admin Users page.
-    { userId: 'u-admin-req1', email: 'neha.sharma@example.com', role: 'admin', profileCompleted: true, isActive: false, name: 'Neha Sharma', adminStatus: 'pending', createdAt: daysAgo(3) },
-    { userId: 'u-admin-req2', email: 'vikram.singh@example.com', role: 'admin', profileCompleted: true, isActive: false, name: 'Vikram Singh', adminStatus: 'pending', createdAt: daysAgo(1) },
     { userId: 'u-c1', email: DEMO_EMAILS.candidate, role: 'candidate', profileCompleted: true, isActive: true },
     // New job seeker with no profile yet — used to demo the "fill your profile" flow.
     { userId: 'u-c-new', email: DEMO_EMAILS.newCandidate, role: 'candidate', profileCompleted: false, isActive: true },
@@ -633,5 +630,15 @@ export function createSeedDb(): MockDb {
     applications,
     sessionUserId: null,
     pendingRole: {},
+    // Emails granted admin access ahead of time — demoes the "pending invites" list.
+    adminInvites: [
+      {
+        id: 'invite-1',
+        email: 'neha.sharma@example.com',
+        invitedByName: 'District Admin',
+        invitedByEmail: DEMO_EMAILS.admin,
+        createdAt: daysAgo(3),
+      },
+    ],
   };
 }

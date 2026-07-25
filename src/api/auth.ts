@@ -31,11 +31,9 @@ export async function sendOtp(payload: SendOtpPayload): Promise<{ message: strin
   return data;
 }
 
-export async function verifyOtpAndRegister(payload: VerifyOtpPayload): Promise<{ pending: boolean }> {
-  const { data } = await api.post<AuthResponse & { pending?: boolean }>('/auth/verify-otp', payload);
-  if (data.pending) return { pending: true };
+export async function verifyOtpAndRegister(payload: VerifyOtpPayload): Promise<void> {
+  const { data } = await api.post<AuthResponse>('/auth/verify-otp', payload);
   setAccessToken(data.accessToken);
-  return { pending: false };
 }
 
 export interface RegisterPayload {
@@ -52,6 +50,20 @@ export async function loginWithEmailPassword(payload: LoginPayload): Promise<voi
 export function initiateGoogleLogin(): void {
   const apiBase = api.defaults.baseURL || '/api/v1';
   window.location.href = `${apiBase}/auth/google`;
+}
+
+/**
+ * Second step of Google sign-up for brand-new accounts. The backend redirects
+ * to /auth/google/callback?status=needs-role&pendingToken=... when it can't
+ * tell whether the Google account is a job seeker or an employer; the
+ * frontend then asks the user and submits the answer here.
+ */
+export async function completeGoogleSignup(payload: {
+  pendingToken: string;
+  role: Extract<Role, 'candidate' | 'employer'>;
+}): Promise<void> {
+  const { data } = await api.post<AuthResponse>('/auth/google/complete', payload);
+  setAccessToken(data.accessToken);
 }
 
 export async function logout(): Promise<void> {

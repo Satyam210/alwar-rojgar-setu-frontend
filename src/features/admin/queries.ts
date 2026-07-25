@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  approveAdmin,
+  cancelAdminInvite,
   disableUser,
   enableUser,
-  getAdminAdmins,
+  getAdmins,
   getAdminCandidates,
   getAdminDashboard,
   getAdminEmployers,
-  rejectAdmin,
+  getAdminInvites,
+  grantAdminAccess,
   verifyEmployer,
   type AdminListParams,
   type AdminUserListParams,
@@ -19,6 +20,7 @@ export const adminKeys = {
   employers: (params: AdminListParams) => ['admin', 'employers', params] as const,
   candidates: (params: AdminListParams) => ['admin', 'candidates', params] as const,
   admins: (params: AdminUserListParams) => ['admin', 'admins', params] as const,
+  adminInvites: () => ['admin', 'admin-invites'] as const,
 };
 
 export function useAdminDashboard() {
@@ -65,21 +67,35 @@ export function useToggleUser() {
   });
 }
 
-export function useAdminAdmins(params: AdminUserListParams) {
+export function useAdmins(params: AdminUserListParams) {
   return useQuery({
     queryKey: adminKeys.admins(params),
-    queryFn: () => getAdminAdmins(params),
+    queryFn: () => getAdmins(params),
     placeholderData: (prev) => prev,
   });
 }
 
-export function useReviewAdmin() {
+export function useAdminInvites() {
+  return useQuery({ queryKey: adminKeys.adminInvites(), queryFn: getAdminInvites });
+}
+
+export function useGrantAdminAccess() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ userId, approve }: { userId: string; approve: boolean }) =>
-      approve ? approveAdmin(userId) : rejectAdmin(userId),
+    mutationFn: (email: string) => grantAdminAccess(email),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin', 'admins'] });
+      qc.invalidateQueries({ queryKey: adminKeys.adminInvites() });
+    },
+  });
+}
+
+export function useCancelAdminInvite() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (inviteId: string) => cancelAdminInvite(inviteId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: adminKeys.adminInvites() });
     },
   });
 }

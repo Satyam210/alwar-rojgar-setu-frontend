@@ -45,31 +45,29 @@
   "candidates": {
     "title": "Candidates",
     "search": "Search candidates",
-    "filterDepartment": "Filter by department",
-    "allDepartments": "All departments",
+    "filterTrade": "Filter by ITI trade",
+    "allTrades": "All trades",
     "download": "Download Excel",
     "empty": "No candidates found",
     "viewDetails": "View details"
   },
   "users": {
     "title": "Admin Users",
-    "subtitle": "Review and approve admin access requests.",
-    "filterStatus": "Filter by status",
-    "allStatuses": "All",
-    "phone": "Phone",
-    "requestedOn": "Requested on",
-    "status": {
-      "pending": "Pending approval",
-      "approved": "Approved",
-      "rejected": "Rejected",
-      "unknown": "Unknown"
-    },
-    "approve": "Approve",
-    "reject": "Reject",
-    "approveConfirm": "Approve this admin request? They will get full admin access.",
-    "rejectConfirm": "Reject this admin access request?",
-    "approved": "Admin request approved",
-    "rejected": "Admin request rejected",
-    "empty": "No admin access requests"
+    "subtitle": "Manage who has admin access.",
+    "grantTitle": "Grant admin access",
+    "grantSubtitle": "Enter an email address. If they already have an account, they become an admin immediately. Otherwise, they'll be granted admin access the moment they sign up.",
+    "grantEmailLabel": "Email address",
+    "grantSubmit": "Grant access",
+    "grantPromoted": "{{email}} is now an admin",
+    "grantInvited": "{{email}} will become an admin when they sign up",
+    "pendingInvitesTitle": "Pending invites",
+    "invitedOn": "Invited on",
+    "invitedBy": "by",
+    "cancelInvite": "Cancel invite",
+    "cancelInviteConfirm": "Cancel the pending admin invite for {{email}}?",
+    "inviteCancelled": "Invite cancelled",
+    "currentAdminsTitle": "Current admins",
+    "adminSince": "Admin since",
+    "empty": "No admins yet"
   }
 }
