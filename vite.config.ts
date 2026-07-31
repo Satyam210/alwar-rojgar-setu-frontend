@@ -20,6 +20,11 @@ export default defineConfig(() => ({
         target: process.env.VITE_PROXY_TARGET ?? 'http://localhost:8080',
         changeOrigin: true,
       },
+      // Proxy uploaded files (logos etc.) to the backend in dev.
+      '/uploads': {
+        target: process.env.VITE_PROXY_TARGET ?? 'http://localhost:8080',
+        changeOrigin: true,
+      },
     },
   },
   build: {
