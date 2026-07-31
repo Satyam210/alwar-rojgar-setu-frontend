@@ -122,6 +122,12 @@ export function AuthedCompanyLogo({
       return;
     }
     if (/^https?:/.test(logoUrl)) {
+      // legacy Vercel Blob URLs — pass through directly
+      setSrc(logoUrl);
+      return;
+    }
+    if (logoUrl.startsWith('/uploads/')) {
+      // VPS-served logo — public, no auth needed
       setSrc(logoUrl);
       return;
     }
