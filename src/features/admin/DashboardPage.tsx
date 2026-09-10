@@ -116,51 +116,6 @@ export function AdminDashboardPage() {
       </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {data.registrationsByMonth && data.registrationsByMonth.length > 0 && (
-          <ChartCard title={t('dashboard.charts.registrations')} accent="brand">
-            <AreaChart data={data.registrationsByMonth} margin={{ top: 8, right: 12, bottom: 0, left: -12 }}>
-              <defs>
-                <linearGradient id="gradReg" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={NAVY} stopOpacity={0.35} />
-                  <stop offset="100%" stopColor={NAVY} stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid vertical={false} strokeDasharray="4 4" stroke="#eef1f6" />
-              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={AXIS_TICK} />
-              <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={AXIS_TICK} width={36} />
-              <Tooltip content={<ChartTooltip />} cursor={{ stroke: '#cbd5e1', strokeDasharray: '4 4' }} />
-              <Area
-                type="monotone"
-                dataKey="count"
-                stroke={NAVY}
-                strokeWidth={2.5}
-                fill="url(#gradReg)"
-                dot={{ r: 3, fill: NAVY, strokeWidth: 0 }}
-                activeDot={{ r: 5 }}
-              />
-            </AreaChart>
-          </ChartCard>
-        )}
-
-        {data.placementsByMonth && data.placementsByMonth.length > 0 && (
-          <ChartCard title={t('dashboard.charts.placements')} accent="emerald">
-            <LineChart data={data.placementsByMonth} margin={{ top: 8, right: 16, bottom: 0, left: -12 }}>
-              <CartesianGrid vertical={false} strokeDasharray="4 4" stroke="#eef1f6" />
-              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={AXIS_TICK} />
-              <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={AXIS_TICK} width={36} />
-              <Tooltip content={<ChartTooltip />} cursor={{ stroke: '#cbd5e1', strokeDasharray: '4 4' }} />
-              <Line
-                type="monotone"
-                dataKey="count"
-                stroke={GREEN}
-                strokeWidth={2.5}
-                dot={{ r: 3, fill: GREEN, strokeWidth: 0 }}
-                activeDot={{ r: 5 }}
-              />
-            </LineChart>
-          </ChartCard>
-        )}
-
         {data.applicationsByStatus && data.applicationsByStatus.length > 0 && (
           <ChartCard title={t('dashboard.charts.applicationsByStatus')} accent="brand">
             <PieChart margin={{ top: 4, right: 4, bottom: 4, left: 4 }}>
@@ -227,6 +182,51 @@ export function AdminDashboardPage() {
                 <LabelList dataKey="count" position="right" fontSize={12} fill="#475569" />
               </Bar>
             </BarChart>
+          </ChartCard>
+        )}
+
+        {data.registrationsByMonth && data.registrationsByMonth.length > 0 && (
+          <ChartCard title={t('dashboard.charts.registrations')} accent="brand">
+            <AreaChart data={data.registrationsByMonth} margin={{ top: 8, right: 12, bottom: 0, left: -12 }}>
+              <defs>
+                <linearGradient id="gradReg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={NAVY} stopOpacity={0.35} />
+                  <stop offset="100%" stopColor={NAVY} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} strokeDasharray="4 4" stroke="#eef1f6" />
+              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={AXIS_TICK} />
+              <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={AXIS_TICK} width={36} />
+              <Tooltip content={<ChartTooltip />} cursor={{ stroke: '#cbd5e1', strokeDasharray: '4 4' }} />
+              <Area
+                type="monotone"
+                dataKey="count"
+                stroke={NAVY}
+                strokeWidth={2.5}
+                fill="url(#gradReg)"
+                dot={{ r: 3, fill: NAVY, strokeWidth: 0 }}
+                activeDot={{ r: 5 }}
+              />
+            </AreaChart>
+          </ChartCard>
+        )}
+
+        {data.placementsByMonth && data.placementsByMonth.length > 0 && (
+          <ChartCard title={t('dashboard.charts.placements')} accent="emerald">
+            <LineChart data={data.placementsByMonth} margin={{ top: 8, right: 16, bottom: 0, left: -12 }}>
+              <CartesianGrid vertical={false} strokeDasharray="4 4" stroke="#eef1f6" />
+              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={AXIS_TICK} />
+              <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={AXIS_TICK} width={36} />
+              <Tooltip content={<ChartTooltip />} cursor={{ stroke: '#cbd5e1', strokeDasharray: '4 4' }} />
+              <Line
+                type="monotone"
+                dataKey="count"
+                stroke={GREEN}
+                strokeWidth={2.5}
+                dot={{ r: 3, fill: GREEN, strokeWidth: 0 }}
+                activeDot={{ r: 5 }}
+              />
+            </LineChart>
           </ChartCard>
         )}
 
