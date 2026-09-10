@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
+import { AdminShell } from '@/components/layout/AdminShell';
 import { RedirectIfAuthed, RequireAuth, RequireProfile } from './guards';
 import { paths } from './paths';
 
@@ -94,7 +95,15 @@ export const router = createBrowserRouter([
         ],
       },
 
-      // Admin
+
+      { path: '404', element: <NotFoundPage /> },
+      { path: '*', element: <Navigate to="/404" replace /> },
+    ],
+  },
+  // Admin — separate shell with sidebar layout
+  {
+    element: <AdminShell />,
+    children: [
       {
         element: <RequireAuth requiredRole="admin" />,
         children: [
@@ -105,9 +114,6 @@ export const router = createBrowserRouter([
           { path: paths.admin.testimonials, element: <AdminTestimonialsPage /> },
         ],
       },
-
-      { path: '404', element: <NotFoundPage /> },
-      { path: '*', element: <Navigate to="/404" replace /> },
     ],
   },
 ],
