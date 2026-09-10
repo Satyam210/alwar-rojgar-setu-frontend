@@ -23,6 +23,7 @@
     "users": "Admin Users",
     "login": "Login",
     "logout": "Logout",
+    "settings": "Settings",
     "menu": "Menu"
   },
   "guards": {

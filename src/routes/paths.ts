@@ -4,6 +4,7 @@ export const paths = {
   jobs: '/jobs',
   jobDetail: (id = ':jobId') => `/jobs/${id}`,
   login: '/login',
+  settings: '/settings',
   accessibility: '/accessibility',
   privacy: '/privacy',
   grievance: '/grievance',

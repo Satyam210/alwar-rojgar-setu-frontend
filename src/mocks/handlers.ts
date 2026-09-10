@@ -182,6 +182,22 @@ add('POST', '/auth/logout', (ctx) => {
   return reply({ ok: true });
 });
 
+add('POST', '/auth/change-password', (ctx) => {
+  requireUser(ctx);
+  const currentPassword = String(ctx.body.currentPassword ?? '');
+  const newPassword = String(ctx.body.newPassword ?? '');
+  if (!currentPassword || !newPassword) {
+    throw new HttpError(400, 'Current and new password are required');
+  }
+  if (newPassword.length < 8) throw new HttpError(400, 'Password must be at least 8 characters');
+  if (newPassword === currentPassword) {
+    throw new HttpError(400, 'New password must be different from the current password');
+  }
+  // The mock backend does not store passwords, so we can't verify the current
+  // one — accept and report success so the flow is demoable.
+  return reply({ message: 'Password changed successfully.' });
+});
+
 add('POST', '/auth/token/refresh', (ctx) => {
   const id = ctx.db.sessionUserId;
   const user = id ? ctx.db.users.find((u) => u.userId === id) : null;
