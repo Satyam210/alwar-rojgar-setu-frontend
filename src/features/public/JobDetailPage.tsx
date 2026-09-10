@@ -106,6 +106,14 @@ export function JobDetailPage() {
                 label={t('jobs:fields.openings')}
                 value={t('jobs:detail.openings', { count: job.openings })}
               />
+              <Detail
+                label={t('jobs:fields.remaining')}
+                value={
+                  job.openings - job.filledCount > 0
+                    ? t('jobs:detail.remaining', { count: job.openings - job.filledCount })
+                    : t('jobs:detail.allFilled')
+                }
+              />
             </dl>
 
             <div>
@@ -130,6 +138,25 @@ export function JobDetailPage() {
                 {t('jobs:card.perMonth')}
               </span>
             </p>
+
+            <div>
+              <div className="mb-1 flex items-center justify-between text-xs text-content-muted">
+                <span>{t('jobs:detail.filledProgress', { filled: job.filledCount, total: job.openings })}</span>
+                <span className="font-medium text-content">
+                  {job.openings - job.filledCount > 0
+                    ? t('jobs:detail.remaining', { count: job.openings - job.filledCount })
+                    : t('jobs:detail.allFilled')}
+                </span>
+              </div>
+              <div className="h-2 w-full overflow-hidden rounded-full bg-surface-muted" role="presentation">
+                <div
+                  className="h-full rounded-full bg-brand-600 transition-all"
+                  style={{
+                    width: `${job.openings > 0 ? Math.min(100, (job.filledCount / job.openings) * 100) : 0}%`,
+                  }}
+                />
+              </div>
+            </div>
 
             {!isOpen && (
               <p className="rounded bg-amber-50 p-3 text-sm text-warning" role="status">
