@@ -122,14 +122,24 @@ function withJob(ctx: HandlerCtx, app: Application): Application {
   return { ...app, job: ctx.db.jobs.find((j) => j.id === app.jobId) };
 }
 
+const CONTACT_VISIBLE_STATUSES: ApplicationStatus[] = ['interview_scheduled', 'hired'];
+
 function withCandidate(ctx: HandlerCtx, app: Application): Application {
-  return { ...app, candidate: ctx.db.candidateProfiles.find((c) => c.id === app.candidateId) };
+  const profile = ctx.db.candidateProfiles.find((c) => c.id === app.candidateId);
+  if (!profile) return { ...app, candidate: undefined };
+  if (CONTACT_VISIBLE_STATUSES.includes(app.status)) {
+    return { ...app, candidate: profile };
+  }
+  // Strip contact details for statuses where employer hasn't scheduled an interview yet
+  const { phone: _p, email: _e, ...rest } = profile;
+  return { ...app, candidate: rest as CandidateProfile };
 }
 
 const STATUS_STAMP: Record<ApplicationStatus, keyof Application | null> = {
   received: null,
   viewed: 'viewedAt',
   shortlisted: 'shortlistedAt',
+  interview_scheduled: null,
   rejected: 'rejectedAt',
   hired: 'hiredAt',
 };
@@ -373,6 +383,68 @@ add('DELETE', '/employer-profile/documents/:id', (ctx) => {
   return reply(null, 204);
 });
 
+// --- Testimonials ------------------------------------------------------------
+
+add('GET', '/testimonials', (ctx) => {
+  return ctx.db.testimonials
+    .filter((t) => t.isPublished)
+    .sort((a, b) => a.displayOrder - b.displayOrder || a.createdAt!.localeCompare(b.createdAt!));
+});
+
+add('GET', '/testimonials/admin', (ctx) => {
+  requireRole(ctx, 'admin');
+  return ctx.db.testimonials.sort(
+    (a, b) => a.displayOrder - b.displayOrder || a.createdAt!.localeCompare(b.createdAt!),
+  );
+});
+
+add('POST', '/testimonials/admin', (ctx) => {
+  requireRole(ctx, 'admin');
+  const { name, body } = ctx.body;
+  if (!name || !body) throw new HttpError(400, 'name and body are required');
+  const now = new Date().toISOString();
+  const t = {
+    id: uid('tm'),
+    candidateId: (ctx.body.candidateId as string | null) ?? null,
+    name: String(name),
+    photoUrl: (ctx.body.photoUrl as string | null) ?? null,
+    trade: (ctx.body.trade as string | null) ?? null,
+    body: String(body),
+    isPublished: Boolean(ctx.body.isPublished ?? false),
+    displayOrder: Number(ctx.body.displayOrder ?? 0),
+    createdAt: now,
+    updatedAt: now,
+  };
+  ctx.db.testimonials.push(t);
+  persist();
+  return reply(t, 201);
+});
+
+add('PATCH', '/testimonials/admin/:id', (ctx) => {
+  requireRole(ctx, 'admin');
+  const t = ctx.db.testimonials.find((x) => x.id === ctx.params.id);
+  if (!t) throw new HttpError(404, 'Testimonial not found');
+  if (ctx.body.name !== undefined) t.name = String(ctx.body.name);
+  if (ctx.body.photoUrl !== undefined) t.photoUrl = (ctx.body.photoUrl as string | null) ?? null;
+  if (ctx.body.trade !== undefined) t.trade = (ctx.body.trade as string | null) ?? null;
+  if (ctx.body.body !== undefined) t.body = String(ctx.body.body);
+  if (ctx.body.isPublished !== undefined) t.isPublished = Boolean(ctx.body.isPublished);
+  if (ctx.body.displayOrder !== undefined) t.displayOrder = Number(ctx.body.displayOrder);
+  if (ctx.body.candidateId !== undefined) t.candidateId = (ctx.body.candidateId as string | null) ?? null;
+  t.updatedAt = new Date().toISOString();
+  persist();
+  return t;
+});
+
+add('DELETE', '/testimonials/admin/:id', (ctx) => {
+  requireRole(ctx, 'admin');
+  const idx = ctx.db.testimonials.findIndex((x) => x.id === ctx.params.id);
+  if (idx === -1) throw new HttpError(404, 'Testimonial not found');
+  ctx.db.testimonials.splice(idx, 1);
+  persist();
+  return reply(null, 204);
+});
+
 // --- Public stats -----------------------------------------------------------
 
 add('GET', '/stats', (ctx) => {
@@ -597,6 +669,20 @@ add('PATCH', '/job-applications/:id/status', (ctx) => {
     app.attributedToPlatform = Boolean(ctx.body.attributedToPlatform);
     app.joiningDate = (ctx.body.joiningDate as string) ?? null;
   }
+  app.updatedAt = now();
+  persist();
+  return withCandidate(ctx, withJob(ctx, app));
+});
+
+add('PATCH', '/job-applications/:id/interview', (ctx) => {
+  requireUser(ctx);
+  const app = ctx.db.applications.find((a) => a.id === ctx.params.id);
+  if (!app) throw new HttpError(404, 'Application not found.');
+  const interviewAt = ctx.body.interviewAt as string | undefined;
+  if (!interviewAt) throw new HttpError(400, 'interviewAt is required');
+  app.status = 'interview_scheduled';
+  app.interviewAt = interviewAt;
+  app.interviewNotes = (ctx.body.notes as string) ?? null;
   app.updatedAt = now();
   persist();
   return withCandidate(ctx, withJob(ctx, app));

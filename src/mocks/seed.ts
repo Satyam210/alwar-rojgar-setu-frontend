@@ -4,6 +4,7 @@ import type {
   EmployerDocument,
   EmployerProfile,
   Job,
+  Testimonial,
 } from '@/api/types';
 import type { MockDb, MockUser } from './db';
 
@@ -640,5 +641,43 @@ export function createSeedDb(): MockDb {
         createdAt: daysAgo(3),
       },
     ],
+    testimonials: [
+      {
+        id: 'tm-1',
+        candidateId: 'cp-1',
+        name: 'Rahul Sharma',
+        photoUrl: null,
+        trade: 'Fitter',
+        body: 'Mujhe yahan se 3 mahine mein Havells mein job mil gayi. Bahut achha platform hai, bilkul seedha aur free.',
+        isPublished: true,
+        displayOrder: 0,
+        createdAt: daysAgo(30),
+        updatedAt: daysAgo(30),
+      },
+      {
+        id: 'tm-2',
+        candidateId: 'cp-2',
+        name: 'Priya Verma',
+        photoUrl: null,
+        trade: 'Electrician',
+        body: 'Maine pehle bahut jagah try kiya tha, par yahan se seedha Alwar ke pass job mili. Ab salary bhi achhi hai.',
+        isPublished: true,
+        displayOrder: 1,
+        createdAt: daysAgo(20),
+        updatedAt: daysAgo(20),
+      },
+      {
+        id: 'tm-3',
+        candidateId: null,
+        name: 'Amit Kumar',
+        photoUrl: null,
+        trade: 'Welder',
+        body: 'Is platform ki wajah se mujhe ghar ke paas hi permanent job mili. Parivaar bhi khush hai.',
+        isPublished: false,
+        displayOrder: 2,
+        createdAt: daysAgo(10),
+        updatedAt: daysAgo(10),
+      },
+    ] as Testimonial[],
   };
 }

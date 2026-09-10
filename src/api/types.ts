@@ -202,7 +202,13 @@ export interface JobSearchParams {
 
 // --- Applications ------------------------------------------------------------
 
-export type ApplicationStatus = 'received' | 'viewed' | 'shortlisted' | 'rejected' | 'hired';
+export type ApplicationStatus =
+  | 'received'
+  | 'viewed'
+  | 'shortlisted'
+  | 'interview_scheduled'
+  | 'rejected'
+  | 'hired';
 
 export interface Application {
   id: UUID;
@@ -218,6 +224,9 @@ export interface Application {
   attributedToPlatform?: boolean;
   /** Candidate's confirmed joining date, captured at hire time. */
   joiningDate?: ISODateString | null;
+  /** Set when status is interview_scheduled. */
+  interviewAt?: ISODateString | null;
+  interviewNotes?: string | null;
   createdAt?: ISODateString;
   updatedAt?: ISODateString;
   /** Denormalised join data the dashboards rely on. */
@@ -281,6 +290,31 @@ export interface PublicStats {
   registeredEmployers: number;
   successfulConnects: number;
   topEmployers: TopEmployer[];
+}
+
+// --- Testimonials ------------------------------------------------------------
+
+export interface Testimonial {
+  id: UUID;
+  candidateId?: UUID | null;
+  name: string;
+  photoUrl?: string | null;
+  trade?: string | null;
+  body: string;
+  isPublished: boolean;
+  displayOrder: number;
+  createdAt?: ISODateString;
+  updatedAt?: ISODateString;
+}
+
+export interface TestimonialInput {
+  candidateId?: string | null;
+  name: string;
+  photoUrl?: string | null;
+  trade?: string | null;
+  body: string;
+  isPublished?: boolean;
+  displayOrder?: number;
 }
 
 // --- Shared pagination envelope ---------------------------------------------

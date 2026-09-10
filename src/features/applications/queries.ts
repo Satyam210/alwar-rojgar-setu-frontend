@@ -1,10 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { applyToJob, updateApplicationStatus } from '@/api/applications';
+import {
+  applyToJob,
+  updateApplicationStatus,
+  scheduleInterview,
+  type UpdateApplicationStatusPayload,
+  type ScheduleInterviewPayload,
+} from '@/api/applications';
 import {
   getCandidateApplications,
   type CandidateApplicationsParams,
 } from '@/api/candidate';
-import type { UpdateApplicationStatusPayload } from '@/api/applications';
 import { jobKeys } from '@/features/jobs/queries';
 
 export const applicationKeys = {
@@ -45,6 +50,20 @@ export function useUpdateApplicationStatus(jobId: string) {
       applicationId: string;
       payload: UpdateApplicationStatusPayload;
     }) => updateApplicationStatus(applicationId, payload),
+    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.applicants(jobId) }),
+  });
+}
+
+export function useScheduleInterview(jobId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      applicationId,
+      payload,
+    }: {
+      applicationId: string;
+      payload: ScheduleInterviewPayload;
+    }) => scheduleInterview(applicationId, payload),
     onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.applicants(jobId) }),
   });
 }

@@ -27,3 +27,21 @@ export async function updateApplicationStatus(
   );
   return data;
 }
+
+export interface ScheduleInterviewPayload {
+  /** ISO datetime string for the interview. */
+  interviewAt: string;
+  notes?: string;
+}
+
+/** PATCH /job-applications/{applicationId}/interview — employer/admin schedules interview. */
+export async function scheduleInterview(
+  applicationId: string,
+  payload: ScheduleInterviewPayload,
+): Promise<Application> {
+  const { data } = await api.patch<Application>(
+    `/job-applications/${applicationId}/interview`,
+    payload,
+  );
+  return data;
+}

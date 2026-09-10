@@ -6,6 +6,7 @@ import type {
   EmployerProfile,
   Job,
   Role,
+  Testimonial,
 } from '@/api/types';
 import { createSeedDb } from './seed';
 
@@ -49,9 +50,10 @@ export interface MockDb {
   pendingRole: Record<string, Role>;
   /** Emails granted admin access before they've signed up yet. */
   adminInvites: MockAdminInvite[];
+  testimonials: Testimonial[];
 }
 
-const STORAGE_KEY = 'ars_mock_db_v10';
+const STORAGE_KEY = 'ars_mock_db_v11';
 
 let db: MockDb | null = null;
 

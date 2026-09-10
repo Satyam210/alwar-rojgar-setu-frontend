@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import { useUpdateApplicationStatus } from '@/features/applications/queries';
+import { useUpdateApplicationStatus, useScheduleInterview } from '@/features/applications/queries';
 import { useJob, useJobApplicants } from '@/features/jobs/queries';
 import { paths } from '@/routes/paths';
 import { formatDate, formatExperience } from '@/lib/format';
@@ -25,11 +25,15 @@ export function EmployerApplicantsPage() {
   const { data: job } = useJob(jobId);
   const { data, isLoading, isError, refetch } = useJobApplicants(jobId);
   const updateStatus = useUpdateApplicationStatus(jobId ?? '');
+  const scheduleInterview = useScheduleInterview(jobId ?? '');
   const [rejecting, setRejecting] = useState<Application | null>(null);
   const [reason, setReason] = useState('');
   const [hiring, setHiring] = useState<Application | null>(null);
   const [joiningDate, setJoiningDate] = useState('');
   const [attributed, setAttributed] = useState(true);
+  const [interviewing, setInterviewing] = useState<Application | null>(null);
+  const [interviewAt, setInterviewAt] = useState('');
+  const [interviewNotes, setInterviewNotes] = useState('');
 
   usePageTitle(t('applications:employer.applicantsTitle'));
 
@@ -58,6 +62,28 @@ export function EmployerApplicantsPage() {
     setJoiningDate('');
     setAttributed(true);
     setHiring(app);
+  }
+
+  function openInterview(app: Application) {
+    setInterviewAt('');
+    setInterviewNotes('');
+    setInterviewing(app);
+  }
+
+  function confirmInterview() {
+    if (!interviewing || !interviewAt) return;
+    scheduleInterview.mutate(
+      { applicationId: interviewing.id, payload: { interviewAt, notes: interviewNotes || undefined } },
+      {
+        onSuccess: () => {
+          toast.success(t('applications:employer.interviewScheduled'));
+          setInterviewing(null);
+          setInterviewAt('');
+          setInterviewNotes('');
+        },
+        onError: (err) => toast.error(apiErrorMessage(err)),
+      },
+    );
   }
 
   return (
@@ -109,22 +135,40 @@ export function EmployerApplicantsPage() {
                       <ApplicationStatusBadge status={app.status} />
                     </div>
 
-                    {/* Contact + about — phone and description are always visible to the employer. */}
-                    <div className="flex flex-col gap-1 text-sm">
-                      <p>
-                        {t('candidate:fields.phone')}:{' '}
-                        {c?.phone ? <a href={`tel:${c.phone}`}>{c.phone}</a> : '—'}
-                      </p>
-                      {c?.email && (
-                        <p>
-                          {t('applications:employer.contact')}:{' '}
-                          <a href={`mailto:${c.email}`}>{c.email}</a>
+                    {/* Contact details — only shown once interview is scheduled or candidate is hired */}
+                    {(app.status === 'interview_scheduled' || app.status === 'hired') ? (
+                      <div className="flex flex-col gap-1 rounded-lg border border-brand-200 bg-brand-50 px-3 py-2 text-sm">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">
+                          {t('applications:employer.contactUnlocked')}
                         </p>
-                      )}
-                      {c?.description && (
-                        <p className="whitespace-pre-line text-content-muted">{c.description}</p>
-                      )}
-                    </div>
+                        {c?.phone && (
+                          <p>
+                            {t('candidate:fields.phone')}:{' '}
+                            <a href={`tel:${c.phone}`} className="font-medium">{c.phone}</a>
+                          </p>
+                        )}
+                        {c?.email && (
+                          <p>
+                            {t('applications:employer.contact')}:{' '}
+                            <a href={`mailto:${c.email}`} className="font-medium">{c.email}</a>
+                          </p>
+                        )}
+                        {app.status === 'interview_scheduled' && app.interviewAt && (
+                          <p className="mt-1 text-content-muted">
+                            {t('applications:employer.interviewOn', {
+                              date: new Date(app.interviewAt).toLocaleString(),
+                            })}
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-content-muted italic">
+                        {t('applications:employer.contactLocked')}
+                      </p>
+                    )}
+                    {c?.description && (
+                      <p className="whitespace-pre-line text-sm text-content-muted">{c.description}</p>
+                    )}
 
                     {/* Hire attribution — proof the placement happened via the platform. */}
                     {app.status === 'hired' && app.attributedToPlatform && (
@@ -143,9 +187,16 @@ export function EmployerApplicantsPage() {
                     )}
 
                     <div className="flex flex-wrap gap-2">
-                      {app.status !== 'shortlisted' && app.status !== 'hired' && (
-                        <Button size="sm" onClick={() => setStatus(app, 'shortlisted')}>
-                          {t('applications:employer.shortlist')}
+                      {app.status !== 'shortlisted' &&
+                        app.status !== 'interview_scheduled' &&
+                        app.status !== 'hired' && (
+                          <Button size="sm" onClick={() => setStatus(app, 'shortlisted')}>
+                            {t('applications:employer.shortlist')}
+                          </Button>
+                        )}
+                      {app.status !== 'interview_scheduled' && app.status !== 'hired' && app.status !== 'rejected' && (
+                        <Button size="sm" variant="secondary" onClick={() => openInterview(app)}>
+                          {t('applications:employer.scheduleInterview')}
                         </Button>
                       )}
                       {app.status !== 'hired' && (
@@ -166,6 +217,45 @@ export function EmployerApplicantsPage() {
           })}
         </ul>
       )}
+
+      <Modal
+        open={Boolean(interviewing)}
+        onOpenChange={(o) => !o && setInterviewing(null)}
+        title={t('applications:employer.interviewTitle')}
+        description={t('applications:employer.interviewBody')}
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setInterviewing(null)}>
+              {t('common:actions.cancel')}
+            </Button>
+            <Button
+              loading={scheduleInterview.isPending}
+              disabled={!interviewAt}
+              onClick={confirmInterview}
+            >
+              {t('applications:employer.confirmInterview')}
+            </Button>
+          </>
+        }
+      >
+        <div className="flex flex-col gap-4">
+          <Field label={t('applications:employer.interviewDateTime')} required>
+            <Input
+              type="datetime-local"
+              value={interviewAt}
+              onChange={(e) => setInterviewAt(e.target.value)}
+            />
+          </Field>
+          <Field label={t('applications:employer.interviewNotes')}>
+            <Textarea
+              value={interviewNotes}
+              onChange={(e) => setInterviewNotes(e.target.value)}
+              placeholder={t('applications:employer.interviewNotesPlaceholder')}
+              rows={3}
+            />
+          </Field>
+        </div>
+      </Modal>
 
       <Modal
         open={Boolean(rejecting)}

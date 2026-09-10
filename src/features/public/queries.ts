@@ -1,9 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import { getPublicStats } from '@/api/stats';
 import { searchJobs } from '@/api/jobs';
+import { getPublicTestimonials } from '@/api/testimonials';
 
 export function usePublicStats() {
   return useQuery({ queryKey: ['public', 'stats'], queryFn: getPublicStats, staleTime: 60_000 });
+}
+
+export function usePublicTestimonials() {
+  return useQuery({
+    queryKey: ['public', 'testimonials'],
+    queryFn: getPublicTestimonials,
+    staleTime: 5 * 60_000,
+  });
 }
 
 /** GET /jobs — recent active jobs for the homepage featured section. */

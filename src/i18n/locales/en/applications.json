@@ -3,6 +3,7 @@
     "received": "Application Received",
     "viewed": "Viewed by Employer",
     "shortlisted": "Shortlisted",
+    "interview_scheduled": "Interview Scheduled",
     "rejected": "Not Selected",
     "hired": "Hired"
   },
@@ -10,6 +11,7 @@
     "received": "The employer has received your application but hasn't reviewed it yet.",
     "viewed": "The employer has opened and looked at your profile.",
     "shortlisted": "Good news — the employer is interested and may contact you soon.",
+    "interview_scheduled": "The employer has scheduled an interview with you. Check your contact details.",
     "rejected": "The employer has moved forward with other candidates.",
     "hired": "You got the job! The placement is recorded."
   },
@@ -43,6 +45,17 @@
     "attributedHelp": "Tick this so the district office can verify the placement happened via the platform.",
     "confirmHire": "Confirm hire",
     "hiredViaPlatform": "Hired via Rojgar Setu",
-    "joiningOn": "Joining {{date}}"
+    "joiningOn": "Joining {{date}}",
+    "scheduleInterview": "Schedule Interview",
+    "interviewTitle": "Schedule interview",
+    "interviewBody": "Set a date and time for the interview. The candidate's contact details will be unlocked once scheduled.",
+    "interviewDateTime": "Interview date & time",
+    "interviewNotes": "Notes for candidate (optional)",
+    "interviewNotesPlaceholder": "Location, what to bring, contact number on the day…",
+    "confirmInterview": "Confirm interview",
+    "interviewScheduled": "Interview scheduled",
+    "interviewOn": "Interview: {{date}}",
+    "contactUnlocked": "Contact details",
+    "contactLocked": "Contact details visible after interview is scheduled"
   }
 }

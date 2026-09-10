@@ -9,6 +9,7 @@ import { formatNumber } from '@/lib/format';
 import { Button } from '@/components/ui/Button';
 import { Card, CardBody } from '@/components/ui/Card';
 import { FeaturedCompanies } from './FeaturedCompanies';
+import { TestimonialsSection } from './TestimonialsSection';
 
 /** Trades shown before the "Show more" toggle expands the full list. */
 const TRADES_PREVIEW_COUNT = 12;
@@ -131,6 +132,9 @@ export function HomePage() {
 
       {/* Featured employers */}
       <FeaturedCompanies topEmployers={stats?.topEmployers} />
+
+      {/* Jobseeker testimonials */}
+      <TestimonialsSection />
 
       {/* Browse by trade */}
       <section aria-labelledby="trades-heading">
