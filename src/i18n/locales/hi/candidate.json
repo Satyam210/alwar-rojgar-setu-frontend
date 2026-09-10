@@ -34,8 +34,10 @@
     "highestEducation": "उच्चतम शिक्षा",
     "itiTrade": "आईटीआई ट्रेड",
     "itiCollege": "कॉलेज का नाम",
-    "itiCollegeHelp": "आपने जिस कॉलेज या संस्थान से पढ़ाई की उसका नाम दर्ज करें।",
+    "itiCollegeHelp": "सूची में से अपना आईटीआई/कॉलेज चुनें। यदि सूची में नहीं है, तो \"अन्य\" चुनें और उसका नाम लिखें।",
     "itiCollegePlaceholder": "अपने कॉलेज का नाम लिखें",
+    "itiCollegeOther": "अन्य (सूची में नहीं है)",
+    "itiCollegeOtherPlaceholder": "अपने कॉलेज / आईटीआई का नाम लिखें",
     "department": "विभाग / शाखा",
     "graduationYear": "उत्तीर्ण वर्ष",
     "workExperienceMonths": "कार्य अनुभव (महीने)",
@@ -45,7 +47,11 @@
     "skills": "कौशल",
     "skillsHelp": "एक-एक करके कौशल जोड़ें, जैसे वेल्डिंग, एमएस ऑफ़िस।",
     "city": "शहर / कस्बा",
+    "cityOther": "अन्य (सूची में नहीं है)",
+    "cityOtherPlaceholder": "अपना शहर / कस्बा लिखें",
     "district": "ज़िला",
+    "districtOther": "अन्य (सूची में नहीं है)",
+    "districtOtherPlaceholder": "अपना ज़िला लिखें",
     "pincode": "पिन कोड"
   },
   "documents": {

@@ -13,7 +13,7 @@
     "shortlisted": "Good news — the employer is interested and may contact you soon.",
     "interview_scheduled": "The employer has scheduled an interview with you. Check your contact details.",
     "rejected": "The employer has moved forward with other candidates.",
-    "hired": "You got the job! The placement is recorded."
+    "hired": "🎉 Congratulations! You've been selected for this job. The employer will reach out with the next steps."
   },
   "stepper": {
     "ariaLabel": "Application progress",
@@ -29,7 +29,11 @@
     "emptyBody": "Browse jobs and apply to start tracking your applications here.",
     "appliedOn": "Applied {{date}}",
     "filterByStatus": "Filter by status",
-    "allStatuses": "All applications"
+    "allStatuses": "All applications",
+    "congrats": {
+      "title": "Congratulations! You got the job.",
+      "body": "You've been selected for a job you applied to. Well done! The employer will contact you about joining. Check the highlighted application below."
+    }
   },
   "employer": {
     "applicantsTitle": "Applicants",

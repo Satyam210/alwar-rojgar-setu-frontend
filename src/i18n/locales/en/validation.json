@@ -6,6 +6,8 @@
   "pincodeInvalid": "Enter a valid 6-digit PIN code",
   "numberInvalid": "Enter a valid number",
   "minLength": "Must be at least {{count}} characters",
+  "passwordMismatch": "Passwords do not match",
+  "passwordSameAsCurrent": "New password must be different from the current one",
   "maxLength": "Must be at most {{count}} characters",
   "maxWords": "Must be at most {{count}} words",
   "min": "Must be at least {{min}}",

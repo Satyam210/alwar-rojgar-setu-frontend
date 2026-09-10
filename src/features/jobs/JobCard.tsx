@@ -61,6 +61,19 @@ export function JobCard({ job }: { job: Job }) {
           )}
         </dl>
 
+        {(() => {
+          const remaining = Math.max(0, job.openings - job.filledCount);
+          return (
+            <span
+              className={`inline-flex w-fit items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                remaining > 0 ? 'bg-brand-50 text-brand-800' : 'bg-emerald-50 text-emerald-700'
+              }`}
+            >
+              {remaining > 0 ? t('card.remaining', { count: remaining }) : t('card.allFilled')}
+            </span>
+          );
+        })()}
+
         <div className="flex items-center justify-between">
           <p className="text-sm text-content-muted">
             {t('fields.posted')} {formatRelative(job.postedAt)}

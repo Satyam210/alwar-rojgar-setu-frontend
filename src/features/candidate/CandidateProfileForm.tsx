@@ -6,11 +6,16 @@ import { candidateProfileSchema, type CandidateProfileForm } from './schema';
 import type { CandidateProfile, CandidateProfileInput } from '@/api/types';
 import { translateError } from '@/lib/validation';
 import {
-  ALWAR_COLLEGES,
   DISTRICTS,
   EDUCATION_LEVELS,
+  ITI_COLLEGES,
   ITI_DEPARTMENTS,
   ITI_TRADES,
+  OTHER_COLLEGE,
+  OTHER_DISTRICT,
+  OTHER_TOWN,
+  TOWNS_BY_DISTRICT,
+  type District,
 } from '@/lib/constants';
 import { Field } from '@/components/ui/Field';
 import { Input, NativeSelect, Textarea } from '@/components/ui/Input';
@@ -19,25 +24,52 @@ import { SkillsInput } from './SkillsInput';
 
 interface Props {
   initial?: CandidateProfile;
+  /** Email from the signed-in account, used to pre-fill the (locked) email field on onboarding. */
+  defaultEmail?: string;
   submitting?: boolean;
   submitLabel: string;
   onSubmit: (input: CandidateProfileInput) => void;
 }
 
-export function CandidateProfileFormFields({ initial, submitting, submitLabel, onSubmit }: Props) {
+export function CandidateProfileFormFields({
+  initial,
+  defaultEmail,
+  submitting,
+  submitLabel,
+  onSubmit,
+}: Props) {
   const { t } = useTranslation(['candidate', 'common', 'validation']);
   const [skills, setSkills] = useState<string[]>(initial?.skills ?? []);
+
+  // College is a dropdown of Alwar-district ITIs plus an "Other" free-text option.
+  const initialCollege = initial?.itiCollege ?? '';
+  const [collegeIsOther, setCollegeIsOther] = useState<boolean>(
+    Boolean(initialCollege) && !ITI_COLLEGES.includes(initialCollege as (typeof ITI_COLLEGES)[number]),
+  );
+
+  // Town/City is a dependent dropdown filtered by the chosen district, plus an
+  // "Other" free-text option for towns not in the list.
+  const initialCity = initial?.city ?? '';
+  const initialDistrict = (initial?.district ?? 'Alwar') as District;
+  const [districtIsOther, setDistrictIsOther] = useState<boolean>(
+    Boolean(initial?.district) && !DISTRICTS.includes(initialDistrict),
+  );
+  const [cityIsOther, setCityIsOther] = useState<boolean>(
+    Boolean(initialCity) && !(TOWNS_BY_DISTRICT[initialDistrict] ?? []).includes(initialCity),
+  );
 
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<CandidateProfileForm>({
     resolver: zodResolver(candidateProfileSchema),
     defaultValues: {
       fullName: initial?.fullName ?? '',
       phone: initial?.phone ?? '',
-      email: initial?.email ?? '',
+      email: initial?.email ?? defaultEmail ?? '',
       description: initial?.description ?? '',
       gender: initial?.gender ?? '',
       highestEducation: initial?.highestEducation ?? '',
@@ -51,6 +83,10 @@ export function CandidateProfileFormFields({ initial, submitting, submitLabel, o
       pincode: initial?.pincode ?? '',
     },
   });
+
+  // Towns available for the currently-selected district (dependent dropdown).
+  const selectedDistrict = (watch('district') ?? 'Alwar') as District;
+  const townOptions = TOWNS_BY_DISTRICT[selectedDistrict] ?? [];
 
   function submit(values: CandidateProfileForm) {
     const parsed = candidateProfileSchema.parse(values);
@@ -108,17 +144,71 @@ export function CandidateProfileFormFields({ initial, submitting, submitLabel, o
           <Textarea rows={4} {...register('description')} />
         </Field>
         <div className="grid gap-4 sm:grid-cols-3">
-          <Field label={t('fields.city')} error={translateError(t, errors.city?.message)}>
-            <Input {...register('city')} />
-          </Field>
           <Field label={t('fields.district')} error={translateError(t, errors.district?.message)}>
-            <NativeSelect {...register('district')}>
+            <NativeSelect
+              value={districtIsOther ? OTHER_DISTRICT : selectedDistrict}
+              onChange={(e) => {
+                const value = e.target.value;
+                // Changing district always invalidates the town selection — reset it.
+                setValue('city', '');
+                setCityIsOther(false);
+                if (value === OTHER_DISTRICT) {
+                  setDistrictIsOther(true);
+                  setValue('district', '');
+                } else {
+                  setDistrictIsOther(false);
+                  setValue('district', value);
+                }
+              }}
+            >
               {DISTRICTS.map((d) => (
                 <option key={d} value={d}>
                   {d}
                 </option>
               ))}
+              <option value={OTHER_DISTRICT}>{t('fields.districtOther')}</option>
             </NativeSelect>
+            {districtIsOther && (
+              <Input
+                {...register('district')}
+                className="mt-2"
+                placeholder={t('fields.districtOtherPlaceholder')}
+                autoComplete="off"
+                aria-label={t('fields.districtOtherPlaceholder')}
+              />
+            )}
+          </Field>
+          <Field label={t('fields.city')} error={translateError(t, errors.city?.message)}>
+            <NativeSelect
+              value={cityIsOther ? OTHER_TOWN : (watch('city') ?? '')}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === OTHER_TOWN) {
+                  setCityIsOther(true);
+                  setValue('city', '');
+                } else {
+                  setCityIsOther(false);
+                  setValue('city', value);
+                }
+              }}
+            >
+              <option value="">—</option>
+              {townOptions.map((town) => (
+                <option key={town} value={town}>
+                  {town}
+                </option>
+              ))}
+              <option value={OTHER_TOWN}>{t('fields.cityOther')}</option>
+            </NativeSelect>
+            {cityIsOther && (
+              <Input
+                {...register('city')}
+                className="mt-2"
+                placeholder={t('fields.cityOtherPlaceholder')}
+                autoComplete="off"
+                aria-label={t('fields.cityOtherPlaceholder')}
+              />
+            )}
           </Field>
           <Field label={t('fields.pincode')} error={translateError(t, errors.pincode?.message)}>
             <Input inputMode="numeric" maxLength={6} {...register('pincode')} />
@@ -157,17 +247,36 @@ export function CandidateProfileFormFields({ initial, submitting, submitLabel, o
             help={t('fields.itiCollegeHelp')}
             error={translateError(t, errors.itiCollege?.message)}
           >
-            <Input
-              {...register('itiCollege')}
-              list="college-suggestions"
-              placeholder={t('fields.itiCollegePlaceholder')}
-              autoComplete="off"
-            />
-            <datalist id="college-suggestions">
-              {ALWAR_COLLEGES.map((college) => (
-                <option key={college} value={college} />
+            <NativeSelect
+              value={collegeIsOther ? OTHER_COLLEGE : (watch('itiCollege') ?? '')}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === OTHER_COLLEGE) {
+                  setCollegeIsOther(true);
+                  setValue('itiCollege', '');
+                } else {
+                  setCollegeIsOther(false);
+                  setValue('itiCollege', value);
+                }
+              }}
+            >
+              <option value="">—</option>
+              {ITI_COLLEGES.map((college) => (
+                <option key={college} value={college}>
+                  {college}
+                </option>
               ))}
-            </datalist>
+              <option value={OTHER_COLLEGE}>{t('fields.itiCollegeOther')}</option>
+            </NativeSelect>
+            {collegeIsOther && (
+              <Input
+                {...register('itiCollege')}
+                className="mt-2"
+                placeholder={t('fields.itiCollegeOtherPlaceholder')}
+                autoComplete="off"
+                aria-label={t('fields.itiCollegeOtherPlaceholder')}
+              />
+            )}
           </Field>
           <Field
             label={t('fields.department')}

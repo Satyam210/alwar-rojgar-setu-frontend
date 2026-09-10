@@ -13,6 +13,12 @@ export type Role = 'candidate' | 'employer' | 'admin';
 export interface CurrentUser {
   userId: UUID;
   role: Role;
+  /**
+   * Email the account signed in with (email/password or Google). Used to
+   * pre-fill the email field during profile onboarding. May be absent for
+   * phone-only accounts or older backends.
+   */
+  email?: string | null;
   profileCompleted: boolean;
   /**
    * Whether the user has completed/updated their profile. Distinguishes a
@@ -274,6 +280,10 @@ export interface AdminDashboardMetrics {
   registrationsByMonth?: { month: string; count: number }[];
   placementsByMonth?: { month: string; count: number }[];
   applicationsByStatus?: { status: ApplicationStatus; count: number }[];
+  /** Top employers by number of jobs posted. */
+  jobsByEmployer?: { companyName: string; count: number }[];
+  /** Top employers by number of rejected applications. */
+  rejectionsByEmployer?: { companyName: string; count: number }[];
 }
 
 // --- Public homepage stats ---------------------------------------------------
@@ -288,6 +298,8 @@ export interface TopEmployer {
 
 export interface PublicStats {
   activeJobs: number;
+  /** All jobs ever posted (every status except draft). */
+  totalJobs: number;
   registeredEmployers: number;
   successfulConnects: number;
   topEmployers: TopEmployer[];

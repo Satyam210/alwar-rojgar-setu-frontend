@@ -47,12 +47,15 @@ export const env = {
    * VITE_USE_MOCKS=false (or use `?mock=false`) to hit the real API proxy.
    */
   useMocks: resolveUseMocks(),
-  helplineNumber: import.meta.env.VITE_HELPLINE_NUMBER ?? '1800-000-0000',
+  // No public helpline number yet; set VITE_HELPLINE_NUMBER to show one. The UI
+  // hides the helpline line entirely while this is empty (no placeholder shown).
+  helplineNumber: import.meta.env.VITE_HELPLINE_NUMBER ?? '',
   grievanceOfficer: {
-    name: import.meta.env.VITE_GRIEVANCE_OFFICER_NAME ?? '',
-    designation: import.meta.env.VITE_GRIEVANCE_OFFICER_DESIGNATION ?? '',
-    email: import.meta.env.VITE_GRIEVANCE_OFFICER_EMAIL ?? '',
-    phone: import.meta.env.VITE_GRIEVANCE_OFFICER_PHONE ?? '',
+    name: import.meta.env.VITE_GRIEVANCE_OFFICER_NAME ?? 'Harish Nainakwal',
+    designation:
+      import.meta.env.VITE_GRIEVANCE_OFFICER_DESIGNATION ?? 'District Employment Officer',
+    email: import.meta.env.VITE_GRIEVANCE_OFFICER_EMAIL ?? 'deo.alw.emp@rajasthan.gov.in',
+    phone: import.meta.env.VITE_GRIEVANCE_OFFICER_PHONE ?? '9414453026',
   },
   /**
    * Official Alwar District Administration social handles shown in the footer.

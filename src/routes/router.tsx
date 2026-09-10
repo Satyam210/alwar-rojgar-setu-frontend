@@ -30,6 +30,7 @@ import { AdminEmployersPage } from '@/features/admin/EmployersPage';
 import { AdminCandidatesPage } from '@/features/admin/CandidatesPage';
 import { AdminUsersPage } from '@/features/admin/UsersPage';
 import { AdminTestimonialsPage } from '@/features/admin/TestimonialsPage';
+import { AccountSettingsPage } from '@/features/auth/AccountSettingsPage';
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +55,12 @@ export const router = createBrowserRouter([
       {
         path: '/auth/google/callback',
         element: <GoogleOAuthCallback />,
+      },
+
+      // Any authenticated user (account settings / change password)
+      {
+        element: <RequireAuth />,
+        children: [{ path: paths.settings, element: <AccountSettingsPage /> }],
       },
 
       // Candidate

@@ -28,8 +28,8 @@ export function AccessibilityPage() {
       </p>
       <p>
         Pages use semantic landmarks, descriptive labels, and visible focus indicators. Content is
-        available in English and Hindi. If you face any accessibility barrier, please contact our
-        helpline at {env.helplineNumber}.
+        available in English and Hindi. If you face any accessibility barrier, please contact us
+        {env.helplineNumber ? ` on our helpline at ${env.helplineNumber}` : ' via the Grievance Officer'}.
       </p>
     </Prose>
   );
@@ -91,10 +91,12 @@ export function GrievancePage() {
           </p>
         )}
       </address>
-      <p>
-        You can also call our helpline at{' '}
-        <a href={`tel:${env.helplineNumber}`}>{env.helplineNumber}</a>.
-      </p>
+      {env.helplineNumber && (
+        <p>
+          You can also call our helpline at{' '}
+          <a href={`tel:${env.helplineNumber}`}>{env.helplineNumber}</a>.
+        </p>
+      )}
     </Prose>
   );
 }

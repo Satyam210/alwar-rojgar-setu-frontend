@@ -76,6 +76,18 @@ export function CandidateApplicationsPage() {
 
       {data && data.data.length > 0 && (
         <>
+          {data.data.some((app) => app.status === 'hired') && (
+            <div
+              role="status"
+              className="rounded-lg border border-green-300 bg-green-50 p-4 text-green-900"
+            >
+              <p className="flex items-center gap-2 text-base font-semibold">
+                <span aria-hidden="true">🎉</span>
+                {t('applications:candidate.congrats.title')}
+              </p>
+              <p className="mt-1 text-sm">{t('applications:candidate.congrats.body')}</p>
+            </div>
+          )}
           <ul className="flex flex-col gap-3">
             {data.data.map((app) => (
               <li key={app.id}>

@@ -24,6 +24,7 @@
     "testimonials": "Testimonials",
     "login": "Login",
     "logout": "Logout",
+    "settings": "Settings",
     "menu": "Menu"
   },
   "guards": {
@@ -88,6 +89,7 @@
     },
     "stats": {
       "activeJobs": "Active jobs",
+      "totalJobs": "Total jobs posted",
       "registeredEmployers": "Registered employers",
       "successfulConnects": "Successful connects"
     },

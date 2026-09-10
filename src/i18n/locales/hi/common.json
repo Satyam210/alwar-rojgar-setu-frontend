@@ -24,6 +24,7 @@
     "testimonials": "प्रशंसापत्र",
     "login": "लॉग इन",
     "logout": "लॉग आउट",
+    "settings": "सेटिंग्स",
     "menu": "मेनू"
   },
   "guards": {
@@ -88,6 +89,7 @@
     },
     "stats": {
       "activeJobs": "सक्रिय नौकरियाँ",
+      "totalJobs": "कुल पोस्ट की गई नौकरियाँ",
       "registeredEmployers": "पंजीकृत नियोक्ता",
       "successfulConnects": "सफल जुड़ाव"
     },

@@ -77,6 +77,11 @@
     "updated": "नौकरी अद्यतन की गई",
     "closed": "नौकरी बंद की गई",
     "mustVerify": "नौकरी पोस्ट करने से पहले आपकी कंपनी सत्यापित होनी चाहिए।",
+    "positions": {
+      "filled": "{{total}} में से {{filled}} भरे गए",
+      "remaining": "{{count}} शेष",
+      "allFilled": "सभी पद भर गए"
+    },
     "form": {
       "createTitle": "नई नौकरी पोस्ट करें",
       "editTitle": "नौकरी संपादित करें"

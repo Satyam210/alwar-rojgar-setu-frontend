@@ -44,6 +44,8 @@
     "description": "Job description",
     "company": "Company",
     "district": "District",
+    "districtOther": "Other (not in the list)",
+    "districtOtherPlaceholder": "Type the district",
     "trade": "Skill Category",
     "jobType": "Job type",
     "salary": "Salary (monthly)",
@@ -51,12 +53,17 @@
     "netSalary": "Net / take-home salary (monthly)",
     "openings": "Number of openings",
     "filled": "Positions filled",
+    "remaining": "Positions remaining",
     "posted": "Posted"
   },
   "detail": {
     "salaryRange": "Take-home {{net}} · Gross {{gross}}",
     "openings": "{{count}} opening",
     "openings_other": "{{count}} openings",
+    "remaining": "{{count}} position remaining",
+    "remaining_other": "{{count}} positions remaining",
+    "allFilled": "All positions filled",
+    "filledProgress": "{{filled}} of {{total}} positions filled",
     "aboutRole": "About this role",
     "applyTitle": "Apply for this job",
     "applyCta": "Apply for Job",
@@ -72,6 +79,9 @@
   "card": {
     "salary": "Salary",
     "perMonth": "/month",
-    "matchedSkills": "Matches your skills:"
+    "matchedSkills": "Matches your skills:",
+    "remaining": "{{count}} spot left",
+    "remaining_other": "{{count}} spots left",
+    "allFilled": "Positions filled"
   }
 }

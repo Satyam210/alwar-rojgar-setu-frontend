@@ -14,7 +14,9 @@
     "charts": {
       "registrations": "Candidate registrations by month",
       "placements": "Placements by month",
-      "applicationsByStatus": "Applications by status"
+      "applicationsByStatus": "Applications by status",
+      "jobsByEmployer": "Jobs posted by employer (top 10)",
+      "rejectionsByEmployer": "Rejections by employer (top 10)"
     }
   },
   "employers": {

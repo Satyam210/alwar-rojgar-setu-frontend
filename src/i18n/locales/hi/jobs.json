@@ -44,6 +44,8 @@
     "description": "नौकरी का विवरण",
     "company": "कंपनी",
     "district": "ज़िला",
+    "districtOther": "अन्य (सूची में नहीं है)",
+    "districtOtherPlaceholder": "ज़िला लिखें",
     "trade": "कौशल श्रेणी",
     "jobType": "नौकरी का प्रकार",
     "salary": "वेतन (मासिक)",
@@ -51,12 +53,17 @@
     "netSalary": "शुद्ध / हाथ में वेतन (मासिक)",
     "openings": "रिक्तियों की संख्या",
     "filled": "भरे गए पद",
+    "remaining": "शेष पद",
     "posted": "पोस्ट किया गया"
   },
   "detail": {
     "salaryRange": "हाथ में {{net}} · सकल {{gross}}",
     "openings": "{{count}} रिक्ति",
     "openings_other": "{{count}} रिक्तियाँ",
+    "remaining": "{{count}} पद शेष",
+    "remaining_other": "{{count}} पद शेष",
+    "allFilled": "सभी पद भर गए",
+    "filledProgress": "{{total}} में से {{filled}} पद भरे गए",
     "aboutRole": "इस भूमिका के बारे में",
     "applyTitle": "इस नौकरी के लिए आवेदन करें",
     "applyCta": "नौकरी के लिए आवेदन करें",
@@ -72,6 +79,9 @@
   "card": {
     "salary": "वेतन",
     "perMonth": "/माह",
-    "matchedSkills": "आपके कौशल से मेल:"
+    "matchedSkills": "आपके कौशल से मेल:",
+    "remaining": "{{count}} पद शेष",
+    "remaining_other": "{{count}} पद शेष",
+    "allFilled": "सभी पद भरे"
   }
 }
