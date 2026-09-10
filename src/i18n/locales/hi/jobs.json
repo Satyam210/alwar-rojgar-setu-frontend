@@ -44,6 +44,8 @@
     "description": "नौकरी का विवरण",
     "company": "कंपनी",
     "district": "ज़िला",
+    "districtOther": "अन्य (सूची में नहीं है)",
+    "districtOtherPlaceholder": "ज़िला लिखें",
     "trade": "कौशल श्रेणी",
     "jobType": "नौकरी का प्रकार",
     "salary": "वेतन (मासिक)",

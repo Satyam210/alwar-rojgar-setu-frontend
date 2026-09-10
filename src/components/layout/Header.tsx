@@ -163,6 +163,7 @@ function getNavItems(role: string | undefined, t: (k: string) => string): NavIte
           label: t('nav.myProfile'),
           matchPaths: [paths.employer.onboarding],
         },
+        { to: paths.settings, label: t('nav.settings') },
       ];
     case 'admin':
       return [
@@ -170,6 +171,7 @@ function getNavItems(role: string | undefined, t: (k: string) => string): NavIte
         { to: paths.admin.employers, label: t('nav.employers') },
         { to: paths.admin.candidates, label: t('nav.candidates') },
         { to: paths.admin.users, label: t('nav.users') },
+        { to: paths.settings, label: t('nav.settings') },
       ];
     default:
       return common;

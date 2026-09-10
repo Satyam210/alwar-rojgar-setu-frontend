@@ -108,7 +108,9 @@ export function EmployerJobsPage() {
 
       {data && data.data.length > 0 && (
         <ul className="flex flex-col gap-3">
-          {data.data.map((job) => (
+          {data.data.map((job) => {
+            const remaining = Math.max(0, job.openings - job.filledCount);
+            return (
             <li key={job.id}>
               <Card>
                 <CardBody className="flex flex-wrap items-center justify-between gap-3">
@@ -120,6 +122,22 @@ export function EmployerJobsPage() {
                     <p className="text-sm text-content-muted">
                       {formatCurrency(job.grossSalary)} · {job.district} ·{' '}
                       {t('jobs:fields.posted')} {formatRelative(job.postedAt)}
+                    </p>
+                    <p className="mt-1 text-sm text-content-muted">
+                      {t('employer:jobs.positions.filled', {
+                        filled: job.filledCount,
+                        total: job.openings,
+                      })}
+                      {' · '}
+                      {remaining > 0 ? (
+                        <span className="font-medium text-content">
+                          {t('employer:jobs.positions.remaining', { count: remaining })}
+                        </span>
+                      ) : (
+                        <span className="font-medium text-success">
+                          {t('employer:jobs.positions.allFilled')}
+                        </span>
+                      )}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -179,7 +197,8 @@ export function EmployerJobsPage() {
                 </CardBody>
               </Card>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
 

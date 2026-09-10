@@ -87,3 +87,11 @@ export async function resetPassword(payload: {
   const { data } = await api.post<{ message: string }>('/auth/reset-password', payload);
   return data;
 }
+
+export async function changePassword(payload: {
+  currentPassword: string;
+  newPassword: string;
+}): Promise<{ message: string }> {
+  const { data } = await api.post<{ message: string }>('/auth/change-password', payload);
+  return data;
+}

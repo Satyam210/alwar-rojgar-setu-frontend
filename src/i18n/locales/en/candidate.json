@@ -27,8 +27,10 @@
     "highestEducation": "Highest education",
     "itiTrade": "ITI trade",
     "itiCollege": "College name",
-    "itiCollegeHelp": "Enter the name of the college or institute you studied at.",
+    "itiCollegeHelp": "Select your ITI/college from the list. If it isn't listed, choose \"Other\" and type its name.",
     "itiCollegePlaceholder": "Type your college name",
+    "itiCollegeOther": "Other (not in the list)",
+    "itiCollegeOtherPlaceholder": "Type your college / ITI name",
     "department": "Department / Branch",
     "graduationYear": "Year of passing",
     "workExperienceMonths": "Work experience (months)",
@@ -38,7 +40,11 @@
     "skills": "Skills",
     "skillsHelp": "Add skills one at a time, e.g. Welding, MS Office.",
     "city": "City / Town",
+    "cityOther": "Other (not in the list)",
+    "cityOtherPlaceholder": "Type your town / city",
     "district": "District",
+    "districtOther": "Other (not in the list)",
+    "districtOtherPlaceholder": "Type your district",
     "pincode": "PIN code"
   },
   "documents": {

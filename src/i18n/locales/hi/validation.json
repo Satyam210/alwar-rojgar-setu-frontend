@@ -6,6 +6,8 @@
   "pincodeInvalid": "मान्य 6 अंकों का पिन कोड दर्ज करें",
   "numberInvalid": "मान्य संख्या दर्ज करें",
   "minLength": "कम से कम {{count}} अक्षर होने चाहिए",
+  "passwordMismatch": "पासवर्ड मेल नहीं खाते",
+  "passwordSameAsCurrent": "नया पासवर्ड वर्तमान पासवर्ड से अलग होना चाहिए",
   "maxLength": "अधिकतम {{count}} अक्षर होने चाहिए",
   "maxWords": "अधिकतम {{count}} शब्द होने चाहिए",
   "min": "कम से कम {{min}} होना चाहिए",

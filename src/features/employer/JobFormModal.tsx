@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { jobSchema, type JobForm } from './schema';
 import type { Job, JobInput } from '@/api/types';
 import { translateError } from '@/lib/validation';
-import { DISTRICTS, ITI_TRADES, JOB_TYPES } from '@/lib/constants';
+import { DISTRICTS, ITI_TRADES, JOB_TYPES, OTHER_DISTRICT } from '@/lib/constants';
 import { Modal } from '@/components/ui/Modal';
 import { Field } from '@/components/ui/Field';
 import { Input, NativeSelect, Textarea } from '@/components/ui/Input';
@@ -27,6 +27,8 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<JobForm>({
     resolver: zodResolver(jobSchema),
@@ -42,6 +44,11 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
     },
   });
 
+  // Whether the job's district is one not in the known list (free-text "Other").
+  const [districtIsOther, setDistrictIsOther] = useState<boolean>(
+    Boolean(initial?.district) && !DISTRICTS.includes(initial?.district as (typeof DISTRICTS)[number]),
+  );
+
   useEffect(() => {
     reset({
       title: initial?.title ?? '',
@@ -53,6 +60,9 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
       tradeRequired: initial?.tradeRequired ?? '',
       district: initial?.district ?? 'Alwar',
     });
+    setDistrictIsOther(
+      Boolean(initial?.district) && !DISTRICTS.includes(initial?.district as (typeof DISTRICTS)[number]),
+    );
   }, [initial, reset]);
 
   function submit(values: JobForm) {
@@ -133,13 +143,35 @@ export function JobFormModal({ open, onOpenChange, initial, submitting, onSubmit
             error={translateError(t, errors.district?.message)}
             required
           >
-            <NativeSelect {...register('district')}>
+            <NativeSelect
+              value={districtIsOther ? OTHER_DISTRICT : (watch('district') ?? 'Alwar')}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === OTHER_DISTRICT) {
+                  setDistrictIsOther(true);
+                  setValue('district', '');
+                } else {
+                  setDistrictIsOther(false);
+                  setValue('district', value);
+                }
+              }}
+            >
               {DISTRICTS.map((d) => (
                 <option key={d} value={d}>
                   {d}
                 </option>
               ))}
+              <option value={OTHER_DISTRICT}>{t('jobs:fields.districtOther')}</option>
             </NativeSelect>
+            {districtIsOther && (
+              <Input
+                {...register('district')}
+                className="mt-2"
+                placeholder={t('jobs:fields.districtOtherPlaceholder')}
+                autoComplete="off"
+                aria-label={t('jobs:fields.districtOtherPlaceholder')}
+              />
+            )}
           </Field>
         </div>
 

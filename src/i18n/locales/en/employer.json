@@ -77,6 +77,11 @@
     "updated": "Job updated",
     "closed": "Job closed",
     "mustVerify": "Your company must be verified before you can post jobs.",
+    "positions": {
+      "filled": "{{filled}} of {{total}} filled",
+      "remaining": "{{count}} remaining",
+      "allFilled": "All positions filled"
+    },
     "form": {
       "createTitle": "Post a new job",
       "editTitle": "Edit job"
