@@ -43,6 +43,7 @@ export function AdminCandidatesPage() {
       });
       const columns: CsvColumn<CandidateProfile>[] = [
         { header: 'Full Name', value: (c) => c.fullName },
+        { header: 'Gender', value: (c) => c.gender },
         { header: 'Phone', value: (c) => c.phone },
         { header: 'Email', value: (c) => c.email },
         { header: 'ITI Trade', value: (c) => c.itiTrade },
@@ -123,7 +124,7 @@ export function AdminCandidatesPage() {
                   <CardBody>
                     <h2 className="text-base font-semibold">{c.fullName}</h2>
                     <p className="text-sm text-content-muted">
-                      {[c.itiTrade, c.highestEducation, c.district].filter(Boolean).join(' · ') ||
+                      {[c.gender ? t(`candidate:fields.genderOptions.${c.gender}`) : null, c.itiTrade, c.highestEducation, c.district].filter(Boolean).join(' · ') ||
                         '—'}
                     </p>
                     {(c.department || c.itiCollege) && (

@@ -24,6 +24,13 @@
     "emailHelp": "Employers use this to contact you. Optional but recommended.",
     "description": "About you",
     "descriptionHelp": "Optional. Briefly describe your skills and experience (max 100 words).",
+    "gender": "Gender",
+    "genderOptions": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "prefer_not_to_say": "Prefer not to say"
+    },
     "highestEducation": "Highest education",
     "itiTrade": "ITI trade",
     "itiCollege": "College name",

@@ -39,6 +39,7 @@ export function CandidateProfileFormFields({ initial, submitting, submitLabel, o
       phone: initial?.phone ?? '',
       email: initial?.email ?? '',
       description: initial?.description ?? '',
+      gender: initial?.gender ?? '',
       highestEducation: initial?.highestEducation ?? '',
       itiTrade: initial?.itiTrade ?? '',
       itiCollege: initial?.itiCollege ?? '',
@@ -86,6 +87,17 @@ export function CandidateProfileFormFields({ initial, submitting, submitLabel, o
             help={t('fields.emailHelp')}
           >
             <Input type="email" autoComplete="email" readOnly disabled {...register('email')} />
+          </Field>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label={t('fields.gender')}>
+            <NativeSelect {...register('gender')}>
+              <option value="">—</option>
+              <option value="male">{t('fields.genderOptions.male')}</option>
+              <option value="female">{t('fields.genderOptions.female')}</option>
+              <option value="other">{t('fields.genderOptions.other')}</option>
+              <option value="prefer_not_to_say">{t('fields.genderOptions.prefer_not_to_say')}</option>
+            </NativeSelect>
           </Field>
         </div>
         <Field

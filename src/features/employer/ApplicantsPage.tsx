@@ -125,7 +125,11 @@ export function EmployerApplicantsPage() {
                       <div>
                         <h2 className="text-base font-semibold">{c?.fullName ?? '—'}</h2>
                         <p className="text-sm text-content-muted">
-                          {[c?.itiTrade, c?.highestEducation].filter(Boolean).join(' · ') || '—'}
+                          {[
+                            c?.gender ? t(`candidate:fields.genderOptions.${c.gender}`) : null,
+                            c?.itiTrade,
+                            c?.highestEducation,
+                          ].filter(Boolean).join(' · ') || '—'}
                         </p>
                         <p className="text-sm text-content-muted">
                           {t('candidate:fields.workExperienceMonths')}:{' '}

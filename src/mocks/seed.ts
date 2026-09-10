@@ -44,6 +44,7 @@ export function createSeedDb(): MockDb {
       id: 'cp-1',
       userId: 'u-c1',
       fullName: 'Rahul Sharma',
+      gender: 'male',
       phone: '9811100001',
       email: 'rahul.sharma@example.com',
       description:
@@ -67,6 +68,7 @@ export function createSeedDb(): MockDb {
       id: 'cp-2',
       userId: 'u-c2',
       fullName: 'Priya Verma',
+      gender: 'female',
       phone: '9811100002',
       description:
         'Fresh ITI Electrician graduate skilled in domestic and industrial wiring and COPA basics. Eager to learn on the job.',
@@ -88,6 +90,7 @@ export function createSeedDb(): MockDb {
       id: 'cp-3',
       userId: 'u-c3',
       fullName: 'Amit Kumar',
+      gender: 'male',
       phone: '9811100003',
       description:
         'Diploma-qualified Diesel Mechanic with 2+ years overhauling heavy-vehicle engines. Reliable and safety-conscious.',
@@ -109,6 +112,7 @@ export function createSeedDb(): MockDb {
       id: 'cp-4',
       userId: 'u-c4',
       fullName: 'Sunil Yadav',
+      gender: 'male',
       phone: '9811100005',
       description:
         'ITI Welder trained in arc and MIG welding. 6 months of fabrication-shop experience; keen to grow with a manufacturing unit.',

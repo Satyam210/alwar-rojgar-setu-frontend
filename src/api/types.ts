@@ -39,6 +39,7 @@ export interface CandidateProfile {
   phone?: string | null;
   /** Short self-description / bio (≤100 words) shown to employers. */
   description?: string | null;
+  gender?: string | null;
   highestEducation?: string | null;
   itiTrade?: string | null;
   /** Which ITI the candidate studied at (department reporting / grouping). */
