@@ -625,6 +625,25 @@ add('GET', '/admin/dashboard', (ctx) => {
   requireRole(ctx, 'admin');
   const { candidateProfiles, employerProfiles, jobs, applications } = ctx.db;
   const byStatus = (s: ApplicationStatus) => applications.filter((a) => a.status === s).length;
+  const jobsByEmployer = employerProfiles
+    .map((e) => ({
+      companyName: e.companyName,
+      count: jobs.filter((j) => j.employerId === e.id).length,
+    }))
+    .filter((r) => r.count > 0)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
+  const rejectionsByEmployer = employerProfiles
+    .map((e) => {
+      const jobIds = new Set(jobs.filter((j) => j.employerId === e.id).map((j) => j.id));
+      return {
+        companyName: e.companyName,
+        count: applications.filter((a) => a.status === 'rejected' && jobIds.has(a.jobId)).length,
+      };
+    })
+    .filter((r) => r.count > 0)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
   const metrics: AdminDashboardMetrics = {
     totalCandidates: candidateProfiles.length,
     totalEmployers: employerProfiles.length,
@@ -651,6 +670,8 @@ add('GET', '/admin/dashboard', (ctx) => {
     applicationsByStatus: (
       ['received', 'viewed', 'shortlisted', 'rejected', 'hired'] as ApplicationStatus[]
     ).map((status) => ({ status, count: byStatus(status) })),
+    jobsByEmployer,
+    rejectionsByEmployer,
   };
   return metrics;
 });

@@ -106,6 +106,30 @@ export function AdminDashboardPage() {
             </BarChart>
           </ChartCard>
         )}
+
+        {data.jobsByEmployer && data.jobsByEmployer.length > 0 && (
+          <ChartCard title={t('dashboard.charts.jobsByEmployer')}>
+            <BarChart data={data.jobsByEmployer} layout="vertical" margin={{ left: 16 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" allowDecimals={false} />
+              <YAxis type="category" dataKey="companyName" width={130} tick={{ fontSize: 12 }} />
+              <Tooltip />
+              <Bar dataKey="count" fill="#1d4ed8" />
+            </BarChart>
+          </ChartCard>
+        )}
+
+        {data.rejectionsByEmployer && data.rejectionsByEmployer.length > 0 && (
+          <ChartCard title={t('dashboard.charts.rejectionsByEmployer')}>
+            <BarChart data={data.rejectionsByEmployer} layout="vertical" margin={{ left: 16 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" allowDecimals={false} />
+              <YAxis type="category" dataKey="companyName" width={130} tick={{ fontSize: 12 }} />
+              <Tooltip />
+              <Bar dataKey="count" fill="#dc2626" />
+            </BarChart>
+          </ChartCard>
+        )}
       </div>
     </div>
   );

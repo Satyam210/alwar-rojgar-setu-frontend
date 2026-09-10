@@ -270,6 +270,10 @@ export interface AdminDashboardMetrics {
   registrationsByMonth?: { month: string; count: number }[];
   placementsByMonth?: { month: string; count: number }[];
   applicationsByStatus?: { status: ApplicationStatus; count: number }[];
+  /** Top employers by number of jobs posted. */
+  jobsByEmployer?: { companyName: string; count: number }[];
+  /** Top employers by number of rejected applications. */
+  rejectionsByEmployer?: { companyName: string; count: number }[];
 }
 
 // --- Public homepage stats ---------------------------------------------------
