@@ -15,6 +15,14 @@
     "rejected": "The employer has moved forward with other candidates.",
     "hired": "You got the job! The placement is recorded."
   },
+  "stepper": {
+    "ariaLabel": "Application progress",
+    "applied": "Applied",
+    "reviewed": "Reviewed",
+    "shortlisted": "Shortlisted",
+    "interview": "Interview",
+    "result": "Result"
+  },
   "candidate": {
     "title": "My Applications",
     "empty": "You haven't applied to any jobs yet",
