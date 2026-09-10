@@ -108,19 +108,24 @@ export function HomePage() {
       </section>
 
       {/* Live stats */}
-      <section aria-labelledby="stats-heading" className="grid gap-4 sm:grid-cols-3">
+      <section aria-labelledby="stats-heading" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <h2 id="stats-heading" className="sr-only">
           {t('common:footer.about')}
         </h2>
         <StatCard
-          icon={<BriefcaseIcon />}
-          value={formatNumber(stats?.activeJobs ?? 0)}
-          label={t('common:home.stats.activeJobs')}
-        />
-        <StatCard
           icon={<BuildingIcon />}
           value={formatNumber(stats?.registeredEmployers ?? 0)}
           label={t('common:home.stats.registeredEmployers')}
+        />
+        <StatCard
+          icon={<ClipboardListIcon />}
+          value={formatNumber(stats?.totalJobs ?? 0)}
+          label={t('common:home.stats.totalJobs')}
+        />
+        <StatCard
+          icon={<BriefcaseIcon />}
+          value={formatNumber(stats?.activeJobs ?? 0)}
+          label={t('common:home.stats.activeJobs')}
         />
         <StatCard
           icon={<CheckBadgeIcon />}
@@ -257,6 +262,16 @@ function CheckBadgeIcon() {
     <svg {...iconProps}>
       <path d="M12 3l2.3 1.7 2.8-.2 1 2.6 2.4 1.5-.8 2.7.8 2.7-2.4 1.5-1 2.6-2.8-.2L12 21l-2.3-1.7-2.8.2-1-2.6L3.5 15l.8-2.7-.8-2.7 2.4-1.5 1-2.6 2.8.2z" />
       <path d="M9 12l2 2 4-4" />
+    </svg>
+  );
+}
+
+function ClipboardListIcon() {
+  return (
+    <svg {...iconProps}>
+      <rect x="5" y="4" width="14" height="17" rx="2" />
+      <path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" />
+      <path d="M9 10h6M9 14h6M9 18h4" />
     </svg>
   );
 }

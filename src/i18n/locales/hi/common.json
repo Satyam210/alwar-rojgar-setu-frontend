@@ -88,6 +88,7 @@
     },
     "stats": {
       "activeJobs": "सक्रिय नौकरियाँ",
+      "totalJobs": "कुल पोस्ट की गई नौकरियाँ",
       "registeredEmployers": "पंजीकृत नियोक्ता",
       "successfulConnects": "सफल जुड़ाव"
     },

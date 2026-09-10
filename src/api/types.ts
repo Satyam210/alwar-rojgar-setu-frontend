@@ -288,6 +288,8 @@ export interface TopEmployer {
 
 export interface PublicStats {
   activeJobs: number;
+  /** All jobs ever posted (every status except draft). */
+  totalJobs: number;
   registeredEmployers: number;
   successfulConnects: number;
   topEmployers: TopEmployer[];

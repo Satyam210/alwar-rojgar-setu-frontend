@@ -420,6 +420,7 @@ add('GET', '/stats', (ctx) => {
 
   return {
     activeJobs: jobs.filter((j: any) => j.status === 'active').length,
+    totalJobs: jobs.filter((j: any) => j.status !== 'draft').length,
     registeredEmployers: employerProfiles.length,
     successfulConnects: uniqueCandidates.size,
     topEmployers,
