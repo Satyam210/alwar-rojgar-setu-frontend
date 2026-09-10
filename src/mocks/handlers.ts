@@ -196,6 +196,7 @@ add('GET', '/users/current', (ctx) => {
   return {
     userId: user.userId,
     role: user.role,
+    email: user.email ?? null,
     profileCompleted: user.profileCompleted,
     profileUpdated: user.profileCompleted,
     isActive: user.isActive,

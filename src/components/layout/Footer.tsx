@@ -106,12 +106,14 @@ export function Footer() {
               </p>
             )}
           </address>
-          <p className="mt-3 text-sm">
-            {t('footer.helplineText')}{' '}
-            <a href={`tel:${env.helplineNumber}`} className="font-medium">
-              {env.helplineNumber}
-            </a>
-          </p>
+          {env.helplineNumber && (
+            <p className="mt-3 text-sm">
+              {t('footer.helplineText')}{' '}
+              <a href={`tel:${env.helplineNumber}`} className="font-medium">
+                {env.helplineNumber}
+              </a>
+            </p>
+          )}
         </div>
       </div>
 

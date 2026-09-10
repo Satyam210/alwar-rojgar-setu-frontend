@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
+import { useAuthStore } from '@/stores/authStore';
 import { useCreateCandidateProfile } from './queries';
 import { CandidateProfileFormFields } from './CandidateProfileForm';
 import { paths } from '@/routes/paths';
@@ -13,6 +14,7 @@ export function CandidateOnboardingPage() {
   usePageTitle(t('onboarding.title'));
   const navigate = useNavigate();
   const create = useCreateCandidateProfile();
+  const email = useAuthStore((s) => s.user?.email ?? undefined);
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -23,6 +25,7 @@ export function CandidateOnboardingPage() {
         </CardHeader>
         <CardBody>
           <CandidateProfileFormFields
+            defaultEmail={email}
             submitLabel={t('onboarding.submit')}
             submitting={create.isPending}
             onSubmit={(input) =>

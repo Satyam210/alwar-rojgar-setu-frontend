@@ -44,6 +44,8 @@
     "description": "Job description",
     "company": "Company",
     "district": "District",
+    "districtOther": "Other (not in the list)",
+    "districtOtherPlaceholder": "Type the district",
     "trade": "Skill Category",
     "jobType": "Job type",
     "salary": "Salary (monthly)",
