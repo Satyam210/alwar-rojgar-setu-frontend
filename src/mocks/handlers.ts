@@ -106,6 +106,12 @@ function requireRole(ctx: HandlerCtx, role: Role): MockUser {
   return user;
 }
 
+function requireSuperAdmin(ctx: HandlerCtx): MockUser {
+  const user = requireRole(ctx, 'admin');
+  if (user.adminRole !== 'super_admin') throw new HttpError(403, 'Super admin access required.');
+  return user;
+}
+
 function candidateOf(ctx: HandlerCtx, user: MockUser): CandidateProfile {
   const profile = ctx.db.candidateProfiles.find((c) => c.userId === user.userId);
   if (!profile) throw new HttpError(404, 'Candidate profile not found.');
@@ -226,6 +232,7 @@ add('GET', '/users/current', (ctx) => {
     profileCompleted: user.profileCompleted,
     profileUpdated: user.profileCompleted,
     isActive: user.isActive,
+    ...(user.role === 'admin' && user.adminRole && { adminRole: user.adminRole }),
   };
 });
 
@@ -416,7 +423,7 @@ add('GET', '/testimonials/admin', (ctx) => {
 });
 
 add('POST', '/testimonials/admin', (ctx) => {
-  requireRole(ctx, 'admin');
+  requireSuperAdmin(ctx);
   const { name, body } = ctx.body;
   if (!name || !body) throw new HttpError(400, 'name and body are required');
   const now = new Date().toISOString();
@@ -438,7 +445,7 @@ add('POST', '/testimonials/admin', (ctx) => {
 });
 
 add('PATCH', '/testimonials/admin/:id', (ctx) => {
-  requireRole(ctx, 'admin');
+  requireSuperAdmin(ctx);
   const t = ctx.db.testimonials.find((x) => x.id === ctx.params.id);
   if (!t) throw new HttpError(404, 'Testimonial not found');
   if (ctx.body.name !== undefined) t.name = String(ctx.body.name);
@@ -454,7 +461,7 @@ add('PATCH', '/testimonials/admin/:id', (ctx) => {
 });
 
 add('DELETE', '/testimonials/admin/:id', (ctx) => {
-  requireRole(ctx, 'admin');
+  requireSuperAdmin(ctx);
   const idx = ctx.db.testimonials.findIndex((x) => x.id === ctx.params.id);
   if (idx === -1) throw new HttpError(404, 'Testimonial not found');
   ctx.db.testimonials.splice(idx, 1);
@@ -801,7 +808,7 @@ add('GET', '/admin/employers/:id', (ctx) => {
 });
 
 add('PATCH', '/admin/employers/:id/verification', (ctx) => {
-  const admin = requireRole(ctx, 'admin');
+  const admin = requireSuperAdmin(ctx);
   const e = ctx.db.employerProfiles.find((x) => x.id === ctx.params.id);
   if (!e) throw new HttpError(404, 'Employer not found.');
   e.status = ctx.body.status as EmployerProfile['status'];
@@ -828,7 +835,7 @@ add('GET', '/admin/candidates/:id', (ctx) => {
 });
 
 function setActive(ctx: HandlerCtx, active: boolean) {
-  requireRole(ctx, 'admin');
+  requireSuperAdmin(ctx);
   const userId = ctx.params.id;
   const user = ctx.db.users.find((u) => u.userId === userId);
   if (user) user.isActive = active;
@@ -853,6 +860,7 @@ function toAdminUser(u: MockUser): AdminUser {
     name: u.name ?? 'Admin',
     email: u.email ?? '',
     adminStatus: u.adminStatus ?? 'approved',
+    adminRole: u.adminRole,
     isActive: u.isActive,
     createdAt: u.createdAt,
   };
@@ -874,7 +882,7 @@ add('GET', '/admin/admin-invites', (ctx) => {
 });
 
 add('DELETE', '/admin/admin-invites/:inviteId', (ctx) => {
-  requireRole(ctx, 'admin');
+  requireSuperAdmin(ctx);
   const before = ctx.db.adminInvites.length;
   ctx.db.adminInvites = ctx.db.adminInvites.filter((i) => i.id !== ctx.params.inviteId);
   if (ctx.db.adminInvites.length === before) throw new HttpError(404, 'Invite not found.');
@@ -888,8 +896,9 @@ add('DELETE', '/admin/admin-invites/:inviteId', (ctx) => {
  * every signup handler — that's exercised against the real backend instead.)
  */
 add('POST', '/admin/admins/grant', (ctx) => {
-  const admin = requireRole(ctx, 'admin');
+  const admin = requireSuperAdmin(ctx);
   const email = String(ctx.body.email ?? '').toLowerCase().trim();
+  const adminRole = ctx.body.adminRole === 'super_admin' ? 'super_admin' : 'read_only';
   if (!email) throw new HttpError(400, 'Email is required.');
 
   const existing = ctx.db.users.find((u) => u.email === email);
@@ -897,6 +906,7 @@ add('POST', '/admin/admins/grant', (ctx) => {
     if (existing.role === 'admin') throw new HttpError(409, 'This user is already an admin');
     existing.role = 'admin';
     existing.adminStatus = 'approved';
+    existing.adminRole = adminRole as MockUser['adminRole'];
     existing.isActive = true;
     persist();
     return reply({ kind: 'promoted', user: toAdminUser(existing) }, 201);

@@ -90,7 +90,8 @@ export function useAdminInvites() {
 export function useGrantAdminAccess() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (email: string) => grantAdminAccess(email),
+    mutationFn: ({ email, adminRole }: { email: string; adminRole: import('@/api/types').AdminRole }) =>
+      grantAdminAccess(email, adminRole),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin', 'admins'] });
       qc.invalidateQueries({ queryKey: adminKeys.adminInvites() });

@@ -8,6 +8,7 @@ export type UUID = string;
 export type ISODateString = string;
 
 export type Role = 'candidate' | 'employer' | 'admin';
+export type AdminRole = 'super_admin' | 'read_only';
 
 /** GET /users/current */
 export interface CurrentUser {
@@ -31,6 +32,8 @@ export interface CurrentUser {
   isActive?: boolean;
   /** Only present for employer role. Reflects employer_profiles.status. */
   employerStatus?: 'pending' | 'verified' | 'rejected';
+  /** Only present for admin role. Determines which actions are available. */
+  adminRole?: AdminRole;
 }
 
 // --- Candidate ---------------------------------------------------------------
@@ -252,6 +255,7 @@ export interface AdminUser {
   name: string | null;
   email: string;
   adminStatus: AdminStatus | null;
+  adminRole?: AdminRole;
   isActive?: boolean;
   createdAt?: ISODateString;
 }

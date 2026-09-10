@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
+import { useAuthStore } from '@/stores/authStore';
 import { useAdminEmployers, useToggleUser, useVerifyEmployer } from './queries';
 import { PAGE_SIZE } from '@/lib/constants';
 import { formatDate } from '@/lib/format';
@@ -25,6 +26,7 @@ const STATUSES: EmployerStatus[] = ['pending', 'verified', 'rejected'];
 export function AdminEmployersPage() {
   const { t } = useTranslation(['admin', 'employer', 'common']);
   usePageTitle(t('admin:employers.title'));
+  const isSuperAdmin = useAuthStore((s) => s.user?.adminRole === 'super_admin');
 
   // Fetch the full list once; all filtering/paging happens on the client.
   const { data, isLoading, isError, refetch } = useAdminEmployers({ limit: 500 });
@@ -234,27 +236,29 @@ export function AdminEmployersPage() {
                         </div>
                       </div>
 
-                      <div className="flex shrink-0 flex-wrap gap-2 sm:flex-col sm:items-end">
-                        {emp.status === 'pending' && (
-                          <div className="flex gap-2">
-                            <Button size="sm" onClick={() => approve(emp)}>
-                              {t('admin:employers.verify')}
+                      {isSuperAdmin && (
+                        <div className="flex shrink-0 flex-wrap gap-2 sm:flex-col sm:items-end">
+                          {emp.status === 'pending' && (
+                            <div className="flex gap-2">
+                              <Button size="sm" onClick={() => approve(emp)}>
+                                {t('admin:employers.verify')}
+                              </Button>
+                              <Button variant="ghost" size="sm" onClick={() => setRejecting(emp)}>
+                                {t('admin:employers.reject')}
+                              </Button>
+                            </div>
+                          )}
+                          {emp.status === 'verified' && (
+                            <Button
+                              variant={active ? 'danger' : 'secondary'}
+                              size="sm"
+                              onClick={() => toggleActive(emp)}
+                            >
+                              {active ? t('admin:employers.disable') : t('admin:employers.enable')}
                             </Button>
-                            <Button variant="ghost" size="sm" onClick={() => setRejecting(emp)}>
-                              {t('admin:employers.reject')}
-                            </Button>
-                          </div>
-                        )}
-                        {emp.status === 'verified' && (
-                          <Button
-                            variant={active ? 'danger' : 'secondary'}
-                            size="sm"
-                            onClick={() => toggleActive(emp)}
-                          >
-                            {active ? t('admin:employers.disable') : t('admin:employers.enable')}
-                          </Button>
-                        )}
-                      </div>
+                          )}
+                        </div>
+                      )}
                     </CardBody>
                   </Card>
                 </li>

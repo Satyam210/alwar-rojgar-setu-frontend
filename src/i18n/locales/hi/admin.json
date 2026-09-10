@@ -92,6 +92,7 @@
     "grantTitle": "एडमिन एक्सेस दें",
     "grantSubtitle": "एक ईमेल पता दर्ज करें। यदि उनका पहले से खाता है, तो वे तुरंत एडमिन बन जाते हैं। अन्यथा, साइन अप करते ही उन्हें एडमिन एक्सेस मिल जाएगा।",
     "grantEmailLabel": "ईमेल पता",
+    "grantRoleLabel": "भूमिका",
     "grantSubmit": "एक्सेस दें",
     "grantPromoted": "{{email}} अब एडमिन है",
     "grantInvited": "साइन अप करने पर {{email}} एडमिन बन जाएगा",
@@ -103,6 +104,8 @@
     "inviteCancelled": "आमंत्रण रद्द किया गया",
     "currentAdminsTitle": "वर्तमान एडमिन",
     "adminSince": "एडमिन बने",
-    "empty": "अभी तक कोई एडमिन नहीं"
+    "empty": "अभी तक कोई एडमिन नहीं",
+    "roleSuperAdmin": "सुपर एडमिन",
+    "roleReadOnly": "केवल-पढ़ें"
   }
 }

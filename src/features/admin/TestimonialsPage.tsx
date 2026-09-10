@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
+import { useAuthStore } from '@/stores/authStore';
 import {
   useAdminTestimonials,
   useCreateTestimonial,
@@ -51,6 +52,7 @@ function formFromTestimonial(t: Testimonial): FormState {
 export function AdminTestimonialsPage() {
   const { t } = useTranslation(['admin', 'common']);
   usePageTitle(t('admin:testimonials.title'));
+  const isSuperAdmin = useAuthStore((s) => s.user?.adminRole === 'super_admin');
 
   const { data, isLoading, isError, refetch } = useAdminTestimonials();
   const createMutation = useCreateTestimonial();
@@ -153,7 +155,9 @@ export function AdminTestimonialsPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1>{t('admin:testimonials.title')}</h1>
-        <Button onClick={openAdd}>{t('admin:testimonials.add')}</Button>
+        {isSuperAdmin && (
+          <Button onClick={openAdd}>{t('admin:testimonials.add')}</Button>
+        )}
       </div>
 
       {isLoading && <LoadingState />}
@@ -189,29 +193,31 @@ export function AdminTestimonialsPage() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => handleTogglePublish(item)}
-                          disabled={updateMutation.isPending}
-                        >
-                          {item.isPublished
-                            ? t('admin:testimonials.unpublish')
-                            : t('admin:testimonials.publish')}
-                        </Button>
-                        <Button size="sm" variant="secondary" onClick={() => openEdit(item)}>
-                          {t('common:actions.edit')}
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="danger"
-                          onClick={() => handleDelete(item)}
-                          disabled={deleteMutation.isPending}
-                        >
-                          {t('common:actions.delete')}
-                        </Button>
-                      </div>
+                      {isSuperAdmin && (
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => handleTogglePublish(item)}
+                            disabled={updateMutation.isPending}
+                          >
+                            {item.isPublished
+                              ? t('admin:testimonials.unpublish')
+                              : t('admin:testimonials.publish')}
+                          </Button>
+                          <Button size="sm" variant="secondary" onClick={() => openEdit(item)}>
+                            {t('common:actions.edit')}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="danger"
+                            onClick={() => handleDelete(item)}
+                            disabled={deleteMutation.isPending}
+                          >
+                            {t('common:actions.delete')}
+                          </Button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}

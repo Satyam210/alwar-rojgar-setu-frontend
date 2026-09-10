@@ -12,7 +12,8 @@ import type { MockDb, MockUser } from './db';
 export const DEMO_EMAILS = {
   candidate: 'demo.candidate@example.com',
   employer: 'demo.employer@example.com',
-  admin: 'admin@alwar-rojgar.gov.in',
+  admin: 'alwarrojarsetu@gmail.com',
+  readOnlyAdmin: 'sdmalw.alw@gmail.com',
   /** Employer-side HR Head account (delegated hiring manager). */
   hrHead: 'hr.head@example.com',
   /** Brand-new job seeker: no profile yet, so the onboarding/fill flow shows. */
@@ -25,7 +26,12 @@ const daysAgo = (n: number): string => new Date(Date.now() - n * 86_400_000).toI
 
 export function createSeedDb(): MockDb {
   const users: MockUser[] = [
-    { userId: 'u-admin', email: DEMO_EMAILS.admin, role: 'admin', profileCompleted: true, isActive: true, name: 'District Admin', adminStatus: 'approved', createdAt: daysAgo(120) },
+    { userId: 'u-admin', email: DEMO_EMAILS.admin, role: 'admin', profileCompleted: true, isActive: true, name: 'Alwar Rojgar Setu Admin', adminStatus: 'approved', adminRole: 'super_admin', createdAt: daysAgo(120) },
+    { userId: 'u-admin-dic', email: 'dicalwar@rajasthan.gov.in', role: 'admin', profileCompleted: true, isActive: true, name: 'Harish Mittal', adminStatus: 'approved', adminRole: 'super_admin', createdAt: daysAgo(90) },
+    { userId: 'u-admin-oic', email: DEMO_EMAILS.readOnlyAdmin, role: 'admin', profileCompleted: true, isActive: true, name: 'Shree Madhav Bharadwaj', adminStatus: 'approved', adminRole: 'read_only', createdAt: daysAgo(85) },
+    { userId: 'u-admin-riico', email: 'alwar@riico.co.in', role: 'admin', profileCompleted: true, isActive: true, name: 'Paresh Saxena', adminStatus: 'approved', adminRole: 'read_only', createdAt: daysAgo(80) },
+    { userId: 'u-admin-iti', email: 'iti_alwar_govt@yahoo.co.in', role: 'admin', profileCompleted: true, isActive: true, name: 'Manoj Aggrawal', adminStatus: 'approved', adminRole: 'read_only', createdAt: daysAgo(75) },
+    { userId: 'u-admin-deo', email: 'deo.alw.emp@rajasthan.gov.in', role: 'admin', profileCompleted: true, isActive: true, name: 'Harish Nainakwal', adminStatus: 'approved', adminRole: 'read_only', createdAt: daysAgo(70) },
     { userId: 'u-c1', email: DEMO_EMAILS.candidate, role: 'candidate', profileCompleted: true, isActive: true },
     // New job seeker with no profile yet — used to demo the "fill your profile" flow.
     { userId: 'u-c-new', email: DEMO_EMAILS.newCandidate, role: 'candidate', profileCompleted: false, isActive: true },

@@ -2,6 +2,7 @@ import { api } from './client';
 import type {
   AdminDashboardMetrics,
   AdminInvite,
+  AdminRole,
   AdminUser,
   CandidateProfile,
   EmployerProfile,
@@ -102,8 +103,8 @@ export type GrantAdminResult =
  * existing account immediately, or stores an invite that's consumed the
  * moment that email signs up.
  */
-export async function grantAdminAccess(email: string): Promise<GrantAdminResult> {
-  const { data } = await api.post<GrantAdminResult>('/admin/admins/grant', { email });
+export async function grantAdminAccess(email: string, adminRole: AdminRole = 'read_only'): Promise<GrantAdminResult> {
+  const { data } = await api.post<GrantAdminResult>('/admin/admins/grant', { email, adminRole });
   return data;
 }
 

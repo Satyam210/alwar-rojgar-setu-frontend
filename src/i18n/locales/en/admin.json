@@ -92,6 +92,7 @@
     "grantTitle": "Grant admin access",
     "grantSubtitle": "Enter an email address. If they already have an account, they become an admin immediately. Otherwise, they'll be granted admin access the moment they sign up.",
     "grantEmailLabel": "Email address",
+    "grantRoleLabel": "Role",
     "grantSubmit": "Grant access",
     "grantPromoted": "{{email}} is now an admin",
     "grantInvited": "{{email}} will become an admin when they sign up",
@@ -103,6 +104,8 @@
     "inviteCancelled": "Invite cancelled",
     "currentAdminsTitle": "Current admins",
     "adminSince": "Admin since",
-    "empty": "No admins yet"
+    "empty": "No admins yet",
+    "roleSuperAdmin": "Super Admin",
+    "roleReadOnly": "Read-only"
   }
 }

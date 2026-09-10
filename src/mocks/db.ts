@@ -1,4 +1,5 @@
 import type {
+  AdminRole,
   AdminStatus,
   Application,
   CandidateProfile,
@@ -24,6 +25,8 @@ export interface MockUser {
   name?: string;
   /** Legacy field — every admin from here on is approved by construction. */
   adminStatus?: AdminStatus;
+  /** Only set for admin role — controls which write actions are available. */
+  adminRole?: AdminRole;
   /** When the account was created. */
   createdAt?: string;
 }
@@ -53,7 +56,7 @@ export interface MockDb {
   testimonials: Testimonial[];
 }
 
-const STORAGE_KEY = 'ars_mock_db_v11';
+const STORAGE_KEY = 'ars_mock_db_v12';
 
 let db: MockDb | null = null;
 
