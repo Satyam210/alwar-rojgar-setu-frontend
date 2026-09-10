@@ -88,8 +88,8 @@
     },
     "stats": {
       "activeJobs": "Open jobs",
-      "registeredEmployers": "Employers",
-      "successfulConnects": "Hired so far"
+      "registeredEmployers": "Registered employers",
+      "successfulConnects": "Successful connects"
     },
     "featured": {
       "title": "Top employers in Alwar",
