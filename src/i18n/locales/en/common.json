@@ -87,9 +87,9 @@
       "local": "Jobs across Alwar district"
     },
     "stats": {
-      "activeJobs": "Active jobs",
-      "registeredEmployers": "Registered employers",
-      "successfulConnects": "Successful connects"
+      "activeJobs": "Open jobs",
+      "registeredEmployers": "Employers",
+      "successfulConnects": "Hired so far"
     },
     "featured": {
       "title": "Top employers in Alwar",

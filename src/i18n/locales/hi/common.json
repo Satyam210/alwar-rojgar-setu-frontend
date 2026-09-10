@@ -87,9 +87,9 @@
       "local": "अलवर ज़िले भर में नौकरियाँ"
     },
     "stats": {
-      "activeJobs": "सक्रिय नौकरियाँ",
-      "registeredEmployers": "पंजीकृत नियोक्ता",
-      "successfulConnects": "सफल जुड़ाव"
+      "activeJobs": "खुली नौकरियाँ",
+      "registeredEmployers": "नियोक्ता",
+      "successfulConnects": "अब तक नियुक्त"
     },
     "featured": {
       "title": "अलवर के प्रमुख नियोक्ता",
