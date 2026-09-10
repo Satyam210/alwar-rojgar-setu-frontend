@@ -284,6 +284,8 @@ export interface AdminDashboardMetrics {
   jobsByEmployer?: { companyName: string; count: number }[];
   /** Top employers by number of rejected applications. */
   rejectionsByEmployer?: { companyName: string; count: number }[];
+  /** Hired candidates broken down by gender. */
+  hiredByGender?: { gender: string; count: number }[];
 }
 
 // --- Public homepage stats ---------------------------------------------------

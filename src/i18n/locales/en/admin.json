@@ -16,7 +16,9 @@
       "placements": "Placements by month",
       "applicationsByStatus": "Applications by status",
       "jobsByEmployer": "Jobs posted by employer (top 10)",
-      "rejectionsByEmployer": "Rejections by employer (top 10)"
+      "rejectionsByEmployer": "Rejections by employer (top 10)",
+      "hiredByGender": "Hires by gender",
+      "notSpecified": "Not specified"
     }
   },
   "employers": {

@@ -55,7 +55,7 @@ const STATUS_COLORS: Record<string, string> = {
 const AXIS_TICK = { fontSize: 12, fill: '#64748b' };
 
 export function AdminDashboardPage() {
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation(['admin', 'candidate']);
   usePageTitle(t('dashboard.title'));
   const { data, isLoading, isError, refetch } = useAdminDashboard();
 
@@ -256,6 +256,48 @@ export function AdminDashboardPage() {
               <Tooltip content={<ChartTooltip />} cursor={{ fill: '#f8fafc' }} />
               <Bar dataKey="count" fill="url(#gradRej)" radius={[0, 8, 8, 0]} maxBarSize={22}>
                 <LabelList dataKey="count" position="right" fontSize={12} fill="#475569" />
+              </Bar>
+            </BarChart>
+          </ChartCard>
+        )}
+
+        {data.hiredByGender && data.hiredByGender.length > 0 && (
+          <ChartCard title={t('dashboard.charts.hiredByGender')} accent="emerald">
+            <BarChart
+              data={data.hiredByGender}
+              margin={{ top: 16, right: 16, bottom: 8, left: -12 }}
+            >
+              <defs>
+                <linearGradient id="gradGender" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stopColor={GREEN} stopOpacity={0.75} />
+                  <stop offset="100%" stopColor="#22c55e" stopOpacity={1} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} strokeDasharray="4 4" stroke="#eef1f6" />
+              <XAxis
+                dataKey="gender"
+                axisLine={false}
+                tickLine={false}
+                tick={AXIS_TICK}
+                tickFormatter={(v: string) =>
+                  v === 'not_specified'
+                    ? t('dashboard.charts.notSpecified')
+                    : t(`candidate:fields.genderOptions.${v}`, { defaultValue: v })
+                }
+              />
+              <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={AXIS_TICK} width={36} />
+              <Tooltip
+                content={<ChartTooltip />}
+                cursor={{ fill: '#f0fdf4' }}
+                formatter={(value: number, _name: string, props: { payload?: { gender?: string } }) => [
+                  value,
+                  props.payload?.gender === 'not_specified'
+                    ? t('dashboard.charts.notSpecified')
+                    : t(`candidate:fields.genderOptions.${props.payload?.gender ?? ''}`, { defaultValue: props.payload?.gender ?? '' }),
+                ]}
+              />
+              <Bar dataKey="count" fill="url(#gradGender)" radius={[6, 6, 0, 0]} maxBarSize={60}>
+                <LabelList dataKey="count" position="top" fontSize={13} fontWeight={600} fill="#15803d" />
               </Bar>
             </BarChart>
           </ChartCard>

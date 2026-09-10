@@ -731,6 +731,15 @@ add('GET', '/admin/dashboard', (ctx) => {
     .filter((r) => r.count > 0)
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
+  const genderCountMap: Record<string, number> = {};
+  for (const app of applications.filter((a) => a.status === 'hired')) {
+    const profile = candidateProfiles.find((c) => c.id === app.candidateId);
+    const g = profile?.gender ?? 'not_specified';
+    genderCountMap[g] = (genderCountMap[g] ?? 0) + 1;
+  }
+  const hiredByGender = Object.entries(genderCountMap)
+    .map(([gender, count]) => ({ gender, count }))
+    .sort((a, b) => b.count - a.count);
   const metrics: AdminDashboardMetrics = {
     totalCandidates: candidateProfiles.length,
     totalEmployers: employerProfiles.length,
@@ -759,6 +768,7 @@ add('GET', '/admin/dashboard', (ctx) => {
     ).map((status) => ({ status, count: byStatus(status) })),
     jobsByEmployer,
     rejectionsByEmployer,
+    hiredByGender,
   };
   return metrics;
 });
