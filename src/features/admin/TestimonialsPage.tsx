@@ -25,7 +25,6 @@ interface FormState {
   trade: string;
   body: string;
   photoUrl: string;
-  displayOrder: string;
   isPublished: boolean;
 }
 
@@ -34,7 +33,6 @@ const EMPTY_FORM: FormState = {
   trade: '',
   body: '',
   photoUrl: '',
-  displayOrder: '0',
   isPublished: false,
 };
 
@@ -44,7 +42,6 @@ function formFromTestimonial(t: Testimonial): FormState {
     trade: t.trade ?? '',
     body: t.body,
     photoUrl: t.photoUrl ?? '',
-    displayOrder: String(t.displayOrder),
     isPublished: t.isPublished,
   };
 }
@@ -52,7 +49,7 @@ function formFromTestimonial(t: Testimonial): FormState {
 export function AdminTestimonialsPage() {
   const { t } = useTranslation(['admin', 'common']);
   usePageTitle(t('admin:testimonials.title'));
-  const isSuperAdmin = useAuthStore((s) => s.user?.adminRole === 'super_admin');
+  const isAdmin = useAuthStore((s) => s.user?.role === 'admin');
 
   const { data, isLoading, isError, refetch } = useAdminTestimonials();
   const createMutation = useCreateTestimonial();
@@ -99,7 +96,6 @@ export function AdminTestimonialsPage() {
       trade: form.trade.trim() || null,
       body: form.body.trim(),
       photoUrl: form.photoUrl.trim() || null,
-      displayOrder: parseInt(form.displayOrder, 10) || 0,
       isPublished: form.isPublished,
     };
     try {
@@ -155,7 +151,7 @@ export function AdminTestimonialsPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1>{t('admin:testimonials.title')}</h1>
-        {isSuperAdmin && (
+        {isAdmin && (
           <Button onClick={openAdd}>{t('admin:testimonials.add')}</Button>
         )}
       </div>
@@ -174,7 +170,6 @@ export function AdminTestimonialsPage() {
                 <tr className="border-b border-border bg-surface text-left text-xs font-semibold uppercase tracking-wide text-content-muted">
                   <th className="px-4 py-3">{t('admin:testimonials.colName')}</th>
                   <th className="px-4 py-3">{t('admin:testimonials.colTrade')}</th>
-                  <th className="px-4 py-3">{t('admin:testimonials.colOrder')}</th>
                   <th className="px-4 py-3">{t('admin:testimonials.colStatus')}</th>
                   <th className="px-4 py-3 text-right">{t('admin:testimonials.colActions')}</th>
                 </tr>
@@ -184,7 +179,6 @@ export function AdminTestimonialsPage() {
                   <tr key={item.id} className="hover:bg-surface/50">
                     <td className="px-4 py-3 font-medium">{item.name}</td>
                     <td className="px-4 py-3 text-content-muted">{item.trade ?? '—'}</td>
-                    <td className="px-4 py-3">{item.displayOrder}</td>
                     <td className="px-4 py-3">
                       {item.isPublished ? (
                         <Badge tone="success">{t('admin:testimonials.statusPublished')}</Badge>
@@ -193,7 +187,7 @@ export function AdminTestimonialsPage() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      {isSuperAdmin && (
+                      {isAdmin && (
                         <div className="flex items-center justify-end gap-2">
                           <Button
                             size="sm"
@@ -269,15 +263,6 @@ export function AdminTestimonialsPage() {
               value={form.photoUrl}
               onChange={(e) => setField('photoUrl', e.target.value)}
               placeholder="https://..."
-            />
-          </Field>
-
-          <Field label={t('admin:testimonials.fieldOrder')}>
-            <Input
-              type="number"
-              value={form.displayOrder}
-              onChange={(e) => setField('displayOrder', e.target.value)}
-              min={0}
             />
           </Field>
 

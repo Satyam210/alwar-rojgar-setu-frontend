@@ -25,7 +25,7 @@ export function setAppLanguage(lng: AppLanguage): void {
   changeLanguage(lng);
 
   if (lng === 'en') {
-    if (getActivePageLang()) clearPageTranslateState();
+    clearPageTranslateState();
     return;
   }
 

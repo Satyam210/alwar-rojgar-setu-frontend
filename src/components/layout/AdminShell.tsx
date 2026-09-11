@@ -215,7 +215,10 @@ export function AdminShell() {
                 }
               >
                 {item.icon}
-                <span>{item.label}</span>
+                <span className="flex-1">{item.label}</span>
+                {item.to === paths.admin.testimonials && (
+                  <span className="rounded px-1 py-0.5 text-[10px] font-semibold bg-amber-100 text-amber-700">WIP</span>
+                )}
               </NavLink>
             ))}
           </nav>

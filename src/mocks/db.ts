@@ -56,7 +56,7 @@ export interface MockDb {
   testimonials: Testimonial[];
 }
 
-const STORAGE_KEY = 'ars_mock_db_v12';
+const STORAGE_KEY = 'ars_mock_db_v14';
 
 let db: MockDb | null = null;
 

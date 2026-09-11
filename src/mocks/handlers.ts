@@ -423,7 +423,7 @@ add('GET', '/testimonials/admin', (ctx) => {
 });
 
 add('POST', '/testimonials/admin', (ctx) => {
-  requireSuperAdmin(ctx);
+  requireRole(ctx, 'admin');
   const { name, body } = ctx.body;
   if (!name || !body) throw new HttpError(400, 'name and body are required');
   const now = new Date().toISOString();
@@ -445,7 +445,7 @@ add('POST', '/testimonials/admin', (ctx) => {
 });
 
 add('PATCH', '/testimonials/admin/:id', (ctx) => {
-  requireSuperAdmin(ctx);
+  requireRole(ctx, 'admin');
   const t = ctx.db.testimonials.find((x) => x.id === ctx.params.id);
   if (!t) throw new HttpError(404, 'Testimonial not found');
   if (ctx.body.name !== undefined) t.name = String(ctx.body.name);
@@ -461,7 +461,7 @@ add('PATCH', '/testimonials/admin/:id', (ctx) => {
 });
 
 add('DELETE', '/testimonials/admin/:id', (ctx) => {
-  requireSuperAdmin(ctx);
+  requireRole(ctx, 'admin');
   const idx = ctx.db.testimonials.findIndex((x) => x.id === ctx.params.id);
   if (idx === -1) throw new HttpError(404, 'Testimonial not found');
   ctx.db.testimonials.splice(idx, 1);
@@ -747,6 +747,15 @@ add('GET', '/admin/dashboard', (ctx) => {
   const hiredByGender = Object.entries(genderCountMap)
     .map(([gender, count]) => ({ gender, count }))
     .sort((a, b) => b.count - a.count);
+
+  const allGenderMap: Record<string, number> = {};
+  for (const cp of candidateProfiles) {
+    const g = cp.gender ?? 'not_specified';
+    allGenderMap[g] = (allGenderMap[g] ?? 0) + 1;
+  }
+  const candidatesByGender = Object.entries(allGenderMap)
+    .map(([gender, count]) => ({ gender, count }))
+    .sort((a, b) => b.count - a.count);
   const metrics: AdminDashboardMetrics = {
     totalCandidates: candidateProfiles.length,
     totalEmployers: employerProfiles.length,
@@ -776,6 +785,7 @@ add('GET', '/admin/dashboard', (ctx) => {
     jobsByEmployer,
     rejectionsByEmployer,
     hiredByGender,
+    candidatesByGender,
   };
   return metrics;
 });

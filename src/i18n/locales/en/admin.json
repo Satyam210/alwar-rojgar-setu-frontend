@@ -18,6 +18,7 @@
       "jobsByEmployer": "Jobs posted by employer (top 10)",
       "rejectionsByEmployer": "Rejections by employer (top 10)",
       "hiredByGender": "Hires by gender",
+      "candidatesByGender": "Candidates by gender",
       "notSpecified": "Not specified"
     }
   },

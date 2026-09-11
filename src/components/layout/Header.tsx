@@ -166,7 +166,7 @@ function getNavItems(role: string | undefined, t: (k: string) => string): NavIte
         { to: paths.settings, label: t('nav.settings') },
       ];
     case 'admin':
-      return [];
+      return [{ to: paths.admin.dashboard, label: t('nav.dashboard') }];
     default:
       return common;
   }

@@ -18,6 +18,7 @@
       "jobsByEmployer": "नियोक्ता अनुसार पोस्ट की गई नौकरियाँ (शीर्ष 10)",
       "rejectionsByEmployer": "नियोक्ता अनुसार अस्वीकृतियाँ (शीर्ष 10)",
       "hiredByGender": "लिंग अनुसार नियुक्तियाँ",
+      "candidatesByGender": "लिंग अनुसार उम्मीदवार",
       "notSpecified": "अनिर्दिष्ट"
     }
   },

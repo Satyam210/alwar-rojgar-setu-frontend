@@ -290,6 +290,8 @@ export interface AdminDashboardMetrics {
   rejectionsByEmployer?: { companyName: string; count: number }[];
   /** Hired candidates broken down by gender. */
   hiredByGender?: { gender: string; count: number }[];
+  /** All registered candidates broken down by gender. */
+  candidatesByGender?: { gender: string; count: number }[];
 }
 
 // --- Public homepage stats ---------------------------------------------------
