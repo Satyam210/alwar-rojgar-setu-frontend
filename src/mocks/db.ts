@@ -1,4 +1,5 @@
 import type {
+  AdminRole,
   AdminStatus,
   Application,
   CandidateProfile,
@@ -6,6 +7,7 @@ import type {
   EmployerProfile,
   Job,
   Role,
+  Testimonial,
 } from '@/api/types';
 import { createSeedDb } from './seed';
 
@@ -23,6 +25,8 @@ export interface MockUser {
   name?: string;
   /** Legacy field — every admin from here on is approved by construction. */
   adminStatus?: AdminStatus;
+  /** Only set for admin role — controls which write actions are available. */
+  adminRole?: AdminRole;
   /** When the account was created. */
   createdAt?: string;
 }
@@ -49,9 +53,10 @@ export interface MockDb {
   pendingRole: Record<string, Role>;
   /** Emails granted admin access before they've signed up yet. */
   adminInvites: MockAdminInvite[];
+  testimonials: Testimonial[];
 }
 
-const STORAGE_KEY = 'ars_mock_db_v10';
+const STORAGE_KEY = 'ars_mock_db_v14';
 
 let db: MockDb | null = null;
 

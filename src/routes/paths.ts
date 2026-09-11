@@ -28,6 +28,7 @@ export const paths = {
     employers: '/admin/employers',
     candidates: '/admin/candidates',
     users: '/admin/users',
+    testimonials: '/admin/testimonials',
   },
 } as const;
 

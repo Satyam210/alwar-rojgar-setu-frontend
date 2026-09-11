@@ -29,6 +29,8 @@ let running = false;
 // Text nodes we have written, mapped to the value we wrote — lets us ignore our
 // own mutations and skip already-translated nodes.
 const written = new WeakMap<Text, string>();
+// Original text captured before first translation — restored when switching back to English.
+const originals: Array<[Text, string]> = [];
 
 function hasTranslatableChars(text: string): boolean {
   // Latin or Devanagari letters — skip pure numbers / punctuation / symbols.
@@ -135,6 +137,9 @@ async function translateNodes(target: string, nodes: Text[]): Promise<void> {
     if (translated == null || translated === src) continue;
     for (const node of nodesForText) {
       const raw = node.nodeValue ?? '';
+      if (!written.has(node)) {
+        originals.push([node, raw]);
+      }
       const lead = raw.match(/^\s*/)?.[0] ?? '';
       const trail = raw.match(/\s*$/)?.[0] ?? '';
       const value = lead + translated + trail;
@@ -200,12 +205,19 @@ export function getPersistedPageLang(): string | null {
   }
 }
 
-/** Clear page-translation state without reloading. React re-renders restore UI strings; dynamic content stays translated until next navigation. */
+/** Clear page-translation state and restore translated DOM nodes to their original text. */
 export function clearPageTranslateState(): void {
   activeTarget = null;
   observer?.disconnect();
   observer = null;
-  if (retranslateTimer) clearTimeout(retranslateTimer);
+  if (retranslateTimer) {
+    clearTimeout(retranslateTimer);
+    retranslateTimer = null;
+  }
+  for (const [node, original] of originals) {
+    if (node.parentNode) node.nodeValue = original;
+  }
+  originals.length = 0;
   try {
     localStorage.removeItem(PAGE_LANG_KEY);
   } catch {

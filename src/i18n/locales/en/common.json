@@ -21,6 +21,7 @@
     "employers": "Employers",
     "candidates": "Candidates",
     "users": "Admin Users",
+    "testimonials": "Testimonials",
     "login": "Login",
     "logout": "Logout",
     "settings": "Settings",
@@ -91,6 +92,10 @@
       "totalJobs": "Total jobs posted",
       "registeredEmployers": "Registered employers",
       "successfulConnects": "Successful connects"
+    },
+    "testimonials": {
+      "title": "What jobseekers are saying",
+      "subtitle": "Success stories from Alwar youth who found work through this platform."
     },
     "featured": {
       "title": "Top employers in Alwar",

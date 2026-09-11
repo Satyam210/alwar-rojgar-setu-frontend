@@ -37,6 +37,8 @@ const ACCENTS: Record<Accent, { chip: string; bar: string }> = {
   emerald: { chip: 'bg-emerald-100 text-emerald-700', bar: 'from-emerald-400 to-emerald-600' },
 };
 
+const GENDER_COLORS = ['#1E378A', '#e879f9', '#f97316', '#94a3b8'];
+
 // Chart palette drawn from the brand/semantic tokens.
 const NAVY = '#1E378A';
 const NAVY_LIGHT = '#526DC4';
@@ -55,7 +57,7 @@ const STATUS_COLORS: Record<string, string> = {
 const AXIS_TICK = { fontSize: 12, fill: '#64748b' };
 
 export function AdminDashboardPage() {
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation(['admin', 'candidate']);
   usePageTitle(t('dashboard.title'));
   const { data, isLoading, isError, refetch } = useAdminDashboard();
 
@@ -260,6 +262,98 @@ export function AdminDashboardPage() {
             </BarChart>
           </ChartCard>
         )}
+
+        {data.candidatesByGender && data.candidatesByGender.length > 0 && (
+          <ChartCard title={t('dashboard.charts.candidatesByGender')} accent="sky">
+            <PieChart margin={{ top: 4, right: 4, bottom: 4, left: 4 }}>
+              <Pie
+                data={data.candidatesByGender}
+                dataKey="count"
+                nameKey="gender"
+                cx="50%"
+                cy="50%"
+                innerRadius={56}
+                outerRadius={84}
+                paddingAngle={2}
+                stroke="none"
+              >
+                {data.candidatesByGender.map((entry, idx) => (
+                  <Cell key={entry.gender} fill={GENDER_COLORS[idx % GENDER_COLORS.length]} />
+                ))}
+                <Label
+                  content={
+                    <DonutCenter
+                      total={data.candidatesByGender.reduce((sum, s) => sum + s.count, 0)}
+                      caption={t('dashboard.metrics.candidates')}
+                    />
+                  }
+                />
+              </Pie>
+              <Tooltip
+                content={<ChartTooltip />}
+                formatter={(value: number, _name: string, props: { payload?: { gender?: string } }) => [
+                  value,
+                  props.payload?.gender === 'not_specified'
+                    ? t('dashboard.charts.notSpecified')
+                    : t(`candidate:fields.genderOptions.${props.payload?.gender ?? ''}`, { defaultValue: props.payload?.gender ?? '' }),
+                ]}
+              />
+              <Legend
+                iconType="circle"
+                iconSize={9}
+                formatter={(value: string) => (
+                  <span className="text-xs capitalize text-content-muted">
+                    {value === 'not_specified'
+                      ? t('dashboard.charts.notSpecified')
+                      : t(`candidate:fields.genderOptions.${value}`, { defaultValue: value })}
+                  </span>
+                )}
+              />
+            </PieChart>
+          </ChartCard>
+        )}
+
+        {data.hiredByGender && data.hiredByGender.length > 0 && (
+          <ChartCard title={t('dashboard.charts.hiredByGender')} accent="emerald">
+            <BarChart
+              data={data.hiredByGender}
+              margin={{ top: 16, right: 16, bottom: 8, left: -12 }}
+            >
+              <defs>
+                <linearGradient id="gradGender" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stopColor={GREEN} stopOpacity={0.75} />
+                  <stop offset="100%" stopColor="#22c55e" stopOpacity={1} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} strokeDasharray="4 4" stroke="#eef1f6" />
+              <XAxis
+                dataKey="gender"
+                axisLine={false}
+                tickLine={false}
+                tick={AXIS_TICK}
+                tickFormatter={(v: string) =>
+                  v === 'not_specified'
+                    ? t('dashboard.charts.notSpecified')
+                    : t(`candidate:fields.genderOptions.${v}`, { defaultValue: v })
+                }
+              />
+              <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={AXIS_TICK} width={36} />
+              <Tooltip
+                content={<ChartTooltip />}
+                cursor={{ fill: '#f0fdf4' }}
+                formatter={(value: number, _name: string, props: { payload?: { gender?: string } }) => [
+                  value,
+                  props.payload?.gender === 'not_specified'
+                    ? t('dashboard.charts.notSpecified')
+                    : t(`candidate:fields.genderOptions.${props.payload?.gender ?? ''}`, { defaultValue: props.payload?.gender ?? '' }),
+                ]}
+              />
+              <Bar dataKey="count" fill="url(#gradGender)" radius={[6, 6, 0, 0]} maxBarSize={60}>
+                <LabelList dataKey="count" position="top" fontSize={13} fontWeight={600} fill="#15803d" />
+              </Bar>
+            </BarChart>
+          </ChartCard>
+        )}
       </div>
     </div>
   );
@@ -270,6 +364,7 @@ const HEADER_ACCENT: Record<string, string> = {
   saffron: 'from-accent-500 to-accent-600',
   emerald: 'from-emerald-400 to-emerald-600',
   rose: 'from-rose-400 to-rose-600',
+  sky: 'from-sky-400 to-sky-600',
 };
 
 function ChartCard({

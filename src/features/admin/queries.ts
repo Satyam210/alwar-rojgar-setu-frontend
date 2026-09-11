@@ -14,6 +14,13 @@ import {
   type AdminUserListParams,
   type VerifyEmployerPayload,
 } from '@/api/admin';
+import {
+  adminGetTestimonials,
+  adminCreateTestimonial,
+  adminUpdateTestimonial,
+  adminDeleteTestimonial,
+} from '@/api/testimonials';
+import type { TestimonialInput } from '@/api/types';
 
 export const adminKeys = {
   dashboard: () => ['admin', 'dashboard'] as const,
@@ -21,6 +28,7 @@ export const adminKeys = {
   candidates: (params: AdminListParams) => ['admin', 'candidates', params] as const,
   admins: (params: AdminUserListParams) => ['admin', 'admins', params] as const,
   adminInvites: () => ['admin', 'admin-invites'] as const,
+  testimonials: () => ['admin', 'testimonials'] as const,
 };
 
 export function useAdminDashboard() {
@@ -82,7 +90,8 @@ export function useAdminInvites() {
 export function useGrantAdminAccess() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (email: string) => grantAdminAccess(email),
+    mutationFn: ({ email, adminRole }: { email: string; adminRole: import('@/api/types').AdminRole }) =>
+      grantAdminAccess(email, adminRole),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin', 'admins'] });
       qc.invalidateQueries({ queryKey: adminKeys.adminInvites() });
@@ -96,6 +105,47 @@ export function useCancelAdminInvite() {
     mutationFn: (inviteId: string) => cancelAdminInvite(inviteId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: adminKeys.adminInvites() });
+    },
+  });
+}
+
+export function useAdminTestimonials() {
+  return useQuery({
+    queryKey: adminKeys.testimonials(),
+    queryFn: adminGetTestimonials,
+  });
+}
+
+export function useCreateTestimonial() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: TestimonialInput) => adminCreateTestimonial(input),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: adminKeys.testimonials() });
+      qc.invalidateQueries({ queryKey: ['public', 'testimonials'] });
+    },
+  });
+}
+
+export function useUpdateTestimonial() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string; input: Partial<TestimonialInput> }) =>
+      adminUpdateTestimonial(id, input),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: adminKeys.testimonials() });
+      qc.invalidateQueries({ queryKey: ['public', 'testimonials'] });
+    },
+  });
+}
+
+export function useDeleteTestimonial() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => adminDeleteTestimonial(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: adminKeys.testimonials() });
+      qc.invalidateQueries({ queryKey: ['public', 'testimonials'] });
     },
   });
 }

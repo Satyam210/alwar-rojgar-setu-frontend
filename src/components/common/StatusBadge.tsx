@@ -12,6 +12,7 @@ const applicationTone: Record<ApplicationStatus, { tone: BadgeProps['tone']; ico
   received: { tone: 'info', icon: '•' },
   viewed: { tone: 'warning', icon: '👁' },
   shortlisted: { tone: 'success', icon: '★' },
+  interview_scheduled: { tone: 'info', icon: '📅' },
   rejected: { tone: 'danger', icon: '✕' },
   hired: { tone: 'success', icon: '✓' },
 };

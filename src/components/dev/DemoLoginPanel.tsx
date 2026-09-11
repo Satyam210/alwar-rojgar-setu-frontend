@@ -13,7 +13,8 @@ const ACCOUNTS: { id: string; role: Role; email: string; password: string; label
   { id: 'newCandidate', role: 'candidate', email: DEMO_EMAILS.newCandidate, password: 'Password@123', label: 'New Job Seeker (empty profile)' },
   { id: 'employer', role: 'employer', email: DEMO_EMAILS.employer, password: 'Employer@123', label: 'Employer (Owner)' },
   { id: 'newEmployer', role: 'employer', email: DEMO_EMAILS.newEmployer, password: 'Password@123', label: 'New Employer (empty profile)' },
-  { id: 'admin', role: 'admin', email: DEMO_EMAILS.admin, password: 'Admin@123', label: 'Admin' },
+  { id: 'admin', role: 'admin', email: DEMO_EMAILS.admin, password: 'Admin@123', label: 'Admin (Super)' },
+  { id: 'readOnlyAdmin', role: 'admin', email: DEMO_EMAILS.readOnlyAdmin, password: 'Admin@123', label: 'Admin (Read-only)' },
 ];
 
 export function DemoLoginPanel() {

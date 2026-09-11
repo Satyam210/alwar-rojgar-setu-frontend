@@ -16,7 +16,10 @@
       "placements": "Placements by month",
       "applicationsByStatus": "Applications by status",
       "jobsByEmployer": "Jobs posted by employer (top 10)",
-      "rejectionsByEmployer": "Rejections by employer (top 10)"
+      "rejectionsByEmployer": "Rejections by employer (top 10)",
+      "hiredByGender": "Hires by gender",
+      "candidatesByGender": "Candidates by gender",
+      "notSpecified": "Not specified"
     }
   },
   "employers": {
@@ -53,12 +56,44 @@
     "empty": "No candidates found",
     "viewDetails": "View details"
   },
+  "testimonials": {
+    "title": "Testimonials",
+    "add": "Add testimonial",
+    "addTitle": "Add testimonial",
+    "editTitle": "Edit testimonial",
+    "empty": "No testimonials yet",
+    "created": "Testimonial created",
+    "updated": "Testimonial updated",
+    "deleted": "Testimonial deleted",
+    "published": "Testimonial published",
+    "unpublished": "Testimonial unpublished",
+    "deleteTitle": "Delete testimonial",
+    "deleteConfirm": "Delete testimonial by {{name}}? This cannot be undone.",
+    "validationRequired": "Name and quote are required.",
+    "colName": "Name",
+    "colTrade": "Trade",
+    "colOrder": "Order",
+    "colStatus": "Status",
+    "colActions": "Actions",
+    "statusPublished": "Published",
+    "statusDraft": "Draft",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "fieldName": "Name",
+    "fieldTrade": "Trade / Role",
+    "fieldBody": "Quote",
+    "fieldBodyPlaceholder": "\"This platform helped me find a great job near Alwar…\"",
+    "fieldPhoto": "Photo URL (optional)",
+    "fieldOrder": "Display order (lower = first)",
+    "fieldPublish": "Publish immediately"
+  },
   "users": {
     "title": "Admin Users",
     "subtitle": "Manage who has admin access.",
     "grantTitle": "Grant admin access",
     "grantSubtitle": "Enter an email address. If they already have an account, they become an admin immediately. Otherwise, they'll be granted admin access the moment they sign up.",
     "grantEmailLabel": "Email address",
+    "grantRoleLabel": "Role",
     "grantSubmit": "Grant access",
     "grantPromoted": "{{email}} is now an admin",
     "grantInvited": "{{email}} will become an admin when they sign up",
@@ -70,6 +105,8 @@
     "inviteCancelled": "Invite cancelled",
     "currentAdminsTitle": "Current admins",
     "adminSince": "Admin since",
-    "empty": "No admins yet"
+    "empty": "No admins yet",
+    "roleSuperAdmin": "Super Admin",
+    "roleReadOnly": "Read-only"
   }
 }

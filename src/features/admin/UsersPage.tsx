@@ -4,25 +4,32 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from '@/hooks/usePageTitle';
+import { useAuthStore } from '@/stores/authStore';
 import { useAdmins, useAdminInvites, useGrantAdminAccess, useCancelAdminInvite } from './queries';
+import type { AdminRole } from '@/api/types';
 import { PAGE_SIZE } from '@/lib/constants';
 import { formatDate } from '@/lib/format';
 import { apiErrorMessage } from '@/lib/errors';
 import { Card, CardBody } from '@/components/ui/Card';
 import { Field } from '@/components/ui/Field';
-import { Input } from '@/components/ui/Input';
+import { Input, NativeSelect } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 import { confirmDialog } from '@/components/ui/ConfirmDialog';
 import { Pagination } from '@/components/ui/Pagination';
 import { EmptyState, ErrorState, LoadingState } from '@/components/common/States';
 import { toast } from '@/components/ui/toast';
 
-const grantSchema = z.object({ email: z.string().trim().email() });
+const grantSchema = z.object({
+  email: z.string().trim().email(),
+  adminRole: z.enum(['read_only', 'super_admin']).default('read_only'),
+});
 type GrantForm = z.infer<typeof grantSchema>;
 
 export function AdminUsersPage() {
   const { t } = useTranslation(['admin', 'common']);
   usePageTitle(t('admin:users.title'));
+  const isSuperAdmin = useAuthStore((s) => s.user?.adminRole === 'super_admin');
 
   const [page, setPage] = useState(1);
   const { data, isLoading, isError, refetch } = useAdmins({ page, limit: PAGE_SIZE });
@@ -38,7 +45,7 @@ export function AdminUsersPage() {
   } = useForm<GrantForm>({ resolver: zodResolver(grantSchema) });
 
   function onSubmit(values: GrantForm) {
-    grant.mutate(values.email, {
+    grant.mutate({ email: values.email, adminRole: values.adminRole as AdminRole }, {
       onSuccess: (result) => {
         toast.success(
           result.kind === 'promoted'
@@ -75,22 +82,32 @@ export function AdminUsersPage() {
         <p className="text-content-muted">{t('admin:users.subtitle')}</p>
       </div>
 
-      <Card>
-        <CardBody className="flex flex-col gap-3">
-          <h2 className="text-base font-semibold">{t('admin:users.grantTitle')}</h2>
-          <p className="text-sm text-content-muted">{t('admin:users.grantSubtitle')}</p>
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-wrap items-end gap-3" noValidate>
-            <div className="w-72">
-              <Field label={t('admin:users.grantEmailLabel')} error={errors.email?.message}>
-                <Input type="email" placeholder="name@example.com" {...register('email')} />
-              </Field>
-            </div>
-            <Button type="submit" loading={isSubmitting || grant.isPending}>
-              {t('admin:users.grantSubmit')}
-            </Button>
-          </form>
-        </CardBody>
-      </Card>
+      {isSuperAdmin && (
+        <Card>
+          <CardBody className="flex flex-col gap-3">
+            <h2 className="text-base font-semibold">{t('admin:users.grantTitle')}</h2>
+            <p className="text-sm text-content-muted">{t('admin:users.grantSubtitle')}</p>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-wrap items-end gap-3" noValidate>
+              <div className="w-72">
+                <Field label={t('admin:users.grantEmailLabel')} error={errors.email?.message}>
+                  <Input type="email" placeholder="name@example.com" {...register('email')} />
+                </Field>
+              </div>
+              <div className="w-44">
+                <Field label={t('admin:users.grantRoleLabel')}>
+                  <NativeSelect {...register('adminRole')}>
+                    <option value="read_only">{t('admin:users.roleReadOnly')}</option>
+                    <option value="super_admin">{t('admin:users.roleSuperAdmin')}</option>
+                  </NativeSelect>
+                </Field>
+              </div>
+              <Button type="submit" loading={isSubmitting || grant.isPending}>
+                {t('admin:users.grantSubmit')}
+              </Button>
+            </form>
+          </CardBody>
+        </Card>
+      )}
 
       {inviteRows.length > 0 && (
         <div className="flex flex-col gap-3">
@@ -109,13 +126,15 @@ export function AdminUsersPage() {
                           : ''}
                       </p>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleCancelInvite(invite.id, invite.email)}
-                    >
-                      {t('admin:users.cancelInvite')}
-                    </Button>
+                    {isSuperAdmin && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleCancelInvite(invite.id, invite.email)}
+                      >
+                        {t('admin:users.cancelInvite')}
+                      </Button>
+                    )}
                   </CardBody>
                 </Card>
               </li>
@@ -138,8 +157,15 @@ export function AdminUsersPage() {
                 <li key={row.userId}>
                   <Card>
                     <CardBody className="flex flex-wrap items-center justify-between gap-3">
-                      <div>
-                        <h3 className="text-base font-semibold">{row.name || row.email}</h3>
+                      <div className="flex flex-col gap-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="text-base font-semibold">{row.name || row.email}</h3>
+                          <Badge tone={row.adminRole === 'super_admin' ? 'info' : 'neutral'}>
+                            {row.adminRole === 'super_admin'
+                              ? t('admin:users.roleSuperAdmin')
+                              : t('admin:users.roleReadOnly')}
+                          </Badge>
+                        </div>
                         <p className="text-sm text-content-muted">{row.email}</p>
                       </div>
                       {row.createdAt && (

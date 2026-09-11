@@ -8,6 +8,7 @@ export type UUID = string;
 export type ISODateString = string;
 
 export type Role = 'candidate' | 'employer' | 'admin';
+export type AdminRole = 'super_admin' | 'read_only';
 
 /** GET /users/current */
 export interface CurrentUser {
@@ -31,6 +32,8 @@ export interface CurrentUser {
   isActive?: boolean;
   /** Only present for employer role. Reflects employer_profiles.status. */
   employerStatus?: 'pending' | 'verified' | 'rejected';
+  /** Only present for admin role. Determines which actions are available. */
+  adminRole?: AdminRole;
 }
 
 // --- Candidate ---------------------------------------------------------------
@@ -45,6 +48,7 @@ export interface CandidateProfile {
   phone?: string | null;
   /** Short self-description / bio (≤100 words) shown to employers. */
   description?: string | null;
+  gender?: string | null;
   highestEducation?: string | null;
   itiTrade?: string | null;
   /** Which ITI the candidate studied at (department reporting / grouping). */
@@ -208,7 +212,13 @@ export interface JobSearchParams {
 
 // --- Applications ------------------------------------------------------------
 
-export type ApplicationStatus = 'received' | 'viewed' | 'shortlisted' | 'rejected' | 'hired';
+export type ApplicationStatus =
+  | 'received'
+  | 'viewed'
+  | 'shortlisted'
+  | 'interview_scheduled'
+  | 'rejected'
+  | 'hired';
 
 export interface Application {
   id: UUID;
@@ -224,6 +234,9 @@ export interface Application {
   attributedToPlatform?: boolean;
   /** Candidate's confirmed joining date, captured at hire time. */
   joiningDate?: ISODateString | null;
+  /** Set when status is interview_scheduled. */
+  interviewAt?: ISODateString | null;
+  interviewNotes?: string | null;
   createdAt?: ISODateString;
   updatedAt?: ISODateString;
   /** Denormalised join data the dashboards rely on. */
@@ -242,6 +255,7 @@ export interface AdminUser {
   name: string | null;
   email: string;
   adminStatus: AdminStatus | null;
+  adminRole?: AdminRole;
   isActive?: boolean;
   createdAt?: ISODateString;
 }
@@ -274,6 +288,10 @@ export interface AdminDashboardMetrics {
   jobsByEmployer?: { companyName: string; count: number }[];
   /** Top employers by number of rejected applications. */
   rejectionsByEmployer?: { companyName: string; count: number }[];
+  /** Hired candidates broken down by gender. */
+  hiredByGender?: { gender: string; count: number }[];
+  /** All registered candidates broken down by gender. */
+  candidatesByGender?: { gender: string; count: number }[];
 }
 
 // --- Public homepage stats ---------------------------------------------------
@@ -293,6 +311,31 @@ export interface PublicStats {
   registeredEmployers: number;
   successfulConnects: number;
   topEmployers: TopEmployer[];
+}
+
+// --- Testimonials ------------------------------------------------------------
+
+export interface Testimonial {
+  id: UUID;
+  candidateId?: UUID | null;
+  name: string;
+  photoUrl?: string | null;
+  trade?: string | null;
+  body: string;
+  isPublished: boolean;
+  displayOrder: number;
+  createdAt?: ISODateString;
+  updatedAt?: ISODateString;
+}
+
+export interface TestimonialInput {
+  candidateId?: string | null;
+  name: string;
+  photoUrl?: string | null;
+  trade?: string | null;
+  body: string;
+  isPublished?: boolean;
+  displayOrder?: number;
 }
 
 // --- Shared pagination envelope ---------------------------------------------

@@ -16,7 +16,10 @@
       "placements": "माह अनुसार नियुक्तियाँ",
       "applicationsByStatus": "स्थिति अनुसार आवेदन",
       "jobsByEmployer": "नियोक्ता अनुसार पोस्ट की गई नौकरियाँ (शीर्ष 10)",
-      "rejectionsByEmployer": "नियोक्ता अनुसार अस्वीकृतियाँ (शीर्ष 10)"
+      "rejectionsByEmployer": "नियोक्ता अनुसार अस्वीकृतियाँ (शीर्ष 10)",
+      "hiredByGender": "लिंग अनुसार नियुक्तियाँ",
+      "candidatesByGender": "लिंग अनुसार उम्मीदवार",
+      "notSpecified": "अनिर्दिष्ट"
     }
   },
   "employers": {
@@ -53,12 +56,44 @@
     "empty": "कोई उम्मीदवार नहीं मिला",
     "viewDetails": "विवरण देखें"
   },
+  "testimonials": {
+    "title": "प्रशंसापत्र",
+    "add": "प्रशंसापत्र जोड़ें",
+    "addTitle": "प्रशंसापत्र जोड़ें",
+    "editTitle": "प्रशंसापत्र संपादित करें",
+    "empty": "अभी तक कोई प्रशंसापत्र नहीं",
+    "created": "प्रशंसापत्र बनाया गया",
+    "updated": "प्रशंसापत्र अपडेट किया गया",
+    "deleted": "प्रशंसापत्र हटाया गया",
+    "published": "प्रशंसापत्र प्रकाशित किया गया",
+    "unpublished": "प्रशंसापत्र अप्रकाशित किया गया",
+    "deleteTitle": "प्रशंसापत्र हटाएं",
+    "deleteConfirm": "{{name}} का प्रशंसापत्र हटाएं? यह पूर्ववत नहीं किया जा सकता।",
+    "validationRequired": "नाम और उद्धरण आवश्यक हैं।",
+    "colName": "नाम",
+    "colTrade": "ट्रेड",
+    "colOrder": "क्रम",
+    "colStatus": "स्थिति",
+    "colActions": "कार्रवाई",
+    "statusPublished": "प्रकाशित",
+    "statusDraft": "ड्राफ़्ट",
+    "publish": "प्रकाशित करें",
+    "unpublish": "अप्रकाशित करें",
+    "fieldName": "नाम",
+    "fieldTrade": "ट्रेड / भूमिका",
+    "fieldBody": "उद्धरण",
+    "fieldBodyPlaceholder": "\"इस प्लेटफ़ॉर्म ने मुझे अलवर के पास एक बेहतरीन नौकरी दिलाई…\"",
+    "fieldPhoto": "फ़ोटो URL (वैकल्पिक)",
+    "fieldOrder": "प्रदर्शन क्रम (कम = पहले)",
+    "fieldPublish": "तुरंत प्रकाशित करें"
+  },
   "users": {
     "title": "एडमिन उपयोगकर्ता",
     "subtitle": "प्रबंधित करें कि किसके पास एडमिन एक्सेस है।",
     "grantTitle": "एडमिन एक्सेस दें",
     "grantSubtitle": "एक ईमेल पता दर्ज करें। यदि उनका पहले से खाता है, तो वे तुरंत एडमिन बन जाते हैं। अन्यथा, साइन अप करते ही उन्हें एडमिन एक्सेस मिल जाएगा।",
     "grantEmailLabel": "ईमेल पता",
+    "grantRoleLabel": "भूमिका",
     "grantSubmit": "एक्सेस दें",
     "grantPromoted": "{{email}} अब एडमिन है",
     "grantInvited": "साइन अप करने पर {{email}} एडमिन बन जाएगा",
@@ -70,6 +105,8 @@
     "inviteCancelled": "आमंत्रण रद्द किया गया",
     "currentAdminsTitle": "वर्तमान एडमिन",
     "adminSince": "एडमिन बने",
-    "empty": "अभी तक कोई एडमिन नहीं"
+    "empty": "अभी तक कोई एडमिन नहीं",
+    "roleSuperAdmin": "सुपर एडमिन",
+    "roleReadOnly": "केवल-पढ़ें"
   }
 }

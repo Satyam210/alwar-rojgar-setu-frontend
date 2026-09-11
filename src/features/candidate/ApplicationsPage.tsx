@@ -12,10 +12,17 @@ import { Field } from '@/components/ui/Field';
 import { NativeSelect } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Pagination } from '@/components/ui/Pagination';
-import { ApplicationStatusBadge } from '@/components/common/StatusBadge';
+import { ApplicationStepper } from '@/components/common/ApplicationStepper';
 import { EmptyState, ErrorState, LoadingState } from '@/components/common/States';
 
-const STATUSES: ApplicationStatus[] = ['received', 'viewed', 'shortlisted', 'rejected', 'hired'];
+const STATUSES: ApplicationStatus[] = [
+  'received',
+  'viewed',
+  'shortlisted',
+  'interview_scheduled',
+  'rejected',
+  'hired',
+];
 
 export function CandidateApplicationsPage() {
   const { t } = useTranslation(['applications', 'common']);
@@ -85,30 +92,30 @@ export function CandidateApplicationsPage() {
             {data.data.map((app) => (
               <li key={app.id}>
                 <Card>
-                  <CardBody className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <h2 className="text-base font-semibold">
-                        {app.job ? (
-                          <Link to={paths.jobDetail(app.job.id)} className="no-underline hover:underline">
-                            {app.job.title}
-                          </Link>
-                        ) : (
-                          t('applications:candidate.title')
+                  <CardBody className="flex flex-col gap-1">
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <div>
+                        <h2 className="text-base font-semibold">
+                          {app.job ? (
+                            <Link to={paths.jobDetail(app.job.id)} className="no-underline hover:underline">
+                              {app.job.title}
+                            </Link>
+                          ) : (
+                            t('applications:candidate.title')
+                          )}
+                        </h2>
+                        {app.job?.companyName && (
+                          <p className="text-sm text-content-muted">{app.job.companyName}</p>
                         )}
-                      </h2>
-                      {app.job?.companyName && (
-                        <p className="text-sm text-content-muted">{app.job.companyName}</p>
-                      )}
-                      <p className="text-sm text-content-muted">
+                      </div>
+                      <p className="shrink-0 text-xs text-content-muted">
                         {t('applications:candidate.appliedOn', { date: formatDate(app.createdAt) })}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <ApplicationStatusBadge status={app.status} />
-                      <p className="mt-1 max-w-xs text-sm text-content-muted">
-                        {t(`applications:statusHelp.${app.status}`)}
-                      </p>
-                    </div>
+                    <ApplicationStepper app={app} />
+                    <p className="mt-1 text-xs text-content-muted">
+                      {t(`applications:statusHelp.${app.status}`)}
+                    </p>
                   </CardBody>
                 </Card>
               </li>
