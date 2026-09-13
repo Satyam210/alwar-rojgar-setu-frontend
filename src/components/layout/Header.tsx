@@ -148,6 +148,7 @@ function getNavItems(role: string | undefined, t: (k: string) => string): NavIte
       return [
         ...common,
         { to: paths.candidate.applications, label: t('nav.myApplications') },
+        { to: paths.candidate.testimonial, label: t('nav.myTestimonial') },
         {
           to: paths.candidate.profile,
           label: t('nav.myProfile'),

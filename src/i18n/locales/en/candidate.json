@@ -54,6 +54,21 @@
     "districtOtherPlaceholder": "Type your district",
     "pincode": "PIN code"
   },
+  "testimonial": {
+    "title": "Share your success story",
+    "subtitle": "Tell others how this platform helped you. Your testimonial will be reviewed before appearing on the homepage.",
+    "yourName": "Your name",
+    "yourTrade": "Your trade",
+    "suggestionsLabel": "Quick suggestions — tap to fill",
+    "bodyLabel": "Your story",
+    "bodyPlaceholder": "Tell us how this platform helped you find a job…",
+    "errorRequired": "Please write something before submitting.",
+    "reviewNote": "Your testimonial will be visible on the homepage once approved by the admin.",
+    "submit": "Submit testimonial",
+    "submitted": "Testimonial submitted!",
+    "successTitle": "Thank you!",
+    "successBody": "Your testimonial has been submitted for review. Once approved, it will appear on the homepage."
+  },
   "documents": {
     "resume": "Resume",
     "resumeHelp": "Optional — we can auto-generate a clean resume from your profile.",

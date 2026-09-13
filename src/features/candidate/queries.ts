@@ -4,7 +4,8 @@ import {
   getCandidateProfile,
   updateCandidateProfile,
 } from '@/api/candidate';
-import type { CandidateProfileInput } from '@/api/types';
+import { candidateSubmitTestimonial } from '@/api/testimonials';
+import type { CandidateProfileInput, CandidateTestimonialInput } from '@/api/types';
 import { useAuthStore } from '@/stores/authStore';
 
 export const candidateKeys = {
@@ -39,5 +40,15 @@ export function useUpdateCandidateProfile() {
   return useMutation({
     mutationFn: (input: Partial<CandidateProfileInput>) => updateCandidateProfile(input),
     onSuccess: (data) => qc.setQueryData(candidateKeys.profile(), data),
+  });
+}
+
+export function useSubmitTestimonial() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: CandidateTestimonialInput) => candidateSubmitTestimonial(input),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['public', 'testimonials'] });
+    },
   });
 }

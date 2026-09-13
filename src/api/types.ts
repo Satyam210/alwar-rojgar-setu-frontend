@@ -338,6 +338,10 @@ export interface TestimonialInput {
   displayOrder?: number;
 }
 
+export interface CandidateTestimonialInput {
+  body: string;
+}
+
 // --- Shared pagination envelope ---------------------------------------------
 
 export interface Paginated<T> {

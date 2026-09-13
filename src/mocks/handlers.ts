@@ -422,22 +422,24 @@ add('GET', '/testimonials/admin', (ctx) => {
   );
 });
 
-add('POST', '/testimonials/admin', (ctx) => {
-  requireRole(ctx, 'admin');
-  const { name, body } = ctx.body;
-  if (!name || !body) throw new HttpError(400, 'name and body are required');
-  const now = new Date().toISOString();
+add('POST', '/testimonials/candidate', (ctx) => {
+  const user = requireRole(ctx, 'candidate');
+  const { body } = ctx.body;
+  if (!body || !String(body).trim()) throw new HttpError(400, 'body is required');
+  const profile = ctx.db.candidateProfiles.find((c: any) => c.userId === user.userId);
+  if (!profile) throw new HttpError(404, 'Candidate profile not found');
+  const nowStr = new Date().toISOString();
   const t = {
     id: uid('tm'),
-    candidateId: (ctx.body.candidateId as string | null) ?? null,
-    name: String(name),
-    photoUrl: (ctx.body.photoUrl as string | null) ?? null,
-    trade: (ctx.body.trade as string | null) ?? null,
-    body: String(body),
-    isPublished: Boolean(ctx.body.isPublished ?? false),
-    displayOrder: Number(ctx.body.displayOrder ?? 0),
-    createdAt: now,
-    updatedAt: now,
+    candidateId: profile.id,
+    name: profile.fullName,
+    photoUrl: (profile as any).photoUrl ?? null,
+    trade: (profile as any).itiTrade ?? null,
+    body: String(body).trim(),
+    isPublished: false,
+    displayOrder: 0,
+    createdAt: nowStr,
+    updatedAt: nowStr,
   };
   ctx.db.testimonials.push(t);
   persist();
@@ -448,13 +450,8 @@ add('PATCH', '/testimonials/admin/:id', (ctx) => {
   requireRole(ctx, 'admin');
   const t = ctx.db.testimonials.find((x) => x.id === ctx.params.id);
   if (!t) throw new HttpError(404, 'Testimonial not found');
-  if (ctx.body.name !== undefined) t.name = String(ctx.body.name);
-  if (ctx.body.photoUrl !== undefined) t.photoUrl = (ctx.body.photoUrl as string | null) ?? null;
-  if (ctx.body.trade !== undefined) t.trade = (ctx.body.trade as string | null) ?? null;
-  if (ctx.body.body !== undefined) t.body = String(ctx.body.body);
   if (ctx.body.isPublished !== undefined) t.isPublished = Boolean(ctx.body.isPublished);
   if (ctx.body.displayOrder !== undefined) t.displayOrder = Number(ctx.body.displayOrder);
-  if (ctx.body.candidateId !== undefined) t.candidateId = (ctx.body.candidateId as string | null) ?? null;
   t.updatedAt = new Date().toISOString();
   persist();
   return t;
