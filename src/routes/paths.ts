@@ -14,6 +14,7 @@ export const paths = {
     onboarding: '/candidate/onboarding',
     profile: '/candidate/profile',
     applications: '/candidate/applications',
+    testimonial: '/candidate/testimonial',
   },
 
   employer: {

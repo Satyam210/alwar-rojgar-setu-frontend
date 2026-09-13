@@ -20,6 +20,7 @@ import { GoogleOAuthCallback } from '@/features/auth/GoogleOAuthCallback';
 import { CandidateOnboardingPage } from '@/features/candidate/OnboardingPage';
 import { CandidateProfilePage } from '@/features/candidate/ProfilePage';
 import { CandidateApplicationsPage } from '@/features/candidate/ApplicationsPage';
+import { CandidateTestimonialPage } from '@/features/candidate/TestimonialPage';
 
 import { EmployerOnboardingPage } from '@/features/employer/OnboardingPage';
 import { EmployerProfilePage } from '@/features/employer/ProfilePage';
@@ -74,6 +75,7 @@ export const router = createBrowserRouter([
               { path: paths.candidate.onboarding, element: <CandidateOnboardingPage /> },
               { path: paths.candidate.profile, element: <CandidateProfilePage /> },
               { path: paths.candidate.applications, element: <CandidateApplicationsPage /> },
+              { path: paths.candidate.testimonial, element: <CandidateTestimonialPage /> },
             ],
           },
         ],

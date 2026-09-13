@@ -16,11 +16,9 @@ import {
 } from '@/api/admin';
 import {
   adminGetTestimonials,
-  adminCreateTestimonial,
   adminUpdateTestimonial,
   adminDeleteTestimonial,
 } from '@/api/testimonials';
-import type { TestimonialInput } from '@/api/types';
 
 export const adminKeys = {
   dashboard: () => ['admin', 'dashboard'] as const,
@@ -116,21 +114,10 @@ export function useAdminTestimonials() {
   });
 }
 
-export function useCreateTestimonial() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (input: TestimonialInput) => adminCreateTestimonial(input),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: adminKeys.testimonials() });
-      qc.invalidateQueries({ queryKey: ['public', 'testimonials'] });
-    },
-  });
-}
-
 export function useUpdateTestimonial() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: Partial<TestimonialInput> }) =>
+    mutationFn: ({ id, input }: { id: string; input: { isPublished?: boolean; displayOrder?: number } }) =>
       adminUpdateTestimonial(id, input),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: adminKeys.testimonials() });
