@@ -52,7 +52,8 @@
     "district": "District",
     "districtOther": "Other (not in the list)",
     "districtOtherPlaceholder": "Type your district",
-    "pincode": "PIN code"
+    "pincode": "PIN code",
+    "address": "Address"
   },
   "testimonial": {
     "title": "Share your success story",

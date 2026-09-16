@@ -18,6 +18,8 @@ import { confirmDialog } from '@/components/ui/ConfirmDialog';
 import { Pagination } from '@/components/ui/Pagination';
 import { AuthedCompanyLogo } from '@/components/ui/CompanyLogo';
 import { EmployerStatusBadge } from '@/components/common/StatusBadge';
+import { EmployerProfileDetails } from '@/components/common/EmployerProfileDetails';
+import { DisclosureButton } from '@/components/common/DisclosureButton';
 import { EmptyState, ErrorState, LoadingState } from '@/components/common/States';
 import { toast } from '@/components/ui/toast';
 
@@ -187,83 +189,17 @@ export function AdminEmployersPage() {
       {data && filtered.length > 0 && (
         <>
           <ul className="flex flex-col gap-3">
-            {pageItems.map((emp) => {
-              const active = emp.isActive !== false;
-              return (
-                <li key={emp.id}>
-                  <Card>
-                    <CardBody className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                      <div className="flex gap-4">
-                        <AuthedCompanyLogo name={emp.companyName} logoUrl={emp.logoUrl} />
-                        <div className="flex flex-col gap-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h2 className="text-base font-semibold">{emp.companyName}</h2>
-                            <EmployerStatusBadge status={emp.status} />
-                            {!active && (
-                              <Badge tone="danger" icon="✕">
-                                {t('admin:employers.inactive')}
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="max-w-prose text-sm text-content">
-                            {emp.description?.trim() || (
-                              <span className="italic text-content-muted">
-                                {t('admin:employers.noDescription')}
-                              </span>
-                            )}
-                          </p>
-                          {emp.contactPersonName && (
-                            <p className="text-sm text-content">
-                              {t('employer:fields.contactPerson')}: {emp.contactPersonName}
-                              {emp.contactPersonDesignation ? ` (${emp.contactPersonDesignation})` : ''}
-                              {emp.contactPersonPhone && (
-                                <> · <a href={`tel:${emp.contactPersonPhone}`}>{emp.contactPersonPhone}</a></>
-                              )}
-                              {emp.contactPersonEmail && (
-                                <> · <a href={`mailto:${emp.contactPersonEmail}`}>{emp.contactPersonEmail}</a></>
-                              )}
-                            </p>
-                          )}
-                          <p className="text-sm text-content-muted">
-                            {[emp.gstNumber, emp.udyamNumber].filter(Boolean).join(' · ') || '—'}
-                          </p>
-                          {emp.rejectionReason && emp.status === 'rejected' && (
-                            <p className="text-sm text-danger">
-                              {t('admin:employers.rejectReason')}: {emp.rejectionReason}
-                            </p>
-                          )}
-                          <p className="text-xs text-content-muted">{formatDate(emp.createdAt)}</p>
-                        </div>
-                      </div>
-
-                      {isSuperAdmin && (
-                        <div className="flex shrink-0 flex-wrap gap-2 sm:flex-col sm:items-end">
-                          {emp.status === 'pending' && (
-                            <div className="flex gap-2">
-                              <Button size="sm" onClick={() => approve(emp)}>
-                                {t('admin:employers.verify')}
-                              </Button>
-                              <Button variant="ghost" size="sm" onClick={() => setRejecting(emp)}>
-                                {t('admin:employers.reject')}
-                              </Button>
-                            </div>
-                          )}
-                          {emp.status === 'verified' && (
-                            <Button
-                              variant={active ? 'danger' : 'secondary'}
-                              size="sm"
-                              onClick={() => toggleActive(emp)}
-                            >
-                              {active ? t('admin:employers.disable') : t('admin:employers.enable')}
-                            </Button>
-                          )}
-                        </div>
-                      )}
-                    </CardBody>
-                  </Card>
-                </li>
-              );
-            })}
+            {pageItems.map((emp) => (
+              <li key={emp.id}>
+                <AdminEmployerCard
+                  employer={emp}
+                  isSuperAdmin={isSuperAdmin}
+                  onApprove={approve}
+                  onReject={setRejecting}
+                  onToggleActive={toggleActive}
+                />
+              </li>
+            ))}
           </ul>
           <Pagination
             page={currentPage}
@@ -295,5 +231,105 @@ export function AdminEmployersPage() {
         </Field>
       </Modal>
     </div>
+  );
+}
+
+interface AdminEmployerCardProps {
+  employer: EmployerProfile;
+  isSuperAdmin: boolean;
+  onApprove: (emp: EmployerProfile) => void;
+  onReject: (emp: EmployerProfile) => void;
+  onToggleActive: (emp: EmployerProfile) => void;
+}
+
+function AdminEmployerCard({
+  employer: emp,
+  isSuperAdmin,
+  onApprove,
+  onReject,
+  onToggleActive,
+}: AdminEmployerCardProps) {
+  const { t } = useTranslation(['admin', 'employer', 'common']);
+  const [open, setOpen] = useState(false);
+  const active = emp.isActive !== false;
+
+  return (
+    <Card>
+      <CardBody className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex gap-4">
+            <AuthedCompanyLogo name={emp.companyName} logoUrl={emp.logoUrl} />
+            <div className="flex flex-col gap-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-base font-semibold">{emp.companyName}</h2>
+                <EmployerStatusBadge status={emp.status} />
+                {!active && (
+                  <Badge tone="danger" icon="✕">
+                    {t('admin:employers.inactive')}
+                  </Badge>
+                )}
+              </div>
+              <p className="max-w-prose text-sm text-content">
+                {emp.description?.trim() || (
+                  <span className="italic text-content-muted">
+                    {t('admin:employers.noDescription')}
+                  </span>
+                )}
+              </p>
+              {emp.contactPersonName && (
+                <p className="text-sm text-content">
+                  {t('employer:fields.contactPerson')}: {emp.contactPersonName}
+                  {emp.contactPersonDesignation ? ` (${emp.contactPersonDesignation})` : ''}
+                </p>
+              )}
+              {emp.rejectionReason && emp.status === 'rejected' && (
+                <p className="text-sm text-danger">
+                  {t('admin:employers.rejectReason')}: {emp.rejectionReason}
+                </p>
+              )}
+              <p className="text-xs text-content-muted">{formatDate(emp.createdAt)}</p>
+            </div>
+          </div>
+
+          {isSuperAdmin && (
+            <div className="flex shrink-0 flex-wrap gap-2 sm:flex-col sm:items-end">
+              {emp.status === 'pending' && (
+                <div className="flex gap-2">
+                  <Button size="sm" onClick={() => onApprove(emp)}>
+                    {t('admin:employers.verify')}
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={() => onReject(emp)}>
+                    {t('admin:employers.reject')}
+                  </Button>
+                </div>
+              )}
+              {emp.status === 'verified' && (
+                <Button
+                  variant={active ? 'danger' : 'secondary'}
+                  size="sm"
+                  onClick={() => onToggleActive(emp)}
+                >
+                  {active ? t('admin:employers.disable') : t('admin:employers.enable')}
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div>
+          <DisclosureButton
+            open={open}
+            onClick={() => setOpen((o) => !o)}
+            showLabel={t('common:actions.showFullProfile')}
+            hideLabel={t('common:actions.hideFullProfile')}
+          />
+          {open && (
+            <div className="mt-4">
+              <EmployerProfileDetails employer={emp} />
+            </div>
+          )}
+        </div>
+      </CardBody>
+    </Card>
   );
 }

@@ -13,11 +13,13 @@ import { Field } from '@/components/ui/Field';
 import { Input, NativeSelect } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Pagination } from '@/components/ui/Pagination';
+import { CandidateProfileDetails } from '@/components/common/CandidateProfileDetails';
+import { ProfileDisclosure } from '@/components/common/ProfileDisclosure';
 import { EmptyState, ErrorState, LoadingState } from '@/components/common/States';
 import { toast } from '@/components/ui/toast';
 
 export function AdminCandidatesPage() {
-  const { t } = useTranslation(['admin', 'candidate']);
+  const { t } = useTranslation(['admin', 'candidate', 'common']);
   usePageTitle(t('admin:candidates.title'));
 
   const [search, setSearch] = useState('');
@@ -141,6 +143,11 @@ export function AdminCandidatesPage() {
                       {c.phone && c.email ? ' · ' : ''}
                       {c.email && <a href={`mailto:${c.email}`}>{c.email}</a>}
                     </p>
+                    <div className="mt-3">
+                      <ProfileDisclosure>
+                        <CandidateProfileDetails candidate={c} />
+                      </ProfileDisclosure>
+                    </div>
                   </CardBody>
                 </Card>
               </li>
