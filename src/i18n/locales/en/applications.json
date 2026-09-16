@@ -60,7 +60,7 @@
     "joiningOn": "Joining {{date}}",
     "scheduleInterview": "Schedule Interview",
     "interviewTitle": "Schedule interview",
-    "interviewBody": "Set a date and time for the interview. The candidate's contact details will be unlocked once scheduled.",
+    "interviewBody": "Set a date and time for the interview. The candidate will be notified.",
     "interviewDateTime": "Interview date & time",
     "interviewNotes": "Notes for candidate (optional)",
     "interviewNotesPlaceholder": "Location, what to bring, contact number on the day…",

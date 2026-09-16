@@ -55,7 +55,9 @@
     "close": "बंद करें",
     "continue": "जारी रखें",
     "showMore": "और देखें",
-    "showLess": "कम देखें"
+    "showLess": "कम देखें",
+    "showFullProfile": "पूरी प्रोफ़ाइल देखें",
+    "hideFullProfile": "प्रोफ़ाइल छिपाएँ"
   },
   "states": {
     "loading": "लोड हो रहा है…",

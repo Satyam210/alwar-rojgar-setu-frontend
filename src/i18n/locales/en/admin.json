@@ -45,7 +45,8 @@
     "enabled": "Employer account enabled",
     "disabled": "Employer account disabled",
     "active": "Active",
-    "inactive": "Disabled"
+    "inactive": "Disabled",
+    "registeredOn": "Registered on"
   },
   "candidates": {
     "title": "Candidates",

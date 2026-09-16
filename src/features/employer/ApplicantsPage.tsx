@@ -16,6 +16,8 @@ import { Modal } from '@/components/ui/Modal';
 import { Field } from '@/components/ui/Field';
 import { Input, Textarea } from '@/components/ui/Input';
 import { ApplicationStatusBadge } from '@/components/common/StatusBadge';
+import { CandidateProfileDetails } from '@/components/common/CandidateProfileDetails';
+import { ProfileDisclosure } from '@/components/common/ProfileDisclosure';
 import { EmptyState, ErrorState, LoadingState } from '@/components/common/States';
 import { toast } from '@/components/ui/toast';
 
@@ -139,39 +141,18 @@ export function EmployerApplicantsPage() {
                       <ApplicationStatusBadge status={app.status} />
                     </div>
 
-                    {/* Contact details — only shown once interview is scheduled or candidate is hired */}
-                    {(app.status === 'interview_scheduled' || app.status === 'hired') ? (
-                      <div className="flex flex-col gap-1 rounded-lg border border-brand-200 bg-brand-50 px-3 py-2 text-sm">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">
-                          {t('applications:employer.contactUnlocked')}
-                        </p>
-                        {c?.phone && (
-                          <p>
-                            {t('candidate:fields.phone')}:{' '}
-                            <a href={`tel:${c.phone}`} className="font-medium">{c.phone}</a>
-                          </p>
-                        )}
-                        {c?.email && (
-                          <p>
-                            {t('applications:employer.contact')}:{' '}
-                            <a href={`mailto:${c.email}`} className="font-medium">{c.email}</a>
-                          </p>
-                        )}
-                        {app.status === 'interview_scheduled' && app.interviewAt && (
-                          <p className="mt-1 text-content-muted">
-                            {t('applications:employer.interviewOn', {
-                              date: new Date(app.interviewAt).toLocaleString(),
-                            })}
-                          </p>
-                        )}
-                      </div>
-                    ) : (
-                      <p className="text-xs text-content-muted italic">
-                        {t('applications:employer.contactLocked')}
+                    {app.status === 'interview_scheduled' && app.interviewAt && (
+                      <p className="text-sm text-content-muted">
+                        {t('applications:employer.interviewOn', {
+                          date: new Date(app.interviewAt).toLocaleString(),
+                        })}
                       </p>
                     )}
-                    {c?.description && (
-                      <p className="whitespace-pre-line text-sm text-content-muted">{c.description}</p>
+
+                    {c && (
+                      <ProfileDisclosure>
+                        <CandidateProfileDetails candidate={c} />
+                      </ProfileDisclosure>
                     )}
 
                     {/* Hire attribution — proof the placement happened via the platform. */}
