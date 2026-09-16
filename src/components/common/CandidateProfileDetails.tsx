@@ -11,57 +11,60 @@ export function CandidateProfileDetails({ candidate }: { candidate: CandidatePro
   const c = candidate;
 
   return (
-    <div className="flex flex-col gap-5 border-t border-border pt-4">
-      <Section title={t('candidate:profile.sections.basic')}>
-        <dl className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
-          <Item label={t('candidate:fields.phone')} value={c.phone} href={c.phone ? `tel:${c.phone}` : undefined} />
-          <Item label={t('candidate:fields.email')} value={c.email} href={c.email ? `mailto:${c.email}` : undefined} />
-          <Item
-            label={t('candidate:fields.gender')}
-            value={c.gender ? t(`candidate:fields.genderOptions.${c.gender}`) : null}
-          />
-        </dl>
-        {c.description && (
-          <div className="mt-3">
-            <dt className="text-sm text-content-muted">{t('candidate:fields.description')}</dt>
-            <dd className="mt-1 whitespace-pre-line">{c.description}</dd>
-          </div>
-        )}
-      </Section>
+    <div className="rounded-xl border border-border bg-surface-muted p-4 sm:p-5">
+      <div className="flex flex-col gap-4">
+        <Section title={t('candidate:profile.sections.basic')}>
+          <dl className="grid grid-cols-2 gap-x-5 gap-y-2 sm:grid-cols-3">
+            <Item label={t('candidate:fields.phone')} value={c.phone} href={c.phone ? `tel:${c.phone}` : undefined} />
+            <Item label={t('candidate:fields.email')} value={c.email} href={c.email ? `mailto:${c.email}` : undefined} />
+            <Item
+              label={t('candidate:fields.gender')}
+              value={c.gender ? t(`candidate:fields.genderOptions.${c.gender}`) : null}
+            />
+          </dl>
+          {c.description && (
+            <div className="mt-2">
+              <dt className="text-xs text-content-muted">{t('candidate:fields.description')}</dt>
+              <dd className="mt-0.5 whitespace-pre-line text-sm">{c.description}</dd>
+            </div>
+          )}
+        </Section>
 
-      <Section title={t('candidate:profile.sections.education')}>
-        <dl className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
-          <Item label={t('candidate:fields.highestEducation')} value={c.highestEducation} />
-          <Item label={t('candidate:fields.itiTrade')} value={c.itiTrade} />
-          <Item label={t('candidate:fields.itiCollege')} value={c.itiCollege} />
-          <Item label={t('candidate:fields.department')} value={c.department} />
-          <Item label={t('candidate:fields.graduationYear')} value={c.graduationYear?.toString()} />
-        </dl>
-        {c.skills && c.skills.length > 0 && (
-          <div className="mt-3">
-            <dt className="text-sm text-content-muted">{t('candidate:fields.skills')}</dt>
-            <dd className="mt-1 flex flex-wrap gap-2">
-              {c.skills.map((s) => (
-                <span key={s} className="rounded-full bg-brand-50 px-3 py-1 text-sm text-brand-800">
-                  {s}
-                </span>
-              ))}
-            </dd>
-          </div>
-        )}
-      </Section>
+        <Section title={t('candidate:profile.sections.education')}>
+          <dl className="grid grid-cols-2 gap-x-5 gap-y-2 sm:grid-cols-3">
+            <Item label={t('candidate:fields.highestEducation')} value={c.highestEducation} />
+            <Item label={t('candidate:fields.itiTrade')} value={c.itiTrade} />
+            <Item label={t('candidate:fields.itiCollege')} value={c.itiCollege} />
+            <Item label={t('candidate:fields.department')} value={c.department} />
+            <Item label={t('candidate:fields.graduationYear')} value={c.graduationYear?.toString()} />
+          </dl>
+          {c.skills && c.skills.length > 0 && (
+            <div className="mt-2">
+              <dt className="text-xs text-content-muted">{t('candidate:fields.skills')}</dt>
+              <dd className="mt-1 flex flex-wrap gap-1.5">
+                {c.skills.map((s) => (
+                  <span key={s} className="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs text-brand-800">
+                    {s}
+                  </span>
+                ))}
+              </dd>
+            </div>
+          )}
+        </Section>
 
-      <Section title={t('candidate:profile.sections.preferences')}>
-        <dl className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
-          <Item
-            label={t('candidate:fields.workExperienceMonths')}
-            value={formatExperience(c.workExperienceMonths)}
-          />
-          <Item label={t('candidate:fields.city')} value={c.city} />
-          <Item label={t('candidate:fields.district')} value={c.district} />
-          <Item label={t('candidate:fields.pincode')} value={c.pincode} />
-        </dl>
-      </Section>
+        <Section title={t('candidate:profile.sections.preferences')}>
+          <dl className="grid grid-cols-2 gap-x-5 gap-y-2 sm:grid-cols-3">
+            <Item
+              label={t('candidate:fields.workExperienceMonths')}
+              value={formatExperience(c.workExperienceMonths)}
+            />
+            <Item
+              label={t('candidate:fields.address')}
+              value={[c.city, c.district, c.pincode].filter(Boolean).join(', ') || null}
+            />
+          </dl>
+        </Section>
+      </div>
     </div>
   );
 }
@@ -69,7 +72,7 @@ export function CandidateProfileDetails({ candidate }: { candidate: CandidatePro
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-content-muted">{title}</h3>
+      <h3 className="mb-1.5 text-sm font-bold text-content">{title}</h3>
       {children}
     </div>
   );
@@ -86,8 +89,8 @@ function Item({
 }) {
   return (
     <div className="min-w-0">
-      <dt className="text-sm text-content-muted">{label}</dt>
-      <dd className="break-words font-medium">
+      <dt className="text-xs text-content-muted">{label}</dt>
+      <dd className="break-words text-sm font-medium">
         {value ? (
           href ? (
             <a href={href} className="text-brand-700 hover:underline">

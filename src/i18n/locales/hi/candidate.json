@@ -52,7 +52,8 @@
     "district": "ज़िला",
     "districtOther": "अन्य (सूची में नहीं है)",
     "districtOtherPlaceholder": "अपना ज़िला लिखें",
-    "pincode": "पिन कोड"
+    "pincode": "पिन कोड",
+    "address": "पता"
   },
   "testimonial": {
     "title": "अपनी सफलता की कहानी साझा करें",
