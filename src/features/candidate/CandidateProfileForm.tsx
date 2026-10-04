@@ -71,7 +71,7 @@ export function CandidateProfileFormFields({
       phone: initial?.phone ?? '',
       email: initial?.email ?? defaultEmail ?? '',
       description: initial?.description ?? '',
-      gender: initial?.gender ?? '',
+      gender: (initial?.gender ?? '') as CandidateProfileForm['gender'],
       highestEducation: initial?.highestEducation ?? '',
       itiTrade: initial?.itiTrade ?? '',
       itiCollege: initial?.itiCollege ?? '',
