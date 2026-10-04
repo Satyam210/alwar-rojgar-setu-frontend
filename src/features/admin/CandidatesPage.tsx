@@ -45,7 +45,10 @@ export function AdminCandidatesPage() {
       });
       const columns: CsvColumn<CandidateProfile>[] = [
         { header: 'Full Name', value: (c) => c.fullName },
-        { header: 'Gender', value: (c) => c.gender },
+        {
+          header: 'Gender',
+          value: (c) => (c.gender ? t(`candidate:fields.genderOptions.${c.gender}`) : ''),
+        },
         { header: 'Phone', value: (c) => c.phone },
         { header: 'Email', value: (c) => c.email },
         { header: 'ITI Trade', value: (c) => c.itiTrade },

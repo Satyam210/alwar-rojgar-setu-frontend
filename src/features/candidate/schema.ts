@@ -27,7 +27,10 @@ export const candidateProfileSchema = z.object({
     .refine((v) => v.split(/\s+/).filter(Boolean).length <= 100, vmsg('maxWords', { count: 100 }))
     .optional()
     .or(z.literal('')),
-  gender: optionalString,
+  gender: z
+    .enum(['male', 'female', 'other', 'prefer_not_to_say'])
+    .optional()
+    .or(z.literal('').transform(() => undefined)),
   highestEducation: optionalString,
   itiTrade: optionalString,
   itiCollege: optionalString,

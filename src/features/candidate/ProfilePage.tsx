@@ -56,6 +56,10 @@ export function CandidateProfilePage() {
               <Item label={t('fields.fullName')} value={profile.fullName} />
               <Item label={t('fields.phone')} value={profile.phone} />
               <Item label={t('fields.email')} value={profile.email} />
+              <Item
+                label={t('fields.gender')}
+                value={profile.gender ? t(`fields.genderOptions.${profile.gender}`) : null}
+              />
               <Item label={t('fields.highestEducation')} value={profile.highestEducation} />
               <Item label={t('fields.itiTrade')} value={profile.itiTrade} />
               <Item label={t('fields.itiCollege')} value={profile.itiCollege} />
