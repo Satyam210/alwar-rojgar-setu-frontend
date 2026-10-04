@@ -39,6 +39,8 @@
     "contactPersonPhone": "Contact person phone",
     "contactPersonEmail": "Contact person email",
     "contactPersonDesignation": "Designation",
+    "altContactPersonName": "Alternate contact name",
+    "altContactPersonPhone": "Alternate contact phone",
     "status": "Verification status"
   },
   "documents": {

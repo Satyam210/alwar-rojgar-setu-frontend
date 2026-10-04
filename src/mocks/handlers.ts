@@ -328,6 +328,10 @@ add('POST', '/employer-profile', (ctx) => {
       (ctx.body.contactPersonEmail as string) ?? existing?.contactPersonEmail ?? null,
     contactPersonDesignation:
       (ctx.body.contactPersonDesignation as string) ?? existing?.contactPersonDesignation ?? null,
+    altContactPersonName:
+      (ctx.body.altContactPersonName as string) ?? existing?.altContactPersonName ?? null,
+    altContactPersonPhone:
+      (ctx.body.altContactPersonPhone as string) ?? existing?.altContactPersonPhone ?? null,
     gstNumber: (ctx.body.gstNumber as string) ?? existing?.gstNumber ?? null,
     udyamNumber: (ctx.body.udyamNumber as string) ?? existing?.udyamNumber ?? null,
     status: existing?.status ?? 'pending',
@@ -362,6 +366,8 @@ add('PATCH', '/employer-profile', (ctx) => {
     'contactPersonPhone',
     'contactPersonEmail',
     'contactPersonDesignation',
+    'altContactPersonName',
+    'altContactPersonPhone',
   ] as const) {
     if (body[key] !== undefined) target[key] = body[key];
   }

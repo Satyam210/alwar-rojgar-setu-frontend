@@ -50,6 +50,34 @@ export const candidateProfileSchema = z.object({
     .optional()
     .or(z.literal('').transform(() => undefined)),
   skills: z.array(z.string().trim().min(1)).optional(),
+  workExperiences: z
+    .array(
+      z.object({
+        company: z.string().trim().min(1, vmsg('required')),
+        role: z.string().trim().min(1, vmsg('required')),
+        fromMonth: optionalString,
+        toMonth: optionalString,
+        current: z.boolean().optional(),
+        description: optionalString,
+      }),
+    )
+    .optional(),
+  educations: z
+    .array(
+      z.object({
+        degree: z.string().trim().min(1, vmsg('required')),
+        institution: z.string().trim().min(1, vmsg('required')),
+        field: optionalString,
+        year: z.coerce
+          .number()
+          .int()
+          .min(1980, vmsg('yearInvalid'))
+          .max(currentYear, vmsg('yearInvalid'))
+          .optional()
+          .or(z.literal('').transform(() => undefined)),
+      }),
+    )
+    .optional(),
   city: optionalString,
   district: optionalString,
   pincode: z

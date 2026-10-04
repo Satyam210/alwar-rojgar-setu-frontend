@@ -12,6 +12,8 @@
     "sections": {
       "basic": "Basic details",
       "education": "Education & skills",
+      "workHistory": "Work experience",
+      "educationHistory": "Education history",
       "preferences": "Job preferences",
       "documents": "Documents"
     }
@@ -41,6 +43,23 @@
     "department": "Department / Branch",
     "graduationYear": "Year of passing",
     "workExperienceMonths": "Work experience (months)",
+    "workExp": {
+      "company": "Company",
+      "role": "Role / Designation",
+      "fromMonth": "From",
+      "toMonth": "To",
+      "current": "I currently work here",
+      "present": "Present",
+      "description": "What you did",
+      "add": "Add work experience"
+    },
+    "edu": {
+      "degree": "Degree / Qualification",
+      "institution": "Institution",
+      "field": "Field / Specialisation",
+      "year": "Year of passing",
+      "add": "Add education"
+    },
     "expectedSalary": "Expected salary (monthly)",
     "expectedSalaryMin": "Expected salary – min (monthly)",
     "expectedSalaryMax": "Expected salary – max (monthly)",

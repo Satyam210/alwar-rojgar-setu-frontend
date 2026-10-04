@@ -21,6 +21,13 @@ export const employerProfileSchema = z.object({
     .optional()
     .or(z.literal('')),
   contactPersonDesignation: z.string().trim().optional().or(z.literal('')),
+  altContactPersonName: z.string().trim().optional().or(z.literal('')),
+  altContactPersonPhone: z
+    .string()
+    .trim()
+    .regex(/^[6-9]\d{9}$/, vmsg('phoneInvalid'))
+    .optional()
+    .or(z.literal('')),
   gstNumber: z
     .string()
     .trim()
