@@ -40,6 +40,16 @@ export function EmployerProfileDetails({ employer }: { employer: EmployerProfile
               href={e.contactPersonEmail ? `mailto:${e.contactPersonEmail}` : undefined}
             />
           </dl>
+          {(e.altContactPersonName || e.altContactPersonPhone) && (
+            <dl className="mt-3 grid grid-cols-2 gap-x-5 gap-y-2 sm:grid-cols-3">
+              <Item label={t('employer:fields.altContactPersonName')} value={e.altContactPersonName} />
+              <Item
+                label={t('employer:fields.altContactPersonPhone')}
+                value={e.altContactPersonPhone}
+                href={e.altContactPersonPhone ? `tel:${e.altContactPersonPhone}` : undefined}
+              />
+            </dl>
+          )}
         </Section>
       </div>
     </div>

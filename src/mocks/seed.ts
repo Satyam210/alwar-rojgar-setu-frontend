@@ -65,6 +65,19 @@ export function createSeedDb(): MockDb {
       graduationYear: 2023,
       workExperienceMonths: 14,
       skills: ['Fitter', 'Blueprint Reading', 'Welding Basics'],
+      workExperiences: [
+        {
+          company: 'Alwar Engineering Works',
+          role: 'Fitter',
+          fromMonth: '2023-06',
+          toMonth: null,
+          current: true,
+          description: 'Assembly-line fitting, blueprint reading, basic welding.',
+        },
+      ],
+      educations: [
+        { degree: 'ITI', institution: 'Govt. ITI Alwar', field: 'Fitter', year: 2023 },
+      ],
       city: 'Alwar',
       district: 'Alwar',
       pincode: '301001',
@@ -215,6 +228,8 @@ export function createSeedDb(): MockDb {
       contactPersonDesignation: 'Director',
       contactPersonPhone: '9829010001',
       contactPersonEmail: 'rakesh@bhiwadiauto.example.com',
+      altContactPersonName: 'Sunita Rao',
+      altContactPersonPhone: '9829019999',
       gstNumber: '08ABCDE1234F1Z5',
       udyamNumber: 'UDYAM-RJ-01-0001234',
       status: 'verified',

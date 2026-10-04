@@ -12,6 +12,8 @@
     "sections": {
       "basic": "बुनियादी विवरण",
       "education": "शिक्षा एवं कौशल",
+      "workHistory": "कार्य अनुभव",
+      "educationHistory": "शिक्षा इतिहास",
       "preferences": "नौकरी प्राथमिकताएँ",
       "documents": "दस्तावेज़"
     }
@@ -41,6 +43,23 @@
     "department": "विभाग / शाखा",
     "graduationYear": "उत्तीर्ण वर्ष",
     "workExperienceMonths": "कार्य अनुभव (महीने)",
+    "workExp": {
+      "company": "कंपनी",
+      "role": "भूमिका / पदनाम",
+      "fromMonth": "से",
+      "toMonth": "तक",
+      "current": "मैं अभी यहाँ काम करता/करती हूँ",
+      "present": "वर्तमान",
+      "description": "आपने क्या किया",
+      "add": "कार्य अनुभव जोड़ें"
+    },
+    "edu": {
+      "degree": "डिग्री / योग्यता",
+      "institution": "संस्थान",
+      "field": "क्षेत्र / विशेषज्ञता",
+      "year": "उत्तीर्ण वर्ष",
+      "add": "शिक्षा जोड़ें"
+    },
     "expectedSalary": "अपेक्षित वेतन (मासिक)",
     "expectedSalaryMin": "अपेक्षित वेतन – न्यूनतम (मासिक)",
     "expectedSalaryMax": "अपेक्षित वेतन – अधिकतम (मासिक)",

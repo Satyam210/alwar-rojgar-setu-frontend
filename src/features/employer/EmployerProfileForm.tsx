@@ -42,6 +42,8 @@ export function EmployerProfileFormFields({
       contactPersonPhone: initial?.contactPersonPhone ?? '',
       contactPersonEmail: initial?.contactPersonEmail ?? '',
       contactPersonDesignation: initial?.contactPersonDesignation ?? '',
+      altContactPersonName: initial?.altContactPersonName ?? '',
+      altContactPersonPhone: initial?.altContactPersonPhone ?? '',
       gstNumber: initial?.gstNumber ?? '',
       udyamNumber: initial?.udyamNumber ?? '',
     },
@@ -72,6 +74,8 @@ export function EmployerProfileFormFields({
         contactPersonPhone: parsed.contactPersonPhone,
         contactPersonEmail: parsed.contactPersonEmail || undefined,
         contactPersonDesignation: parsed.contactPersonDesignation || undefined,
+        altContactPersonName: parsed.altContactPersonName || undefined,
+        altContactPersonPhone: parsed.altContactPersonPhone || undefined,
         gstNumber: parsed.gstNumber || undefined,
         udyamNumber: parsed.udyamNumber || undefined,
       },
@@ -174,6 +178,18 @@ export function EmployerProfileFormFields({
             label={t('fields.contactPersonEmail')}
           >
             <Input type="email" autoComplete="email" readOnly disabled {...register('contactPersonEmail')} />
+          </Field>
+          <Field
+            label={t('fields.altContactPersonName')}
+            error={translateError(t, errors.altContactPersonName?.message)}
+          >
+            <Input {...register('altContactPersonName')} />
+          </Field>
+          <Field
+            label={t('fields.altContactPersonPhone')}
+            error={translateError(t, errors.altContactPersonPhone?.message)}
+          >
+            <Input type="tel" inputMode="numeric" maxLength={10} {...register('altContactPersonPhone')} />
           </Field>
         </div>
       </fieldset>

@@ -52,6 +52,44 @@ export function CandidateProfileDetails({ candidate }: { candidate: CandidatePro
           )}
         </Section>
 
+        {c.workExperiences && c.workExperiences.length > 0 && (
+          <Section title={t('candidate:profile.sections.workHistory')}>
+            <ul className="flex flex-col gap-3">
+              {c.workExperiences.map((w, i) => (
+                <li key={i} className="text-sm">
+                  <div className="font-medium">
+                    {[w.role, w.company].filter(Boolean).join(' · ')}
+                  </div>
+                  {(w.fromMonth || w.toMonth || w.current) && (
+                    <div className="text-xs text-content-muted">
+                      {[w.fromMonth, w.current ? t('candidate:fields.workExp.present') : w.toMonth]
+                        .filter(Boolean)
+                        .join(' – ')}
+                    </div>
+                  )}
+                  {w.description && <div className="mt-0.5 whitespace-pre-line">{w.description}</div>}
+                </li>
+              ))}
+            </ul>
+          </Section>
+        )}
+
+        {c.educations && c.educations.length > 0 && (
+          <Section title={t('candidate:profile.sections.educationHistory')}>
+            <ul className="flex flex-col gap-2">
+              {c.educations.map((ed, i) => (
+                <li key={i} className="text-sm">
+                  <span className="font-medium">
+                    {[ed.degree, ed.field].filter(Boolean).join(', ')}
+                  </span>
+                  {ed.institution && <span> — {ed.institution}</span>}
+                  {ed.year && <span className="text-content-muted"> ({ed.year})</span>}
+                </li>
+              ))}
+            </ul>
+          </Section>
+        )}
+
         <Section title={t('candidate:profile.sections.preferences')}>
           <dl className="grid grid-cols-2 gap-x-5 gap-y-2 sm:grid-cols-3">
             <Item

@@ -38,6 +38,23 @@ export interface CurrentUser {
 
 // --- Candidate ---------------------------------------------------------------
 
+export interface WorkExperience {
+  company: string;
+  role: string;
+  /** YYYY-MM or null. */
+  fromMonth?: string | null;
+  toMonth?: string | null;
+  current?: boolean;
+  description?: string | null;
+}
+
+export interface Education {
+  degree: string;
+  institution: string;
+  field?: string | null;
+  year?: number | null;
+}
+
 export interface CandidateProfile {
   id: UUID;
   userId: UUID;
@@ -58,6 +75,10 @@ export interface CandidateProfile {
   graduationYear?: number | null;
   workExperienceMonths?: number | null;
   skills?: string[];
+  /** Repeatable resume-style work history. */
+  workExperiences?: WorkExperience[];
+  /** Repeatable education history. */
+  educations?: Education[];
   city?: string | null;
   district?: string | null;
   pincode?: string | null;
@@ -107,6 +128,9 @@ export interface EmployerProfile {
   contactPersonPhone?: string | null;
   contactPersonEmail?: string | null;
   contactPersonDesignation?: string | null;
+  /** Secondary contact (name + phone only). */
+  altContactPersonName?: string | null;
+  altContactPersonPhone?: string | null;
   gstNumber?: string | null;
   udyamNumber?: string | null;
   status: EmployerStatus;
@@ -130,6 +154,8 @@ export type EmployerProfileInput = Pick<
   | 'contactPersonPhone'
   | 'contactPersonEmail'
   | 'contactPersonDesignation'
+  | 'altContactPersonName'
+  | 'altContactPersonPhone'
 >;
 
 export type EmployerDocumentType =

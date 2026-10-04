@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { candidateProfileSchema, type CandidateProfileForm } from './schema';
@@ -63,6 +63,7 @@ export function CandidateProfileFormFields({
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm<CandidateProfileForm>({
     resolver: zodResolver(candidateProfileSchema),
@@ -78,11 +79,28 @@ export function CandidateProfileFormFields({
       department: initial?.department ?? '',
       graduationYear: initial?.graduationYear ?? undefined,
       workExperienceMonths: initial?.workExperienceMonths ?? undefined,
+      workExperiences: (initial?.workExperiences ?? []).map((w) => ({
+        company: w.company,
+        role: w.role,
+        fromMonth: w.fromMonth ?? '',
+        toMonth: w.toMonth ?? '',
+        current: w.current ?? false,
+        description: w.description ?? '',
+      })),
+      educations: (initial?.educations ?? []).map((e) => ({
+        degree: e.degree,
+        institution: e.institution,
+        field: e.field ?? '',
+        year: e.year ?? undefined,
+      })),
       city: initial?.city ?? '',
       district: initial?.district ?? 'Alwar',
       pincode: initial?.pincode ?? '',
     },
   });
+
+  const workExp = useFieldArray({ control, name: 'workExperiences' });
+  const edu = useFieldArray({ control, name: 'educations' });
 
   // Towns available for the currently-selected district (dependent dropdown).
   const selectedDistrict = (watch('district') ?? 'Alwar') as District;
@@ -307,6 +325,102 @@ export function CandidateProfileFormFields({
         <Field label={t('fields.skills')} help={t('fields.skillsHelp')}>
           <SkillsInput value={skills} onChange={setSkills} />
         </Field>
+      </fieldset>
+
+      <fieldset className="flex flex-col gap-4">
+        <legend className="mb-2 text-lg font-semibold">{t('profile.sections.workHistory')}</legend>
+        {workExp.fields.map((f, i) => (
+          <div key={f.id} className="rounded-xl border border-border p-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field
+                label={t('fields.workExp.company')}
+                error={translateError(t, errors.workExperiences?.[i]?.company?.message)}
+                required
+              >
+                <Input {...register(`workExperiences.${i}.company`)} />
+              </Field>
+              <Field
+                label={t('fields.workExp.role')}
+                error={translateError(t, errors.workExperiences?.[i]?.role?.message)}
+                required
+              >
+                <Input {...register(`workExperiences.${i}.role`)} />
+              </Field>
+              <Field label={t('fields.workExp.fromMonth')}>
+                <Input type="month" {...register(`workExperiences.${i}.fromMonth`)} />
+              </Field>
+              <Field label={t('fields.workExp.toMonth')}>
+                <Input type="month" {...register(`workExperiences.${i}.toMonth`)} />
+              </Field>
+            </div>
+            <label className="mt-3 flex items-center gap-2 text-sm">
+              <input type="checkbox" {...register(`workExperiences.${i}.current`)} />
+              {t('fields.workExp.current')}
+            </label>
+            <Field label={t('fields.workExp.description')} className="mt-3">
+              <Textarea rows={2} {...register(`workExperiences.${i}.description`)} />
+            </Field>
+            <Button type="button" variant="ghost" className="mt-3" onClick={() => workExp.remove(i)}>
+              {t('common:actions.remove')}
+            </Button>
+          </div>
+        ))}
+        <div>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() =>
+              workExp.append({ company: '', role: '', fromMonth: '', toMonth: '', current: false, description: '' })
+            }
+          >
+            {t('fields.workExp.add')}
+          </Button>
+        </div>
+      </fieldset>
+
+      <fieldset className="flex flex-col gap-4">
+        <legend className="mb-2 text-lg font-semibold">{t('profile.sections.educationHistory')}</legend>
+        {edu.fields.map((f, i) => (
+          <div key={f.id} className="rounded-xl border border-border p-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field
+                label={t('fields.edu.degree')}
+                error={translateError(t, errors.educations?.[i]?.degree?.message)}
+                required
+              >
+                <Input {...register(`educations.${i}.degree`)} />
+              </Field>
+              <Field
+                label={t('fields.edu.institution')}
+                error={translateError(t, errors.educations?.[i]?.institution?.message)}
+                required
+              >
+                <Input {...register(`educations.${i}.institution`)} />
+              </Field>
+              <Field label={t('fields.edu.field')}>
+                <Input {...register(`educations.${i}.field`)} />
+              </Field>
+              <Field
+                label={t('fields.edu.year')}
+                error={translateError(t, errors.educations?.[i]?.year?.message)}
+              >
+                <Input type="number" inputMode="numeric" {...register(`educations.${i}.year`)} />
+              </Field>
+            </div>
+            <Button type="button" variant="ghost" className="mt-3" onClick={() => edu.remove(i)}>
+              {t('common:actions.remove')}
+            </Button>
+          </div>
+        ))}
+        <div>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => edu.append({ degree: '', institution: '', field: '', year: undefined })}
+          >
+            {t('fields.edu.add')}
+          </Button>
+        </div>
       </fieldset>
 
       <div>

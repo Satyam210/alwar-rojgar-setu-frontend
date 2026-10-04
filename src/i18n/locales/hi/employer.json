@@ -39,6 +39,8 @@
     "contactPersonPhone": "संपर्क व्यक्ति का फ़ोन",
     "contactPersonEmail": "संपर्क व्यक्ति का ईमेल",
     "contactPersonDesignation": "पदनाम",
+    "altContactPersonName": "वैकल्पिक संपर्क नाम",
+    "altContactPersonPhone": "वैकल्पिक संपर्क फ़ोन",
     "status": "सत्यापन स्थिति"
   },
   "documents": {
