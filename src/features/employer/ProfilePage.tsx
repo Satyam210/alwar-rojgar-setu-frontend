@@ -116,6 +116,8 @@ export function EmployerProfilePage() {
               <Item label={t('fields.contactPersonDesignation')} value={profile.contactPersonDesignation} />
               <Item label={t('fields.contactPersonPhone')} value={profile.contactPersonPhone} />
               <Item label={t('fields.contactPersonEmail')} value={profile.contactPersonEmail} />
+              <Item label={t('fields.altContactPersonName')} value={profile.altContactPersonName} />
+              <Item label={t('fields.altContactPersonPhone')} value={profile.altContactPersonPhone} />
               <Item label={t('fields.gstNumber')} value={profile.gstNumber} />
               <Item label={t('fields.udyamNumber')} value={profile.udyamNumber} />
               <div className="col-span-2">

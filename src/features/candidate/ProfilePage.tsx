@@ -89,6 +89,40 @@ export function CandidateProfilePage() {
                   </dd>
                 </div>
               )}
+              {profile.workExperiences && profile.workExperiences.length > 0 && (
+                <div className="col-span-full">
+                  <dt className="text-sm text-content-muted">{t('profile.sections.workHistory')}</dt>
+                  <dd className="mt-1 flex flex-col gap-3">
+                    {profile.workExperiences.map((w, i) => (
+                      <div key={i}>
+                        <div className="font-medium">{[w.role, w.company].filter(Boolean).join(' · ')}</div>
+                        {(w.fromMonth || w.toMonth || w.current) && (
+                          <div className="text-xs text-content-muted">
+                            {[w.fromMonth, w.current ? t('fields.workExp.present') : w.toMonth]
+                              .filter(Boolean)
+                              .join(' – ')}
+                          </div>
+                        )}
+                        {w.description && <div className="mt-0.5 whitespace-pre-line text-sm">{w.description}</div>}
+                      </div>
+                    ))}
+                  </dd>
+                </div>
+              )}
+              {profile.educations && profile.educations.length > 0 && (
+                <div className="col-span-full">
+                  <dt className="text-sm text-content-muted">{t('profile.sections.educationHistory')}</dt>
+                  <dd className="mt-1 flex flex-col gap-2">
+                    {profile.educations.map((ed, i) => (
+                      <div key={i} className="text-sm">
+                        <span className="font-medium">{[ed.degree, ed.field].filter(Boolean).join(', ')}</span>
+                        {ed.institution && <span> — {ed.institution}</span>}
+                        {ed.year && <span className="text-content-muted"> ({ed.year})</span>}
+                      </div>
+                    ))}
+                  </dd>
+                </div>
+              )}
             </dl>
           )}
         </CardBody>
